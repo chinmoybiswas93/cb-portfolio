@@ -1,0 +1,12 @@
+{
+  "name": "cb/portfolio",
+  "description": "WordPress Portfolio Plugin by Chinmoy Biswas",
+  "type": "wordpress-plugin",
+  "version": "0.1.0",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "ChinmoyBiswasPortfolio\\": "app/"
+    }
+  }
+}
