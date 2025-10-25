@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
-
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,23 +28,12 @@
     <?php endif; ?>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        #cb-portfolio-frontend {
-            min-height: 100vh;
-        }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; }
+        #cb-portfolio-frontend { min-height: 100vh; }
     </style>
 </head>
-
 <body>
     <div id="cb-portfolio-frontend"></div>
 </body>
-
 </html>

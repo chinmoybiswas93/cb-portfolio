@@ -40,7 +40,8 @@
 
     <div class="form-group checkbox-group">
       <label class="checkbox-label">
-        <input type="checkbox" v-model="localData.featured" @change="$emit('update', localData)" />
+        <input type="checkbox" v-model="localData.featured" :true-value="1" :false-value="0"
+          @change="$emit('update', localData)" />
         <span class="checkbox-custom"></span>
         <span>Featured Project</span>
       </label>

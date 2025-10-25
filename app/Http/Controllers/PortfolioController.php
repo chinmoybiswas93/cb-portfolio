@@ -14,7 +14,7 @@ class PortfolioController
         register_rest_route('cb-portfolio/v1', '/portfolio', [
             'methods' => 'GET',
             'callback' => [$this, 'get_portfolio'],
-            'permission_callback' => [$this, 'check_permission'],
+            'permission_callback' => '__return_true',
         ]);
 
         register_rest_route('cb-portfolio/v1', '/portfolio', [
@@ -27,7 +27,7 @@ class PortfolioController
         register_rest_route('cb-portfolio/v1', '/experience', [
             'methods' => 'GET',
             'callback' => [$this, 'get_experience'],
-            'permission_callback' => [$this, 'check_permission'],
+            'permission_callback' => '__return_true',
         ]);
 
         register_rest_route('cb-portfolio/v1', '/experience', [
@@ -46,7 +46,7 @@ class PortfolioController
         register_rest_route('cb-portfolio/v1', '/projects', [
             'methods' => 'GET',
             'callback' => [$this, 'get_projects'],
-            'permission_callback' => [$this, 'check_permission'],
+            'permission_callback' => '__return_true',
         ]);
 
         register_rest_route('cb-portfolio/v1', '/projects', [

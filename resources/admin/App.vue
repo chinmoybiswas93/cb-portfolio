@@ -133,7 +133,7 @@ export default {
   methods: {
     async loadSettings() {
       try {
-        const response = await fetch('/wp-json/cb-portfolio/v1/settings', {
+        const response = await fetch(`${cbPortfolioData.restUrl}settings`, {
           headers: {
             'X-WP-Nonce': cbPortfolioData.nonce
           }
@@ -150,7 +150,7 @@ export default {
 
     async loadPortfolioData() {
       try {
-        const response = await fetch('/wp-json/cb-portfolio/v1/portfolio', {
+        const response = await fetch(`${cbPortfolioData.restUrl}portfolio`, {
           headers: {
             'X-WP-Nonce': cbPortfolioData.nonce
           }
@@ -169,7 +169,7 @@ export default {
 
     async loadExperienceData() {
       try {
-        const response = await fetch('/wp-json/cb-portfolio/v1/experience', {
+        const response = await fetch(`${cbPortfolioData.restUrl}experience`, {
           headers: {
             'X-WP-Nonce': cbPortfolioData.nonce
           }
@@ -188,7 +188,7 @@ export default {
 
     async loadProjectsData() {
       try {
-        const response = await fetch('/wp-json/cb-portfolio/v1/projects', {
+        const response = await fetch(`${cbPortfolioData.restUrl}projects`, {
           headers: {
             'X-WP-Nonce': cbPortfolioData.nonce
           }
@@ -196,6 +196,8 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
+
+          console.log(data);
           this.projectsData = data || [];
           // Reset deleted IDs when loading fresh data
           this.deletedProjectIds = [];
@@ -244,7 +246,7 @@ export default {
       this.error = null;
 
       try {
-        const response = await fetch('/wp-json/cb-portfolio/v1/settings', {
+        const response = await fetch(`${cbPortfolioData.restUrl}settings`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -294,7 +296,7 @@ export default {
     },
 
     async savePortfolioData() {
-      const response = await fetch('/wp-json/cb-portfolio/v1/portfolio', {
+      const response = await fetch(`${cbPortfolioData.restUrl}portfolio`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -311,7 +313,7 @@ export default {
     async saveExperienceData() {
       // First, delete removed experiences
       for (const id of this.deletedExperienceIds) {
-        const response = await fetch(`/wp-json/cb-portfolio/v1/experience/${id}`, {
+        const response = await fetch(`${cbPortfolioData.restUrl}experience/${id}`, {
           method: 'DELETE',
           headers: {
             'X-WP-Nonce': cbPortfolioData.nonce
@@ -328,7 +330,7 @@ export default {
 
       // Then save/update existing experiences
       for (const exp of this.experienceData) {
-        const response = await fetch('/wp-json/cb-portfolio/v1/experience', {
+        const response = await fetch(`${cbPortfolioData.restUrl}experience`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -346,7 +348,7 @@ export default {
     async saveProjectsData() {
       // First, delete removed projects
       for (const id of this.deletedProjectIds) {
-        const response = await fetch(`/wp-json/cb-portfolio/v1/projects/${id}`, {
+        const response = await fetch(`${cbPortfolioData.restUrl}projects/${id}`, {
           method: 'DELETE',
           headers: {
             'X-WP-Nonce': cbPortfolioData.nonce
@@ -363,7 +365,7 @@ export default {
 
       // Then save/update existing projects
       for (const project of this.projectsData) {
-        const response = await fetch('/wp-json/cb-portfolio/v1/projects', {
+        const response = await fetch(`${cbPortfolioData.restUrl}projects`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

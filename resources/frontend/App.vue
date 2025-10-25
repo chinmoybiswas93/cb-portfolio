@@ -1,13 +1,13 @@
 <template>
   <div class="portfolio-container">
     <PortfolioHeader :portfolio-data="portfolioData" />
-    
+
     <AboutSection :portfolio-data="portfolioData" />
-    
+
     <ExperienceSection :experience-data="experienceData" />
-    
+
     <ProjectsSection :projects-data="projectsData" />
-    
+
     <PortfolioFooter :portfolio-data="portfolioData" />
   </div>
 </template>
@@ -60,6 +60,7 @@ export default {
         const response = await fetch('/wp-json/cb-portfolio/v1/portfolio');
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           if (data && Object.keys(data).length > 0) {
             this.portfolioData = { ...this.portfolioData, ...data };
           }
@@ -68,7 +69,7 @@ export default {
         console.error('Error loading portfolio data:', err);
       }
     },
-    
+
     async loadExperienceData() {
       try {
         const response = await fetch('/wp-json/cb-portfolio/v1/experience');
@@ -80,7 +81,7 @@ export default {
         console.error('Error loading experience data:', err);
       }
     },
-    
+
     async loadProjectsData() {
       try {
         const response = await fetch('/wp-json/cb-portfolio/v1/projects');
@@ -120,5 +121,4 @@ body {
   margin: 0 auto;
   padding: 0 15px;
 }
-
 </style>
