@@ -26,78 +26,127 @@ class AdminMenuHandler
             6
         );
 
-        add_submenu_page(
-            'cb-custom-portfolio',
-            'Portfolio Settings',
-            'Settings',
-            'manage_options',
-            'cb-portfolio-settings',
-            [$this, 'renderAdminPage']
-        );
+        // add_submenu_page(
+        //     'cb-custom-portfolio',
+        //     'Portfolio Settings',
+        //     'Settings',
+        //     'manage_options',
+        //     'cb-portfolio-settings',
+        //     [$this, 'renderAdminPage']
+        // );
     }
 
     public function renderAdminPage()
     {
         ?>
-            <div id="cb-portfolio-admin-page">
+            <div id="cb-portfolio-admin">
+                <p>Loading...</p>
             </div>
         <?php
     }
 
     public function enqueueAssets($hook)
     {
+        if (!in_array($hook, ['toplevel_page_cb-custom-portfolio', 'cb-portfolio_page_cb-portfolio-settings'])) {
+            return;
+        }
+        
+        // Add type="module" for Vue ES modules to work
+        add_filter('script_loader_tag', function ($tag, $handle) {
+            if (strpos($handle, 'cb-portfolio-') === 0 || $handle === 'vite-client') {
+                return str_replace('<script ', '<script type="module" crossorigin ', $tag);
+            }
+            return $tag;
+        }, 10, 2);
+        
+        // Check if we're in dev mode
+        if (file_exists(CB_PORTFOLIO_PLUGIN_PATH . '/.hot')) {
+            $this->enqueueDevScripts();
+        } else {
+            $this->enqueueProductionScripts();
+        }
+        
+        // Localize script with API data
+        wp_localize_script('cb-portfolio-admin', 'cbPortfolioData', [
+            'nonce' => wp_create_nonce('wp_rest'),
+            'restUrl' => rest_url('cb-portfolio/v1/'),
+        ]);
+    }
 
-        if ('toplevel_page_cb-custom-portfolio' === $hook) {
-            $plugin_url = CB_PORTFOLIO_PLUGIN_URL;
+    private function enqueueDevScripts()
+    {
+        wp_enqueue_script(
+            'vite-client',
+            'http://localhost:5173/@vite/client',
+            [],
+            null,
+            true
+        );
 
-            // Check if we're in dev mode
-            if (file_exists(CB_PORTFOLIO_PLUGIN_PATH . '/.hot')) {
-                add_filter('script_loader_tag', function ($tag, $handle) {
-                    if (in_array($handle, ['vite-client', 'cb-portfolio-admin'])) {
-                        // Add type="module" and allow inline/unsafe for localhost dev
-                        return str_replace(
-                            '<script ',
-                            '<script type="module" crossorigin ',
-                            $tag
-                        );
-                    }
-                    return $tag;
-                }, 10, 2);
+        wp_enqueue_script(
+            'cb-portfolio-admin',
+            'http://localhost:5173/admin/app.js',
+            ['vite-client'],
+            CB_PORTFOLIO_VERSION,
+            true
+        );
+    }
 
-                // Add Vite client FIRST (use http for localhost)
-                wp_enqueue_script(
-                    'vite-client',
-                    'http://localhost:5173/@vite/client',
-                    [],
-                    null,
-                    true
-                );
+    private function enqueueProductionScripts()
+    {
+        $manifest_path = CB_PORTFOLIO_PLUGIN_PATH . '/assets/.vite/manifest.json';
+        
+        if (!file_exists($manifest_path)) {
+            return;
+        }
 
-                // Then add the app script
-                wp_enqueue_script(
-                    'cb-portfolio-admin',
-                    'http://localhost:5173/admin/app.js',
-                    ['vite-client'],
-                    CB_PORTFOLIO_VERSION,
-                    true
-                );
-            } else {
-                // Production mode - use built assets
-                wp_enqueue_script(
-                    'cb-portfolio-admin',
-                    $plugin_url . '/assets/admin/app.js',
-                    [],
-                    CB_PORTFOLIO_VERSION,
-                    true
-                );
+        $manifest = json_decode(file_get_contents($manifest_path), true);
+        
+        if (!isset($manifest['admin/app.js'])) {
+            return;
+        }
 
+        $entry = $manifest['admin/app.js'];
+        $plugin_url = CB_PORTFOLIO_PLUGIN_URL;
+        $dependencies = [];
+        
+        // Load shared chunks first
+        if (isset($entry['imports'])) {
+            foreach ($entry['imports'] as $import) {
+                if (isset($manifest[$import])) {
+                    $chunk_handle = 'cb-portfolio-' . $manifest[$import]['name'];
+                    $dependencies[] = $chunk_handle;
+                    
+                    wp_enqueue_script(
+                        $chunk_handle,
+                        $plugin_url . '/assets/' . $manifest[$import]['file'],
+                        [],
+                        CB_PORTFOLIO_VERSION,
+                        true
+                    );
+                }
+            }
+        }
+        
+        // Load CSS
+        if (isset($entry['css'])) {
+            foreach ($entry['css'] as $css) {
                 wp_enqueue_style(
-                    'cb-portfolio-admin',
-                    $plugin_url . '/assets/admin/style.css',
+                    'cb-portfolio-admin-style',
+                    $plugin_url . '/assets/' . $css,
                     [],
                     CB_PORTFOLIO_VERSION
                 );
             }
         }
+        
+        // Load main script with dependencies
+        wp_enqueue_script(
+            'cb-portfolio-admin',
+            $plugin_url . '/assets/' . $entry['file'],
+            $dependencies,
+            CB_PORTFOLIO_VERSION,
+            true
+        );
     }
 }

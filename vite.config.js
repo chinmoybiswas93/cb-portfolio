@@ -9,24 +9,25 @@ export default defineConfig({
     host: 'localhost',
     port: 5173,
     cors: true,
-    strictPort: true,
   },
   build: {
-    outDir: '../assets/admin',
-    emptyOutDir: true,
+    outDir: '../assets',
+    emptyOutDir: false,
     manifest: true,
     rollupOptions: {
-      input: resolve(__dirname, 'resources/admin/app.js'),
+      input: {
+        admin: resolve(__dirname, 'resources/admin/app.js'),
+        frontend: resolve(__dirname, 'resources/frontend/app.js'),
+      },
       output: {
-        entryFileNames: 'app.js',
-        chunkFileNames: 'chunks/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]',
+        entryFileNames: '[name]/app.js',
+        chunkFileNames: '[name]/chunks/[name]-[hash].js',
       },
     },
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'resources/admin'),
+      '@': resolve(__dirname, 'resources'),
     },
   },
 });
