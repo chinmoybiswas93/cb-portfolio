@@ -6,6 +6,7 @@ use ChinmoyBiswasPortfolio\Hooks\Handlers\ActivationHandler;
 use ChinmoyBiswasPortfolio\Hooks\Handlers\DeactivationHandler;
 use ChinmoyBiswasPortfolio\Hooks\Handlers\AdminMenuHandler;
 use ChinmoyBiswasPortfolio\Http\Controllers\PortfolioSettingsController;
+use ChinmoyBiswasPortfolio\Http\Controllers\PortfolioController;
 
 if (! defined('ABSPATH')) {
     exit;
@@ -62,8 +63,11 @@ class Bootstrap
     
     public function registerApiRoutes(): void
     {
-        $controller = new PortfolioSettingsController();
-        $controller->register_routes();
+        $settingsController = new PortfolioSettingsController();
+        $settingsController->register_routes();
+        
+        $portfolioController = new PortfolioController();
+        $portfolioController->register_routes();
     }
     
     public function maybeLoadPortfolio(): void

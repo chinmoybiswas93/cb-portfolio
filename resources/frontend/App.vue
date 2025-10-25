@@ -1,200 +1,124 @@
 <template>
   <div class="portfolio-container">
-    <header class="portfolio-header">
-      <div class="container">
-        <h1 class="portfolio-title">{{ title }}</h1>
-        <p class="portfolio-subtitle">{{ subtitle }}</p>
-      </div>
-    </header>
-
-    <main class="portfolio-main">
-      <div class="container">
-        <div class="portfolio-grid">
-          <div v-for="project in projects" :key="project.id" class="portfolio-item">
-            <div class="portfolio-card">
-              <h3>{{ project.title }}</h3>
-              <p>{{ project.description }}</p>
-              <a v-if="project.link" :href="project.link" target="_blank" class="btn">View Project</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <footer class="portfolio-footer">
-      <div class="container">
-        <p>&copy; {{ new Date().getFullYear() }} {{ authorName }}</p>
-      </div>
-    </footer>
+    <PortfolioHeader :portfolio-data="portfolioData" />
+    
+    <AboutSection :portfolio-data="portfolioData" />
+    
+    <ExperienceSection :experience-data="experienceData" />
+    
+    <ProjectsSection :projects-data="projectsData" />
+    
+    <PortfolioFooter :portfolio-data="portfolioData" />
   </div>
 </template>
 
 <script>
+import PortfolioHeader from './components/PortfolioHeader.vue'
+import AboutSection from './components/AboutSection.vue'
+import ExperienceSection from './components/ExperienceSection.vue'
+import ProjectsSection from './components/ProjectsSection.vue'
+import PortfolioFooter from './components/PortfolioFooter.vue'
+
 export default {
   name: 'PortfolioApp',
+  components: {
+    PortfolioHeader,
+    AboutSection,
+    ExperienceSection,
+    ProjectsSection,
+    PortfolioFooter
+  },
   data() {
     return {
-      title: 'Welcome to My Portfolio',
-      subtitle: 'Showcasing my latest work and projects',
-      authorName: 'Chinmoy Biswas',
-      projects: [
-        {
-          id: 1,
-          title: 'Project One',
-          description: 'This is a sample project description. Replace it with your actual project details.',
-          link: '#'
-        },
-        {
-          id: 2,
-          title: 'Project Two',
-          description: 'Another amazing project that demonstrates my skills and expertise.',
-          link: '#'
-        },
-        {
-          id: 3,
-          title: 'Project Three',
-          description: 'A third project that showcases my versatility and creativity.',
-          link: '#'
-        }
-      ]
+      portfolioData: {
+        name: '',
+        title: '',
+        tagline: '',
+        about: '',
+        email: '',
+        phone: '',
+        location: '',
+        github_url: '',
+        linkedin_url: '',
+        twitter_url: '',
+        website_url: '',
+        resume_url: '',
+        profile_image: ''
+      },
+      experienceData: [],
+      projectsData: []
     }
   },
   mounted() {
-    // Load portfolio data from API if needed
     this.loadPortfolioData();
+    this.loadExperienceData();
+    this.loadProjectsData();
   },
   methods: {
     async loadPortfolioData() {
-      // Future: Load data from WordPress REST API
-      // const response = await fetch('/wp-json/cb-portfolio/v1/items');
-      // this.projects = await response.json();
+      try {
+        const response = await fetch('/wp-json/cb-portfolio/v1/portfolio');
+        if (response.ok) {
+          const data = await response.json();
+          if (data && Object.keys(data).length > 0) {
+            this.portfolioData = { ...this.portfolioData, ...data };
+          }
+        }
+      } catch (err) {
+        console.error('Error loading portfolio data:', err);
+      }
+    },
+    
+    async loadExperienceData() {
+      try {
+        const response = await fetch('/wp-json/cb-portfolio/v1/experience');
+        if (response.ok) {
+          const data = await response.json();
+          this.experienceData = data || [];
+        }
+      } catch (err) {
+        console.error('Error loading experience data:', err);
+      }
+    },
+    
+    async loadProjectsData() {
+      try {
+        const response = await fetch('/wp-json/cb-portfolio/v1/projects');
+        if (response.ok) {
+          const data = await response.json();
+          this.projectsData = data || [];
+        }
+      } catch (err) {
+        console.error('Error loading projects data:', err);
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+.portfolio-container {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Global styles */
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
-.portfolio-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+body {
+  margin: 0;
+  padding: 0;
 }
 
+/* Responsive container */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 15px;
 }
 
-.portfolio-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 80px 0;
-  text-align: center;
-}
-
-.portfolio-title {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  font-weight: 700;
-}
-
-.portfolio-subtitle {
-  font-size: 1.5rem;
-  opacity: 0.9;
-}
-
-.portfolio-main {
-  flex: 1;
-  padding: 80px 0;
-  background: #f8f9fa;
-}
-
-.portfolio-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  margin-top: 40px;
-}
-
-.portfolio-item {
-  animation: fadeIn 0.6s ease-in;
-}
-
-.portfolio-card {
-  background: white;
-  border-radius: 10px;
-  padding: 30px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.portfolio-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-}
-
-.portfolio-card h3 {
-  color: #333;
-  margin-bottom: 15px;
-  font-size: 1.5rem;
-}
-
-.portfolio-card p {
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: opacity 0.3s ease;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-
-.portfolio-footer {
-  background: #2c3e50;
-  color: white;
-  padding: 30px 0;
-  text-align: center;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .portfolio-title {
-    font-size: 2rem;
-  }
-  
-  .portfolio-subtitle {
-    font-size: 1.2rem;
-  }
-  
-  .portfolio-grid {
-    grid-template-columns: 1fr;
-  }
-}
 </style>
