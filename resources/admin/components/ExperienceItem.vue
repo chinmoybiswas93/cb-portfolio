@@ -7,57 +7,93 @@
       </button>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Company</label>
-        <input type="text" v-model="localData.company" placeholder="Company Name" @input="$emit('update', localData)" />
-      </div>
+    <FormRow :columns="2">
+      <FormGroup label="Company">
+        <BaseInput 
+          v-model="localData.company" 
+          type="text"
+          placeholder="Company Name" 
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
 
-      <div class="form-group">
-        <label>Position</label>
-        <input type="text" v-model="localData.position" placeholder="Job Title" @input="$emit('update', localData)" />
-      </div>
-    </div>
+      <FormGroup label="Position">
+        <BaseInput 
+          v-model="localData.position" 
+          type="text"
+          placeholder="Job Title" 
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
+    </FormRow>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Start Date</label>
-        <input type="text" v-model="localData.start_date" placeholder="2020" @input="$emit('update', localData)" />
-      </div>
+    <FormRow :columns="3">
+      <FormGroup label="Start Date">
+        <BaseInput 
+          v-model="localData.start_date" 
+          type="text"
+          placeholder="2020" 
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
 
-      <div class="form-group">
-        <label>End Date</label>
-        <input type="text" v-model="localData.end_date" placeholder="2024 or Present" :disabled="localData.current"
-          @input="$emit('update', localData)" />
-      </div>
+      <FormGroup label="End Date">
+        <BaseInput 
+          v-model="localData.end_date" 
+          type="text"
+          placeholder="2024 or Present" 
+          :disabled="localData.current"
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
 
-      <div class="form-group checkbox-group">
-        <label class="checkbox-label">
-          <input type="checkbox" v-model="localData.current" :true-value="1" :false-value="0"
-            @change="$emit('update', localData)" />
-          <span class="checkbox-custom"></span>
-          <span>Currently working here</span>
-        </label>
-      </div>
-    </div>
+      <FormGroup label="">
+        <BaseCheckbox 
+          v-model="localData.current" 
+          :true-value="1" 
+          :false-value="0"
+          label="Currently working here"
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
+    </FormRow>
 
-    <div class="form-group">
-      <label>Description</label>
-      <textarea v-model="localData.description" placeholder="Describe your role and achievements" rows="3"
-        @input="$emit('update', localData)"></textarea>
-    </div>
+    <FormGroup label="Description">
+      <BaseTextarea 
+        v-model="localData.description" 
+        placeholder="Describe your role and achievements" 
+        :rows="3"
+        @update:modelValue="$emit('update', localData)" 
+      />
+    </FormGroup>
 
-    <div class="form-group">
-      <label>Skills/Technologies</label>
-      <input type="text" v-model="localData.skills" placeholder="JavaScript, React, Node.js (comma separated)"
-        @input="$emit('update', localData)" />
-    </div>
+    <FormGroup label="Skills/Technologies">
+      <BaseInput 
+        v-model="localData.skills" 
+        type="text"
+        placeholder="JavaScript, React, Node.js (comma separated)"
+        @update:modelValue="$emit('update', localData)" 
+      />
+    </FormGroup>
   </div>
 </template>
 
 <script>
+import BaseInput from './form/BaseInput.vue'
+import BaseTextarea from './form/BaseTextarea.vue'
+import BaseCheckbox from './form/BaseCheckbox.vue'
+import FormGroup from './form/FormGroup.vue'
+import FormRow from './form/FormRow.vue'
+
 export default {
   name: 'ExperienceItem',
+  components: {
+    BaseInput,
+    BaseTextarea,
+    BaseCheckbox,
+    FormGroup,
+    FormRow
+  },
   props: {
     experience: {
       type: Object,

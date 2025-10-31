@@ -6,66 +6,99 @@
     </div>
 
     <div class="form-section">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" v-model="localData.email" placeholder="your.email@example.com"
-            @input="$emit('data-changed', localData)" />
-        </div>
+      <FormRow :columns="2">
+        <FormGroup label="Email">
+          <BaseInput 
+            v-model="localData.email" 
+            type="email"
+            placeholder="your.email@example.com"
+            @update:modelValue="$emit('data-changed', localData)" 
+          />
+        </FormGroup>
 
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="tel" v-model="localData.phone" placeholder="+1 (555) 123-4567"
-            @input="$emit('data-changed', localData)" />
-        </div>
-      </div>
+        <FormGroup label="Phone">
+          <BaseInput 
+            v-model="localData.phone" 
+            type="tel"
+            placeholder="+1 (555) 123-4567"
+            @update:modelValue="$emit('data-changed', localData)" 
+          />
+        </FormGroup>
+      </FormRow>
 
-      <div class="form-group">
-        <label>Location</label>
-        <input type="text" v-model="localData.location" placeholder="City, State/Country"
-          @input="$emit('data-changed', localData)" />
-      </div>
+      <FormGroup label="Location">
+        <BaseInput 
+          v-model="localData.location" 
+          type="text"
+          placeholder="City, State/Country"
+          @update:modelValue="$emit('data-changed', localData)" 
+        />
+      </FormGroup>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>GitHub URL</label>
-          <input type="url" v-model="localData.github_url" placeholder="https://github.com/username"
-            @input="$emit('data-changed', localData)" />
-        </div>
+      <FormRow :columns="2">
+        <FormGroup label="GitHub URL">
+          <BaseInput 
+            v-model="localData.github_url" 
+            type="url"
+            placeholder="https://github.com/username"
+            @update:modelValue="$emit('data-changed', localData)" 
+          />
+        </FormGroup>
 
-        <div class="form-group">
-          <label>LinkedIn URL</label>
-          <input type="url" v-model="localData.linkedin_url" placeholder="https://linkedin.com/in/username"
-            @input="$emit('data-changed', localData)" />
-        </div>
-      </div>
+        <FormGroup label="LinkedIn URL">
+          <BaseInput 
+            v-model="localData.linkedin_url" 
+            type="url"
+            placeholder="https://linkedin.com/in/username"
+            @update:modelValue="$emit('data-changed', localData)" 
+          />
+        </FormGroup>
+      </FormRow>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Twitter URL</label>
-          <input type="url" v-model="localData.twitter_url" placeholder="https://twitter.com/username"
-            @input="$emit('data-changed', localData)" />
-        </div>
+      <FormRow :columns="2">
+        <FormGroup label="Twitter URL">
+          <BaseInput 
+            v-model="localData.twitter_url" 
+            type="url"
+            placeholder="https://twitter.com/username"
+            @update:modelValue="$emit('data-changed', localData)" 
+          />
+        </FormGroup>
 
-        <div class="form-group">
-          <label>Website URL</label>
-          <input type="url" v-model="localData.website_url" placeholder="https://yourwebsite.com"
-            @input="$emit('data-changed', localData)" />
-        </div>
-      </div>
+        <FormGroup label="Website URL">
+          <BaseInput 
+            v-model="localData.website_url" 
+            type="url"
+            placeholder="https://yourwebsite.com"
+            @update:modelValue="$emit('data-changed', localData)" 
+          />
+        </FormGroup>
+      </FormRow>
 
-      <div class="form-group">
-        <label>Resume URL</label>
-        <input type="url" v-model="localData.resume_url" placeholder="https://yourwebsite.com/resume.pdf"
-          @input="$emit('data-changed', localData)" />
-      </div>
+      <FormGroup label="Resume URL">
+        <BaseInput 
+          v-model="localData.resume_url" 
+          type="url"
+          placeholder="https://yourwebsite.com/resume.pdf"
+          @update:modelValue="$emit('data-changed', localData)" 
+        />
+      </FormGroup>
     </div>
   </div>
 </template>
 
 <script>
+import BaseInput from './form/BaseInput.vue'
+import FormGroup from './form/FormGroup.vue'
+import FormRow from './form/FormRow.vue'
+
 export default {
   name: 'ContactInfoTab',
+  components: {
+    BaseInput,
+    FormGroup,
+    FormRow
+  },
   props: {
     portfolioData: {
       type: Object,

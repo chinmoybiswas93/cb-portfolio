@@ -132,6 +132,7 @@ export default {
   },
   methods: {
     async loadSettings() {
+      console.log(cbPortfolioData);
       try {
         const response = await fetch(`${cbPortfolioData.restUrl}settings`, {
           headers: {
@@ -196,8 +197,6 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
-
-          console.log(data);
           this.projectsData = data || [];
           // Reset deleted IDs when loading fresh data
           this.deletedProjectIds = [];
@@ -569,94 +568,7 @@ export default {
   border: 1px solid #e1e5e9;
 }
 
-#cb-portfolio-admin .main-content .form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-#cb-portfolio-admin .main-content .form-group {
-  margin-bottom: 10px;
-}
-
-#cb-portfolio-admin .main-content .form-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 500;
-  color: #1d2327;
-  font-size: 14px;
-}
-
-#cb-portfolio-admin .main-content .form-group input,
-#cb-portfolio-admin .main-content .form-group textarea {
-  width: 100%;
-  border: 1px solid #dcdcde;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: all 0.2s;
-  background: #fff;
-}
-
-#cb-portfolio-admin .main-content .form-group input {
-  padding: 3px 10px;
-}
-
-#cb-portfolio-admin .main-content .form-group textarea {
-  padding: 5px 10px;
-}
-
-#cb-portfolio-admin .main-content .form-group input:focus,
-#cb-portfolio-admin .main-content .form-group textarea:focus {
-  border-color: #2271b1;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.1);
-}
-
-#cb-portfolio-admin .main-content .form-group textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-/* Custom Checkbox */
-#cb-portfolio-admin .main-content .checkbox-label {
-  display: flex !important;
-  align-items: center;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: normal;
-}
-
-#cb-portfolio-admin .main-content .checkbox-label input[type="checkbox"] {
-  display: none;
-}
-
-#cb-portfolio-admin .main-content .checkbox-custom {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #dcdcde;
-  border-radius: 4px;
-  margin-right: 8px;
-  position: relative;
-  transition: all 0.2s;
-}
-
-#cb-portfolio-admin .main-content .checkbox-label input[type="checkbox"]:checked+.checkbox-custom {
-  background: #2271b1;
-  border-color: #2271b1;
-}
-
-#cb-portfolio-admin .main-content .checkbox-label input[type="checkbox"]:checked+.checkbox-custom::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-}
+/* Form styles are now encapsulated in form components */
 
 #cb-portfolio-admin .main-content .tab-header .add-btn {
   margin-top: 10px;

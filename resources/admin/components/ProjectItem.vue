@@ -7,51 +7,81 @@
       </button>
     </div>
 
-    <div class="form-group">
-      <label>Project Title</label>
-      <input type="text" v-model="localData.title" placeholder="Project Name" @input="$emit('update', localData)" />
-    </div>
+    <FormGroup label="Project Title">
+      <BaseInput 
+        v-model="localData.title" 
+        type="text"
+        placeholder="Project Name" 
+        @update:modelValue="$emit('update', localData)" 
+      />
+    </FormGroup>
 
-    <div class="form-group">
-      <label>Description</label>
-      <textarea v-model="localData.description" placeholder="Describe the project, technologies used, and your role"
-        rows="4" @input="$emit('update', localData)"></textarea>
-    </div>
+    <FormGroup label="Description">
+      <BaseTextarea 
+        v-model="localData.description" 
+        placeholder="Describe the project, technologies used, and your role"
+        :rows="4" 
+        @update:modelValue="$emit('update', localData)" 
+      />
+    </FormGroup>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Live URL</label>
-        <input type="url" v-model="localData.live_url" placeholder="https://project-demo.com"
-          @input="$emit('update', localData)" />
-      </div>
+    <FormRow :columns="2">
+      <FormGroup label="Live URL">
+        <BaseInput 
+          v-model="localData.live_url" 
+          type="url"
+          placeholder="https://project-demo.com"
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
 
-      <div class="form-group">
-        <label>GitHub URL</label>
-        <input type="url" v-model="localData.github_url" placeholder="https://github.com/username/project"
-          @input="$emit('update', localData)" />
-      </div>
-    </div>
+      <FormGroup label="GitHub URL">
+        <BaseInput 
+          v-model="localData.github_url" 
+          type="url"
+          placeholder="https://github.com/username/project"
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
+    </FormRow>
 
-    <div class="form-group">
-      <label>Technologies</label>
-      <input type="text" v-model="localData.technologies" placeholder="React, Node.js, MongoDB (comma separated)"
-        @input="$emit('update', localData)" />
-    </div>
+    <FormGroup label="Technologies">
+      <BaseInput 
+        v-model="localData.technologies" 
+        type="text"
+        placeholder="React, Node.js, MongoDB (comma separated)"
+        @update:modelValue="$emit('update', localData)" 
+      />
+    </FormGroup>
 
-    <div class="form-group checkbox-group">
-      <label class="checkbox-label">
-        <input type="checkbox" v-model="localData.featured" :true-value="1" :false-value="0"
-          @change="$emit('update', localData)" />
-        <span class="checkbox-custom"></span>
-        <span>Featured Project</span>
-      </label>
-    </div>
+    <FormGroup label="">
+      <BaseCheckbox 
+        v-model="localData.featured" 
+        :true-value="1" 
+        :false-value="0"
+        label="Featured Project"
+        @update:modelValue="$emit('update', localData)" 
+      />
+    </FormGroup>
   </div>
 </template>
 
 <script>
+import BaseInput from './form/BaseInput.vue'
+import BaseTextarea from './form/BaseTextarea.vue'
+import BaseCheckbox from './form/BaseCheckbox.vue'
+import FormGroup from './form/FormGroup.vue'
+import FormRow from './form/FormRow.vue'
+
 export default {
   name: 'ProjectItem',
+  components: {
+    BaseInput,
+    BaseTextarea,
+    BaseCheckbox,
+    FormGroup,
+    FormRow
+  },
   props: {
     project: {
       type: Object,

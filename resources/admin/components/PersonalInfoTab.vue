@@ -6,39 +6,61 @@
     </div>
 
     <div class="form-section">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" v-model="localData.name" placeholder="Enter your full name"
-            @input="$emit('data-changed', localData)" />
-        </div>
+      <FormRow :columns="2">
+        <FormGroup label="Full Name">
+          <BaseInput 
+            v-model="localData.name" 
+            type="text"
+            placeholder="Enter your full name"
+            @update:modelValue="$emit('data-changed', localData)" 
+          />
+        </FormGroup>
 
-        <div class="form-group">
-          <label>Job Title</label>
-          <input type="text" v-model="localData.title" placeholder="e.g., Front End Engineer"
-            @input="$emit('data-changed', localData)" />
-        </div>
-      </div>
+        <FormGroup label="Job Title">
+          <BaseInput 
+            v-model="localData.title" 
+            type="text"
+            placeholder="e.g., Front End Engineer"
+            @update:modelValue="$emit('data-changed', localData)" 
+          />
+        </FormGroup>
+      </FormRow>
 
-      <div class="form-group">
-        <label>Tagline</label>
-        <textarea v-model="localData.tagline" placeholder="Brief description of what you do" rows="2"
-          @input="$emit('data-changed', localData)"></textarea>
-      </div>
+      <FormGroup label="Tagline">
+        <BaseTextarea 
+          v-model="localData.tagline" 
+          placeholder="Brief description of what you do" 
+          :rows="2"
+          @update:modelValue="$emit('data-changed', localData)" 
+        />
+      </FormGroup>
 
-      <div class="form-group">
-        <label>About</label>
-        <textarea v-model="localData.about"
-          placeholder="Tell us about yourself, your experience, and what you're passionate about" rows="6"
-          @input="$emit('data-changed', localData)"></textarea>
-      </div>
+      <FormGroup label="About">
+        <BaseTextarea 
+          v-model="localData.about"
+          placeholder="Tell us about yourself, your experience, and what you're passionate about" 
+          :rows="6"
+          @update:modelValue="$emit('data-changed', localData)" 
+        />
+      </FormGroup>
     </div>
   </div>
 </template>
 
 <script>
+import BaseInput from './form/BaseInput.vue'
+import BaseTextarea from './form/BaseTextarea.vue'
+import FormGroup from './form/FormGroup.vue'
+import FormRow from './form/FormRow.vue'
+
 export default {
   name: 'PersonalInfoTab',
+  components: {
+    BaseInput,
+    BaseTextarea,
+    FormGroup,
+    FormRow
+  },
   props: {
     portfolioData: {
       type: Object,
