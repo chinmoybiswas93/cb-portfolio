@@ -309,7 +309,7 @@ html {
     --profile-tagline-size: 16px;
 
     /* Section Font Sizes */
-    --section-title-size: 20px;
+    --section-title-size: 17px;
     --body-text-size: 16px;
     --nav-link-size: 14px;
     --highlight-title-size: 20px;

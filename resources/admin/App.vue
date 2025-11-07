@@ -197,7 +197,10 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
-          this.projectsData = data || [];
+          this.projectsData = (data || []).map(project => ({
+            ...project,
+            featured: parseInt(project.featured) || 0
+          }));
           // Reset deleted IDs when loading fresh data
           this.deletedProjectIds = [];
         }
@@ -408,7 +411,7 @@ export default {
         live_url: '',
         github_url: '',
         technologies: '',
-        featured: false
+        featured: 0
       });
     },
 
@@ -443,6 +446,8 @@ export default {
   align-items: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   z-index: 100;
+  position: sticky;
+  top: 0;
 }
 
 .header-left h1 {

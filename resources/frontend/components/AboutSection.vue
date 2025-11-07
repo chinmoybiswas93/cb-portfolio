@@ -1,7 +1,7 @@
 <template>
   <section class="about-section">
     <div class="section-header fade-in">
-      <h2 class="section-title">About Chinmoy</h2>
+      <h2 class="section-title">About</h2>
     </div>
     
     <div class="about-content slide-up">
@@ -55,10 +55,11 @@ export default {
 
 .section-title {
   font-size: var(--section-title-size);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: .5px;
   color: var(--color-text-primary);
   margin: 0;
-  position: relative;
 }
 
 .about-content {

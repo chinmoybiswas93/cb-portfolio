@@ -11,6 +11,14 @@
       <div v-if="experienceData.length === 0" class="empty-state">
         <p>No experience data available yet.</p>
       </div>
+
+      <!-- View Full Archive Button -->
+      <div v-if="experienceData.length > 0" class="archive-section">
+        <a href="#" class="archive-button" @click.prevent="viewFullArchive">
+          <span class="archive-text">View Full Resume</span>
+          <span class="archive-arrow">→</span>
+        </a>
+      </div>
     </div>
   </section>
 </template>
@@ -28,6 +36,14 @@ export default {
       type: Array,
       required: true
     }
+  },
+  methods: {
+    viewFullArchive() {
+      // Add your archive view logic here
+      console.log('View full experience archive');
+      // You can emit an event or navigate to an archive page
+      this.$emit('view-archive');
+    }
   }
 }
 </script>
@@ -35,7 +51,6 @@ export default {
 <style scoped>
 .experience-section {
   background: transparent;
-  padding-bottom: 4rem;
   margin-bottom: 0;
 }
 
@@ -45,35 +60,20 @@ export default {
   /* Hidden on desktop */
 }
 
-@media (max-width: 768px) {
-  .section-header {
-    display: block;
-    /* Show on mobile */
-    position: sticky;
-    top: 0;
-    background: var(--color-background-blur-strong);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 1rem 1.5rem;
-    margin: 0 -1.5rem 1rem -1.5rem;
-    z-index: 10;
-  }
-
-  .section-title {
-    margin: 0;
-  }
-}
 
 .section-title {
   font-size: var(--section-title-size);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: .5px;
   color: var(--color-text-primary);
   margin: 0;
 }
 
 .experience-timeline {
   position: relative;
-  overflow: visible; /* Allow hover effects to extend beyond boundaries */
+  overflow: visible;
+  /* Allow hover effects to extend beyond boundaries */
 }
 
 .empty-state {
@@ -87,10 +87,62 @@ export default {
   margin: 0;
 }
 
+.archive-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--body-text-size);
+  padding: .2rem 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+
+.archive-section {
+  padding-top: 2rem;
+}
+
+.archive-button:hover {
+  color: var(--color-white);
+  border-bottom: 1px solid var(--color-white-60);
+}
+
+.archive-button:hover .archive-arrow {
+  transform: translateX(4px);
+}
+
+.archive-text {
+  font-size: var(--body-text-size);
+}
+
+.archive-arrow {
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .experience-section {
-    padding: 0 1.5rem 3rem 1.5rem;
+    padding: 0 1.5rem 1rem 1.5rem;
+  }
+
+  .section-header {
+    display: block;
+    position: sticky;
+    top: 0;
+    background: var(--color-background-blur-strong);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 1rem 1.5rem;
+    margin: 0 -1.5rem 1rem -1.5rem;
+    z-index: 10;
+  }
+
+  .section-title {
+    margin: 0;
   }
 }
 
