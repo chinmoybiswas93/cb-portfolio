@@ -41,8 +41,8 @@
         <BaseInput 
           v-model="localData.end_date" 
           type="text"
-          placeholder="2024 or Present" 
-          :disabled="localData.current"
+          :placeholder="isCurrentJob ? 'Present' : '2024 or Present'" 
+          :disabled="isCurrentJob"
           @update:modelValue="$emit('update', localData)" 
         />
       </FormGroup>
@@ -110,12 +110,28 @@ export default {
       localData: { ...this.experience }
     }
   },
+  computed: {
+    isCurrentJob() {
+      // Handle both boolean and numeric values (0/1) from database, including strings
+      const current = this.localData.current;
+      return current === true || current === 1 || current === '1' || current == 1;
+    }
+  },
   watch: {
     experience: {
       handler(newData) {
         this.localData = { ...newData };
       },
       deep: true
+    },
+    'localData.current': {
+      handler(newValue) {
+        // When "current" is checked, clear the end_date
+        if (newValue === 1 || newValue === true || newValue === '1' || newValue == 1) {
+          this.localData.end_date = '';
+        }
+        this.$emit('update', this.localData);
+      }
     }
   }
 }

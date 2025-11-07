@@ -130,6 +130,13 @@ class PortfolioController
             "SELECT * FROM {$wpdb->prefix}cb_portfolio_experience ORDER BY id DESC"
         );
         
+        // Convert database values to proper types
+        foreach ($experience as $exp) {
+            $exp->current = (int) $exp->current; // Convert string to integer
+            $exp->id = (int) $exp->id;
+            $exp->portfolio_id = (int) $exp->portfolio_id;
+        }
+        
         return new \WP_REST_Response($experience, 200);
     }
 

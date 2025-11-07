@@ -3,15 +3,11 @@
     <div class="section-header fade-in">
       <h2 class="section-title">Experience</h2>
     </div>
-    
+
     <div class="experience-timeline slide-up">
-      <ExperienceItem
-        v-for="(experience, index) in experienceData"
-        :key="experience.id"
-        :experience="experience"
-        :index="index"
-      />
-      
+      <ExperienceItem v-for="(experience, index) in experienceData" :key="experience.id" :experience="experience"
+        :index="index" />
+
       <div v-if="experienceData.length === 0" class="empty-state">
         <p>No experience data available yet.</p>
       </div>
@@ -45,12 +41,14 @@ export default {
 
 .section-header {
   margin-bottom: 2rem;
-  display: none; /* Hidden on desktop */
+  display: none;
+  /* Hidden on desktop */
 }
 
 @media (max-width: 768px) {
   .section-header {
-    display: block; /* Show on mobile */
+    display: block;
+    /* Show on mobile */
     position: sticky;
     top: 0;
     background: var(--color-background-blur-strong);
@@ -60,7 +58,7 @@ export default {
     margin: 0 -1.5rem 2rem -1.5rem;
     z-index: 10;
   }
-  
+
   .section-title {
     margin: 0;
   }

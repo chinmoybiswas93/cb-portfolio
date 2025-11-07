@@ -1,29 +1,25 @@
 <template>
   <div class="experience-item" :style="{ animationDelay: `${index * 0.1}s` }">
     <div class="experience-card">
-      <div class="experience-header">
-        <div class="experience-title">
-          <h3>{{ experience.position }}</h3>
-          <p class="company">{{ experience.company }}</p>
-        </div>
-        <div class="experience-dates">
-          <span class="date-badge" :class="{ current: experience.current }">
-            {{ experience.start_date }} - {{ experience.current ? 'Present' : experience.end_date }}
-          </span>
-        </div>
+      <!-- Left Column: Duration (25%) -->
+      <div class="experience-duration">
+        <span class="date-range" :class="{ current: experience.current }">
+          {{ experience.start_date }} — {{ experience.current ? 'PRESENT' : experience.end_date }}
+        </span>
       </div>
-      
+
+      <!-- Right Column: Content (75%) -->
       <div class="experience-content">
+        <div class="experience-header">
+          <h3 class="position">{{ experience.position }}</h3>
+          <p class="company">{{ experience.company }} <span class="external-link">↗</span></p>
+        </div>
+
         <p class="description" v-if="experience.description">{{ experience.description }}</p>
-        
+
         <div v-if="experience.skills" class="skills-section">
-          <h4 class="skills-title">Technologies & Skills</h4>
           <div class="skill-tags">
-            <span 
-              v-for="skill in skillList" 
-              :key="skill" 
-              class="skill-tag"
-            >
+            <span v-for="skill in skillList" :key="skill" class="skill-tag">
               {{ skill.trim() }}
             </span>
           </div>
@@ -58,85 +54,95 @@ export default {
 <style scoped>
 .experience-item {
   position: relative;
-  padding-left: 0;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   animation: slideInLeft 0.6s ease-out;
   animation-fill-mode: both;
 }
 
 .experience-card {
-  background: transparent;
-  padding: 1.5rem 0;
-  border-left: 3px solid rgba(148, 163, 184, 0.3);
-  padding-left: 1.5rem;
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+  margin: -1rem;
+  border-radius: 8px;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .experience-card:hover {
-  border-left-color: rgba(148, 163, 184, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Left Column: Duration (25%) */
+.experience-duration {
+  width: 25%;
+  flex-shrink: 0;
+  padding-top: 0.25rem;
+}
+
+.date-range {
+  font-size: var(--font-size-xs);
+  color: var(--color-white-60);
+  font-weight: var(--font-weight-normal);
+  text-transform: uppercase;
+  display: block;
+}
+
+.date-range.current {
+  color: var(--color-white-80);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Right Column: Content (75%) */
+.experience-content {
+  flex: 1;
+  min-width: 0;
+  /* Allow content to shrink */
 }
 
 .experience-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-.experience-title h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: rgb(248, 250, 252);
+.position {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
   margin: 0 0 0.25rem 0;
+  line-height: 1.3;
 }
 
 .company {
-  font-size: 1rem;
-  color: rgb(203, 213, 225);
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-white-80);
+  font-weight: var(--font-weight-medium);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.experience-dates {
-  flex-shrink: 0;
+.external-link {
+  font-size: 1rem;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
-.date-badge {
-  background: transparent;
-  color: rgb(148, 163, 184);
-  padding: 0;
-  font-size: 0.875rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.date-badge.current {
-  color: rgb(203, 213, 225);
-  font-weight: 600;
-}
-
-.experience-content {
-  margin-top: 1rem;
+.experience-card:hover .external-link {
+  opacity: 1;
 }
 
 .description {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: rgb(148, 163, 184);
-  margin: 0 0 1rem 0;
+  color: var(--text-light);
+  line-height: 1.3;
+  margin-bottom: 1rem;
+  font-size: var(--font-size-sm);
 }
 
 .skills-section {
   margin-top: 1rem;
-}
-
-.skills-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: rgb(203, 213, 225);
-  margin: 0 0 0.5rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .skill-tags {
@@ -146,18 +152,18 @@ export default {
 }
 
 .skill-tag {
-  background: transparent;
-  color: rgb(148, 163, 184);
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-light);
+  padding: 2px 0.5rem;
+  border-radius: 4px;
+  font-size: var(--font-size-xs);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .skill-tag:hover {
-  border-color: rgba(148, 163, 184, 0.6);
-  color: rgb(203, 213, 225);
+  border-color: var(--color-white-40);
+  color: var(--color-white-90);
+  background: var(--color-white-10);
 }
 
 @keyframes slideInLeft {
@@ -165,6 +171,7 @@ export default {
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -173,34 +180,43 @@ export default {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .experience-item {
-    padding-left: 0;
-  }
-  
-  .experience-header {
+  .experience-card {
     flex-direction: column;
     gap: 0.75rem;
+    padding: 0.75rem;
+    margin: -0.75rem;
   }
-  
-  .experience-dates {
-    align-self: flex-start;
+
+  .experience-duration {
+    width: 100%;
+    order: 2;
   }
-  
-  .experience-card {
-    padding: 1rem 0;
-    padding-left: 1rem;
+
+  .experience-content {
+    order: 1;
   }
-  
-  .experience-title h3 {
-    font-size: 1.125rem;
+
+  .position {
+    font-size: var(--body-text-size);
+  }
+
+  .date-range {
+    font-size: 11px;
+  }
+
+  .company {
+    font-size: var(--extra-small-size);
   }
 }
 
 /* Tablet Responsive */
 @media (max-width: 1024px) and (min-width: 769px) {
   .experience-card {
-    padding: 1.25rem 0;
-    padding-left: 1.25rem;
+    gap: 1.5rem;
+  }
+
+  .experience-duration {
+    width: 30%;
   }
 }
 </style>
