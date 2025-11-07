@@ -2,7 +2,6 @@
   <section class="experience-section">
     <div class="section-header fade-in">
       <h2 class="section-title">Experience</h2>
-      <div class="section-divider"></div>
     </div>
     
     <div class="experience-timeline slide-up">
@@ -46,20 +45,32 @@ export default {
 
 .section-header {
   margin-bottom: 2rem;
+  display: none; /* Hidden on desktop */
+}
+
+@media (max-width: 768px) {
+  .section-header {
+    display: block; /* Show on mobile */
+    position: sticky;
+    top: 0;
+    background: var(--color-background-blur-strong);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 1rem 1.5rem;
+    margin: 0 -1.5rem 2rem -1.5rem;
+    z-index: 10;
+  }
+  
+  .section-title {
+    margin: 0;
+  }
 }
 
 .section-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: rgb(248, 250, 252);
-  margin: 0 0 1rem 0;
-}
-
-.section-divider {
-  width: 60px;
-  height: 2px;
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 1px;
+  font-size: var(--section-title-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
 }
 
 .experience-timeline {
@@ -69,11 +80,11 @@ export default {
 .empty-state {
   text-align: center;
   padding: 3rem 0;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
 }
 
 .empty-state p {
-  font-size: 1.125rem;
+  font-size: var(--highlight-text-size);
   margin: 0;
 }
 
@@ -82,22 +93,12 @@ export default {
   .experience-section {
     padding: 0 1.5rem 3rem 1.5rem;
   }
-  
-  .section-title {
-    font-size: 1.75rem;
-  }
-  
-
 }
 
 /* Tablet Responsive */
 @media (max-width: 1024px) and (min-width: 769px) {
   .experience-section {
     padding: 0 2rem 3.5rem 2rem;
-  }
-  
-  .section-title {
-    font-size: 1.875rem;
   }
 }
 </style>

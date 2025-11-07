@@ -1,19 +1,8 @@
 <template>
-  <aside class="left-sidebar" :class="{ 'is-open': sidebarOpen }">
+  <aside class="left-sidebar">
     <div class="sidebar-content">
       <!-- Profile Section -->
       <div class="profile-section">
-        <div class="profile-image">
-          <img 
-            v-if="portfolioData.profile_image" 
-            :src="portfolioData.profile_image" 
-            :alt="portfolioData.name"
-          />
-          <div v-else class="profile-placeholder">
-            {{ getInitials(portfolioData.name) }}
-          </div>
-        </div>
-        
         <div class="profile-info">
           <h1 class="profile-name">{{ portfolioData.name || 'Chinmoy Biswas' }}</h1>
           <p class="profile-title">{{ portfolioData.title || 'Tier 2 Technical Support Engineer' }}</p>
@@ -107,15 +96,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Mobile Toggle Button -->
-    <button 
-      class="sidebar-toggle" 
-      @click="$emit('toggle-sidebar')"
-      aria-label="Toggle navigation"
-    >
-      <span class="toggle-icon">☰</span>
-    </button>
   </aside>
 </template>
 
@@ -130,31 +110,12 @@ export default {
     activeSection: {
       type: String,
       default: 'about'
-    },
-    sidebarOpen: {
-      type: Boolean,
-      default: false
     }
   },
-  emits: ['toggle-sidebar', 'navigate-to'],
+  emits: ['navigate-to'],
   methods: {
-    getInitials(name) {
-      if (!name) return 'CB'
-      return name
-        .split(' ')
-        .map(word => word.charAt(0))
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
-    },
-    
     scrollToSection(sectionId) {
       this.$emit('navigate-to', sectionId)
-      
-      // Close sidebar on mobile after navigation
-      if (window.innerWidth <= 768) {
-        this.$emit('toggle-sidebar')
-      }
     }
   }
 }
@@ -164,15 +125,14 @@ export default {
 .left-sidebar {
   width: 40%;
   height: 100vh;
-  color: #ffffff;
+  color: var(--color-white);
   overflow-y: hidden;
   z-index: 1000;
-  transition: transform 0.3s ease;
   flex-shrink: 0;
 }
 
 .sidebar-content {
-  padding: 3rem 2rem;
+  padding: 6rem 2rem;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -183,59 +143,30 @@ export default {
   text-align: left;
   margin-bottom: 3rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.profile-image {
-  width: 120px;
-  height: 120px;
-  margin: 0 0 1.5rem;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.profile-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profile-placeholder {
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.05em;
 }
 
 .profile-name {
-  font-size: 2.25rem;
-  font-weight: 700;
+  font-size: var(--profile-name-size);
+  font-weight: var(--font-weight-bold);
   margin: 0 0 0.5rem 0;
-  color: #ffffff;
+  color: var(--color-white);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .profile-title {
-  font-size: 1.25rem;
-  font-weight: 400;
+  font-size: var(--profile-title-size);
+  font-weight: var(--font-weight-normal);
   margin: 0 0 1.5rem 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-white-80);
 }
 
 .profile-tagline {
-  font-size: 1rem;
+  font-size: var(--profile-tagline-size);
   margin: 0;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-white-70);
   line-height: 1.6;
+  font-weight: var(--font-weight-light);
 }
 
 /* Navigation */
@@ -247,35 +178,55 @@ export default {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .nav-item {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  padding: 0.75rem 0;
-  color: rgba(255, 255, 255, 0.7);
+  padding: 0;
+  color: var(--color-white-50);
   text-decoration: none;
   transition: all 0.3s ease;
-  font-weight: 400;
-  font-size: 1rem;
-  border-left: 4px solid transparent;
-  padding-left: 1.5rem;
+  font-weight: var(--font-weight-light);
+  font-size: var(--nav-link-size);
   letter-spacing: 0.02em;
   position: relative;
+  gap: 0.5rem;
 }
 
-.nav-link:hover,
-.nav-link.active {
-  color: #ffffff;
-  border-left-color: rgba(148, 163, 184, 0.6);
+.nav-link::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--color-white-30);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.nav-link:hover {
+  color: var(--color-white-80);
+}
+
+.nav-link:hover::before {
+  width: 60px;
+  background: var(--color-white-60);
 }
 
 .nav-link.active {
-  font-weight: 500;
+  color: var(--color-white);
+  font-weight: var(--font-weight-medium);
+}
+
+.nav-link.active::before {
+  width: 80px;
+  background: var(--color-white);
 }
 
 /* Navigation styling is handled in .nav-link */
@@ -288,7 +239,7 @@ export default {
 /* Social Links */
 .social-links {
   display: flex;
-  gap: 1.5rem;
+  gap: .5rem;
   margin: 0;
 }
 
@@ -298,65 +249,84 @@ export default {
   justify-content: center;
   width: 44px;
   height: 44px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-white-60);
   text-decoration: none;
   transition: all 0.3s ease;
   border-radius: 8px;
 }
 
 .social-link:hover {
-  color: rgba(255, 255, 255, 1);
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-white);
+  background: var(--color-white-10);
 }
 
 /* Social links are the main CTA */
 
-/* Mobile Toggle */
-.sidebar-toggle {
-  display: none;
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  width: 44px;
-  height: 44px;
-  background: rgba(148, 163, 184, 0.2);
-  color: #ffffff;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  border-radius: 8px;
-  cursor: pointer;
-  z-index: 1001;
-  transition: all 0.3s ease;
-}
-
-.sidebar-toggle:hover {
-  background: #5a67d8;
-  transform: scale(1.05);
-}
-
-.toggle-icon {
-  font-size: 1.25rem;
-}
-
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .left-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 280px;
-    transform: translateX(-100%);
-    z-index: 1000;
-    overflow-y: auto;
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    max-height: none;
+    position: relative;
+    overflow-y: visible;
+    border-right: none;
+    flex-shrink: 0;
   }
-  
-  .left-sidebar.is-open {
-    transform: translateX(0);
+
+  .sidebar-content {
+    padding: 4rem 1.5rem;
+    min-height: auto;
   }
-  
-  .sidebar-toggle {
+
+  .profile-section {
+    text-align: left; /* Changed from center to left */
+    margin-bottom: 1rem;
+    padding-bottom: 0;
+  }
+
+  .profile-name {
+    font-size: var(--profile-name-mobile); /* Smaller font size for mobile */
+  }
+
+  .sidebar-nav {
+    display: none; /* Hide navigation in mobile */
+    margin-bottom: 2rem;
+  }
+
+  .nav-list {
     display: flex;
-    align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .nav-item {
+    margin-bottom: 0;
+  }
+
+  .nav-link {
+    padding: 0.5rem 1rem;
+    border-left: none;
+    border-radius: 6px;
+    background: var(--color-slate-bg-10);
+    text-align: center;
+    min-width: 100px;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    background: var(--color-slate-bg-20);
+    border-left: none;
+  }
+
+  .social-links {
+    justify-content: flex-start; /* Changed from center to left aligned */
+  }
+
+  .contact-section {
+    margin-top: 1rem; /* Reduced margin for better mobile layout */
   }
 }
 
@@ -367,16 +337,11 @@ export default {
   }
   
   .sidebar-content {
-    padding: 2.5rem 1.5rem;
-  }
-  
-  .profile-image {
-    width: 100px;
-    height: 100px;
+    padding: 4rem 1.5rem;
   }
   
   .profile-name {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 }
 

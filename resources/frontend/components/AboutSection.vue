@@ -1,8 +1,7 @@
 <template>
   <section class="about-section">
     <div class="section-header fade-in">
-      <h2 class="section-title">About Me</h2>
-      <div class="section-divider"></div>
+      <h2 class="section-title">About Chinmoy</h2>
     </div>
     
     <div class="about-content slide-up">
@@ -34,21 +33,34 @@ export default {
 
 .section-header {
   margin-bottom: 2rem;
+  display: none; /* Hidden on desktop */
+}
+
+@media (max-width: 768px) {
+  .section-header {
+    display: block; /* Show on mobile */
+    position: sticky;
+    top: 0;
+    background: var(--color-background-blur);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    padding: 1rem 1.5rem;
+    margin: 0 -1.5rem 2rem -1.5rem;
+    z-index: 10;
+  }
+  
+  .section-title {
+    margin: 0;
+    font-size: var(--section-title-size);
+  }
 }
 
 .section-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: rgb(248, 250, 252);
-  margin: 0 0 1rem 0;
+  font-size: var(--section-title-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
   position: relative;
-}
-
-.section-divider {
-  width: 60px;
-  height: 2px;
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 1px;
 }
 
 .about-content {
@@ -57,10 +69,11 @@ export default {
 }
 
 .about-text p {
-  font-size: 1.125rem;
+  font-size: var(--body-text-size);
   line-height: 1.7;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   margin: 0;
+  font-weight: var(--font-weight-light);
 }
 
 .about-highlights {
@@ -69,25 +82,25 @@ export default {
 
 .highlight-card {
   background: transparent;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   padding: 2rem 0;
   text-align: left;
 }
 
 .highlight-card h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--highlight-title-size);
+  font-weight: var(--font-weight-medium);
   margin: 0 0 1rem 0;
-  color: rgb(248, 250, 252);
+  color: var(--color-text-primary);
   letter-spacing: 0.02em;
 }
 
 .highlight-card p {
-  font-size: 1.125rem;
+  font-size: var(--highlight-text-size);
   margin: 0;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   line-height: 1.6;
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
 }
 
 /* Mobile Responsive */
@@ -95,20 +108,12 @@ export default {
   .about-section {
     padding: 0 1.5rem 3rem 1.5rem;
   }
-  
-  .section-title {
-    font-size: 1.75rem;
-  }
 }
 
 /* Tablet Responsive */
 @media (max-width: 1024px) and (min-width: 769px) {
   .about-section {
     padding: 0 2rem 3.5rem 2rem;
-  }
-  
-  .section-title {
-    font-size: 1.875rem;
   }
 }
 </style>

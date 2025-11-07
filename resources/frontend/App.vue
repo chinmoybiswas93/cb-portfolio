@@ -4,8 +4,6 @@
     <LeftSidebar 
       :portfolio-data="portfolioData"
       :active-section="activeSection"
-      :sidebar-open="sidebarOpen"
-      @toggle-sidebar="toggleSidebar"
       @navigate-to="navigateToSection"
     />
 
@@ -14,15 +12,7 @@
       :portfolio-data="portfolioData"
       :experience-data="experienceData"
       :projects-data="projectsData"
-      :sidebar-open="sidebarOpen"
     />
-
-    <!-- Mobile Overlay -->
-    <div 
-      v-if="sidebarOpen" 
-      class="mobile-overlay"
-      @click="toggleSidebar"
-    ></div>
   </div>
 </template>
 
@@ -50,13 +40,11 @@ export default {
         linkedin_url: '',
         twitter_url: '',
         website_url: '',
-        resume_url: '',
         profile_image: ''
       },
       experienceData: [],
       projectsData: [],
-      activeSection: 'about',
-      sidebarOpen: false
+      activeSection: 'about'
     }
   },
   mounted() {
@@ -104,10 +92,6 @@ export default {
       } catch (err) {
         console.error('Error loading projects data:', err);
       }
-    },
-
-    toggleSidebar() {
-      this.sidebarOpen = !this.sidebarOpen;
     },
 
     navigateToSection(sectionId) {
@@ -201,10 +185,14 @@ export default {
         const rightContent = this.$el.querySelector('.right-content');
         
         if (leftSidebar && rightContent) {
-          // Forward wheel events from left sidebar to right content
+          // Forward wheel events from left sidebar to right content only on desktop
           leftSidebar.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            rightContent.scrollTop += e.deltaY;
+            // Only prevent default and forward scrolling on desktop (width > 768px)
+            if (window.innerWidth > 768) {
+              e.preventDefault();
+              rightContent.scrollTop += e.deltaY;
+            }
+            // On mobile, let the natural scroll behavior work
           }, { passive: false });
         }
       });
@@ -221,31 +209,22 @@ export default {
   height: 100vh;
   overflow: hidden;
   display: flex;
-  max-width: 1880px;
+  max-width: 1280px;
+  width: 1280px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 50px;
 }
 
-/* Mobile Overlay */
-.mobile-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: none;
-}
-
-/* Mobile Responsive */
+/* Mobile Responsive - Stack layout */
 @media (max-width: 768px) {
   .portfolio-app {
     padding: 0;
-  }
-  
-  .mobile-overlay {
-    display: block;
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -253,19 +232,78 @@ export default {
 @media (max-width: 1024px) and (min-width: 769px) {
   .portfolio-app {
     padding: 0 20px;
+    width: 100%;
+    max-width: 100%;
   }
 }
 
 /* Large screens - ensure container doesn't get too wide */
 @media (min-width: 1920px) {
   .portfolio-app {
-    max-width: 1880px;
+    max-width: 1280px;
+    width: 1280px;
   }
 }
 </style>
 
 <!-- Global Styles -->
 <style>
+:root {
+  /* Font Size Variables */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  --font-size-4xl: 40px;
+  --font-size-5xl: 48px;
+  
+  /* Profile Font Sizes */
+  --profile-name-size: 48px;
+  --profile-name-mobile: 40px;
+  --profile-title-size: 20px;
+  --profile-tagline-size: 16px;
+  
+  /* Section Font Sizes */
+  --section-title-size: 20px;
+  --body-text-size: 16px;
+  --nav-link-size: 14px;
+  --highlight-title-size: 20px;
+  --highlight-text-size: 18px;
+  
+  /* Color Variables */
+  --color-white: #ffffff;
+  --color-white-90: rgba(255, 255, 255, 0.9);
+  --color-white-80: rgba(255, 255, 255, 0.8);
+  --color-white-70: rgba(255, 255, 255, 0.7);
+  --color-white-60: rgba(255, 255, 255, 0.6);
+  --color-white-50: rgba(255, 255, 255, 0.5);
+  --color-white-30: rgba(255, 255, 255, 0.3);
+  --color-white-15: rgba(255, 255, 255, 0.15);
+  --color-white-10: rgba(255, 255, 255, 0.1);
+  
+  --color-background: rgb(15, 23, 42);
+  --color-background-blur: rgba(15, 23, 42, 0.762);
+  --color-background-blur-strong: rgba(15, 23, 42, 0.9);
+  
+  /* Text Colors */
+  --color-text-primary: rgb(248, 250, 252);
+  --color-text-secondary: rgb(148, 163, 184);
+  
+  /* UI Elements */
+  --color-slate-bg-10: rgba(148, 163, 184, 0.1);
+  --color-slate-bg-20: rgba(148, 163, 184, 0.2);
+  
+  /* Font Weight Variables */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -273,28 +311,52 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  background: rgb(15, 23, 42);
-  color: rgb(148, 163, 184);
+  background: var(--color-background);
+  color: var(--color-text-secondary);
   height: 100vh;
-  overflow: hidden;
+  overflow: hidden; /* Keep hidden for desktop */
+  font-size: var(--body-text-size);
+}
+
+@media (max-width: 768px) {
+  body {
+    height: auto;
+    overflow: auto;
+    min-height: 100vh;
+  }
 }
 
 html {
   scroll-behavior: smooth;
   height: 100vh;
-  background: rgb(15, 23, 42);
+  background: var(--color-background);
+}
+
+@media (max-width: 768px) {
+  html {
+    height: auto;
+    min-height: 100vh;
+  }
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  color: rgb(148, 163, 184);
-  font-weight: 600;
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-medium);
   line-height: 1.3;
 }
 
 p {
-  color: rgb(148, 163, 184);
+  margin: 0;
+  color: var(--color-text-secondary);
   line-height: 1.6;
+  font-weight: var(--font-weight-light);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 a {
@@ -309,7 +371,7 @@ a:hover {
 
 /* Utility Classes */
 .container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 1rem;
 }

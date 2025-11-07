@@ -1,5 +1,5 @@
 <template>
-  <main class="right-content" :class="{ 'sidebar-open': sidebarOpen }">
+  <main class="right-content">
     <div class="content-container">
       <!-- About Section -->
       <section id="about" class="content-section">
@@ -43,10 +43,6 @@ export default {
     projectsData: {
       type: Array,
       required: true
-    },
-    sidebarOpen: {
-      type: Boolean,
-      default: false
     }
   }
 }
@@ -57,7 +53,6 @@ export default {
   flex: 1;
   height: 100vh;
   overflow-y: auto;
-  transition: margin-left 0.3s ease;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
@@ -69,7 +64,7 @@ export default {
 .content-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 6rem 2rem;
 }
 
 .content-section {
@@ -84,8 +79,11 @@ export default {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .right-content {
-    margin-left: 0;
-    padding-top: 60px; /* Space for mobile toggle button */
+    height: auto;
+    min-height: auto;
+    overflow-y: visible;
+    flex: none;
+    width: 100%;
   }
   
   .content-container {
