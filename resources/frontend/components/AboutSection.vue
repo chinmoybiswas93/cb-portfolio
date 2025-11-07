@@ -27,8 +27,6 @@ export default {
 <style scoped>
 .about-section {
   background: transparent;
-  padding: 0 3rem 4rem 3rem;
-  margin-bottom: 0;
 }
 
 .section-header {
@@ -45,7 +43,7 @@ export default {
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
     padding: 1rem 1.5rem;
-    margin: 0 -1.5rem 2rem -1.5rem;
+    margin: 0 -1.5rem 1rem -1.5rem;
     z-index: 10;
   }
   
@@ -70,7 +68,7 @@ export default {
 
 .about-text p {
   font-size: var(--body-text-size);
-  line-height: 1.7;
+  line-height: var(--line-height-base);
   color: var(--color-text-secondary);
   margin: 0;
   font-weight: var(--font-weight-light);
@@ -99,21 +97,21 @@ export default {
   font-size: var(--highlight-text-size);
   margin: 0;
   color: var(--color-text-secondary);
-  line-height: 1.6;
+  line-height: var(--line-height-base);
   font-weight: var(--font-weight-normal);
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .about-section {
-    padding: 0 1.5rem 3rem 1.5rem;
+    padding: 0 1.5rem 0 1.5rem;
   }
 }
 
 /* Tablet Responsive */
 @media (max-width: 1024px) and (min-width: 769px) {
   .about-section {
-    padding: 0 2rem 3.5rem 2rem;
+    padding: 0 2rem 0 2rem;
   }
 }
 </style>

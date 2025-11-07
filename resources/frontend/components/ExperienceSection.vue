@@ -35,7 +35,7 @@ export default {
 <style scoped>
 .experience-section {
   background: transparent;
-  padding: 0 3rem 4rem 3rem;
+  padding-bottom: 4rem;
   margin-bottom: 0;
 }
 
@@ -55,7 +55,7 @@ export default {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 1rem 1.5rem;
-    margin: 0 -1.5rem 2rem -1.5rem;
+    margin: 0 -1.5rem 1rem -1.5rem;
     z-index: 10;
   }
 
@@ -73,6 +73,7 @@ export default {
 
 .experience-timeline {
   position: relative;
+  overflow: visible; /* Allow hover effects to extend beyond boundaries */
 }
 
 .empty-state {

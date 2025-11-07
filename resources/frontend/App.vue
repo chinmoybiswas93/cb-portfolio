@@ -1,18 +1,10 @@
 <template>
   <div class="portfolio-app">
     <!-- Left Sidebar - Fixed -->
-    <LeftSidebar 
-      :portfolio-data="portfolioData"
-      :active-section="activeSection"
-      @navigate-to="navigateToSection"
-    />
+    <LeftSidebar :portfolio-data="portfolioData" :active-section="activeSection" @navigate-to="navigateToSection" />
 
     <!-- Right Content - Scrollable -->
-    <RightContent 
-      :portfolio-data="portfolioData"
-      :experience-data="experienceData"
-      :projects-data="projectsData"
-    />
+    <RightContent :portfolio-data="portfolioData" :experience-data="experienceData" :projects-data="projectsData" />
   </div>
 </template>
 
@@ -52,7 +44,6 @@ export default {
     this.loadExperienceData();
     this.loadProjectsData();
     this.setupScrollHandler();
-    this.setupScrollForwarding();
   },
   methods: {
     async loadPortfolioData() {
@@ -97,7 +88,7 @@ export default {
     navigateToSection(sectionId) {
       const element = document.getElementById(sectionId);
       if (element) {
-        element.scrollIntoView({ 
+        element.scrollIntoView({
           behavior: 'smooth',
           block: 'start'
         });
@@ -107,53 +98,56 @@ export default {
 
     setupScrollHandler() {
       const sections = ['about', 'experience', 'projects'];
-      
+
       this.$nextTick(() => {
-        const rightContent = this.$el.querySelector('.right-content');
-        
         const handleScroll = () => {
-          const scrollTop = rightContent.scrollTop;
-          const scrollHeight = rightContent.scrollHeight;
-          const clientHeight = rightContent.clientHeight;
-          
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
           // Get all section elements and their positions
           const sectionElements = sections.map(id => ({
             id,
             element: document.getElementById(id)
           })).filter(item => item.element);
-          
+
           if (sectionElements.length === 0) return;
-          
+
           let currentSection = 'about'; // default
           let minDistance = Infinity;
-          
+
           // Find the section closest to the top of the viewport
           for (let i = 0; i < sectionElements.length; i++) {
             const section = sectionElements[i];
             const rect = section.element.getBoundingClientRect();
-            const containerRect = rightContent.getBoundingClientRect();
-            
+
             // Calculate the distance from section top to viewport top
-            const sectionTop = rect.top - containerRect.top;
+            const sectionTop = rect.top;
             const distanceFromTop = Math.abs(sectionTop);
-            
+
             // If section is visible and closer to top than others
             if (sectionTop <= 200 && distanceFromTop < minDistance) {
               minDistance = distanceFromTop;
               currentSection = section.id;
             }
           }
-          
+
           // Handle edge case: if we're at the very bottom, always show Projects
-          if (scrollHeight - scrollTop - clientHeight < 50) {
+          const documentHeight = Math.max(
+            document.body.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.clientHeight,
+            document.documentElement.scrollHeight,
+            document.documentElement.offsetHeight
+          );
+
+          if (window.innerHeight + scrollTop >= documentHeight - 50) {
             currentSection = 'projects';
           }
-          
+
           // Handle edge case: if we're at the very top, always show About
           if (scrollTop < 50) {
             currentSection = 'about';
           }
-          
+
           // Only update if section actually changed to prevent flickering
           if (this.activeSection !== currentSection) {
             this.activeSection = currentSection;
@@ -172,31 +166,17 @@ export default {
           }
         };
 
-        rightContent.addEventListener('scroll', throttledScroll);
-        
+        window.addEventListener('scroll', throttledScroll);
+
         // Initial call
         handleScroll();
+
+        // Cleanup on component unmount
+        this.$once('hook:beforeDestroy', () => {
+          window.removeEventListener('scroll', throttledScroll);
+        });
       });
     },
-
-    setupScrollForwarding() {
-      this.$nextTick(() => {
-        const leftSidebar = this.$el.querySelector('.left-sidebar');
-        const rightContent = this.$el.querySelector('.right-content');
-        
-        if (leftSidebar && rightContent) {
-          // Forward wheel events from left sidebar to right content only on desktop
-          leftSidebar.addEventListener('wheel', (e) => {
-            // Only prevent default and forward scrolling on desktop (width > 768px)
-            if (window.innerWidth > 768) {
-              e.preventDefault();
-              rightContent.scrollTop += e.deltaY;
-            }
-            // On mobile, let the natural scroll behavior work
-          }, { passive: false });
-        }
-      });
-    }
   }
 }
 </script>
@@ -204,27 +184,22 @@ export default {
 <style scoped>
 .portfolio-app {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  line-height: 1.6;
+  line-height: var(--line-height-base);
   color: rgb(148, 163, 184);
-  height: 100vh;
-  overflow: hidden;
   display: flex;
-  max-width: 1280px;
-  width: 1280px;
+  min-height: 100vh;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 50px;
+  padding: 0 2rem;
+  position: relative;
 }
 
 /* Mobile Responsive - Stack layout */
 @media (max-width: 768px) {
   .portfolio-app {
-    padding: 0;
     flex-direction: column;
-    height: auto;
-    overflow: visible;
     min-height: 100vh;
-    width: 100%;
-    max-width: 100%;
+    padding: 20px;
   }
 }
 
@@ -232,16 +207,14 @@ export default {
 @media (max-width: 1024px) and (min-width: 769px) {
   .portfolio-app {
     padding: 0 20px;
-    width: 100%;
-    max-width: 100%;
   }
 }
 
-/* Large screens - ensure container doesn't get too wide */
+/* Large screens */
 @media (min-width: 1920px) {
   .portfolio-app {
-    max-width: 1280px;
-    width: 1280px;
+    max-width: 1400px;
+    margin: 0 auto;
   }
 }
 </style>
@@ -259,20 +232,23 @@ export default {
   --font-size-3xl: 32px;
   --font-size-4xl: 40px;
   --font-size-5xl: 48px;
-  
+
+  /* Line Height Variables */
+  --line-height-base: 1.6;
+
   /* Profile Font Sizes */
   --profile-name-size: 48px;
   --profile-name-mobile: 40px;
   --profile-title-size: 20px;
   --profile-tagline-size: 16px;
-  
+
   /* Section Font Sizes */
   --section-title-size: 20px;
   --body-text-size: 16px;
   --nav-link-size: 14px;
   --highlight-title-size: 20px;
   --highlight-text-size: 18px;
-  
+
   /* Color Variables */
   --color-white: #ffffff;
   --color-white-90: rgba(255, 255, 255, 0.9);
@@ -283,19 +259,19 @@ export default {
   --color-white-30: rgba(255, 255, 255, 0.3);
   --color-white-15: rgba(255, 255, 255, 0.15);
   --color-white-10: rgba(255, 255, 255, 0.1);
-  
+
   --color-background: rgb(15, 23, 42);
   --color-background-blur: rgba(15, 23, 42, 0.762);
   --color-background-blur-strong: rgba(15, 23, 42, 0.9);
-  
+
   /* Text Colors */
   --color-text-primary: rgb(248, 250, 252);
   --color-text-secondary: rgb(148, 163, 184);
-  
+
   /* UI Elements */
   --color-slate-bg-10: rgba(148, 163, 184, 0.1);
   --color-slate-bg-20: rgba(148, 163, 184, 0.2);
-  
+
   /* Font Weight Variables */
   --font-weight-light: 300;
   --font-weight-normal: 400;
@@ -313,47 +289,73 @@ body {
   padding: 0;
   background: var(--color-background);
   color: var(--color-text-secondary);
-  height: 100vh;
-  overflow: hidden; /* Keep hidden for desktop */
   font-size: var(--body-text-size);
+  /* Enable bounce effect for whole app */
+  -webkit-overflow-scrolling: touch;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-background);
+  /* Enable bounce effect for whole app */
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (max-width: 768px) {
+  :root {
+    /* Profile Font Sizes */
+    --profile-name-size: 38px;
+    --profile-title-size: 18px;
+    --profile-tagline-size: 16px;
+
+    /* Section Font Sizes */
+    --section-title-size: 20px;
+    --body-text-size: 16px;
+    --nav-link-size: 14px;
+    --highlight-title-size: 20px;
+    --highlight-text-size: 18px;
+  }
+
+  html {
+    height: auto;
+    min-height: 100vh;
+  }
+
   body {
     height: auto;
     overflow: auto;
     min-height: 100vh;
   }
-}
-
-html {
-  scroll-behavior: smooth;
-  height: 100vh;
-  background: var(--color-background);
-}
-
-@media (max-width: 768px) {
-  html {
-    height: auto;
-    min-height: 100vh;
+  .profile-tagline {
+    max-width: 80% !important;
   }
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--color-secondary);
   font-weight: var(--font-weight-medium);
-  line-height: 1.3;
+  line-height: var(--line-height-base);
 }
 
 p {
   margin: 0;
   color: var(--color-text-secondary);
-  line-height: 1.6;
+  line-height: var(--line-height-base);
   font-weight: var(--font-weight-light);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
@@ -398,6 +400,7 @@ a:hover {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -413,6 +416,7 @@ a:hover {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

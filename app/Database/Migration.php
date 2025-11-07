@@ -52,6 +52,7 @@ class Migration
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             portfolio_id mediumint(9) NOT NULL,
             company varchar(200) NOT NULL,
+            company_website varchar(255),
             position varchar(200) NOT NULL,
             start_date varchar(50),
             end_date varchar(50),

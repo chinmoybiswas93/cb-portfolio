@@ -100,12 +100,12 @@ export default {
   margin-bottom: 20px;
 }
 
-.project-header h3 {
+.project-title {
   font-size: 1.25rem;
   font-weight: 700;
   color: rgb(248, 250, 252);
   margin: 0;
-  line-height: 1.3;
+  line-height: var(--line-height-base);
 }
 
 .featured-badge {
@@ -122,11 +122,11 @@ export default {
   margin-top: 20px;
 }
 
-.description {
+.project-description {
   font-size: 0.875rem;
-  line-height: 1.6;
   color: rgb(148, 163, 184);
-  margin: 0 0 1rem 0;
+  margin: 0.5rem 0 1rem;
+  line-height: var(--line-height-base);
 }
 
 .technologies {

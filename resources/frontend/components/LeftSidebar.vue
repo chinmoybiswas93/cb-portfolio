@@ -123,16 +123,21 @@ export default {
 
 <style scoped>
 .left-sidebar {
-  width: 40%;
+  width: 45%;
+  position: sticky;
+  top: 0;
   height: 100vh;
+  min-height: 100vh;
   color: var(--color-white);
-  overflow-y: hidden;
+  overflow: hidden;
   z-index: 1000;
+  padding: 0 2rem;
+  background: var(--color-background);
   flex-shrink: 0;
 }
 
 .sidebar-content {
-  padding: 6rem 2rem;
+  padding: 6rem 0;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -151,7 +156,7 @@ export default {
   margin: 0 0 0.5rem 0;
   color: var(--color-white);
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1;
 }
 
 .profile-title {
@@ -165,8 +170,9 @@ export default {
   font-size: var(--profile-tagline-size);
   margin: 0;
   color: var(--color-white-70);
-  line-height: 1.6;
+  line-height: var(--line-height-base);
   font-weight: var(--font-weight-light);
+  max-width: 60%;
 }
 
 /* Navigation */
@@ -265,79 +271,37 @@ export default {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .left-sidebar {
+    position: relative;
     width: 100%;
+    min-width: auto;
     height: auto;
     min-height: auto;
-    max-height: none;
-    position: relative;
-    overflow-y: visible;
-    border-right: none;
-    flex-shrink: 0;
+    padding: 0;
   }
 
   .sidebar-content {
-    padding: 4rem 1.5rem;
-    min-height: auto;
-  }
-
-  .profile-section {
-    text-align: left; /* Changed from center to left */
-    margin-bottom: 1rem;
-    padding-bottom: 0;
-  }
-
-  .profile-name {
-    font-size: var(--profile-name-mobile); /* Smaller font size for mobile */
+    padding: 2rem 1.5rem;
   }
 
   .sidebar-nav {
-    display: none; /* Hide navigation in mobile */
-    margin-bottom: 2rem;
+    display: none;
   }
-
-  .nav-list {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .nav-item {
-    margin-bottom: 0;
-  }
-
-  .nav-link {
-    padding: 0.5rem 1rem;
-    border-left: none;
-    border-radius: 6px;
-    background: var(--color-slate-bg-10);
-    text-align: center;
-    min-width: 100px;
-  }
-
-  .nav-link:hover,
-  .nav-link.active {
-    background: var(--color-slate-bg-20);
-    border-left: none;
-  }
-
-  .social-links {
-    justify-content: flex-start; /* Changed from center to left aligned */
-  }
-
-  .contact-section {
-    margin-top: 1rem; /* Reduced margin for better mobile layout */
-  }
+  .profile-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0;
+}
 }
 
 /* Tablet Responsive */
 @media (max-width: 1024px) and (min-width: 769px) {
   .left-sidebar {
-    width: 45%;
+    width: 380px;
+    min-width: 350px;
+    padding: 0 1.5rem;
   }
   
   .sidebar-content {
-    padding: 4rem 1.5rem;
+    padding: 4rem 0;
   }
   
   .profile-name {

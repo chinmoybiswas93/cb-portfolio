@@ -17,6 +17,17 @@
         />
       </FormGroup>
 
+      <FormGroup label="Company Website">
+        <BaseInput 
+          v-model="localData.company_website" 
+          type="url"
+          placeholder="https://company.com" 
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
+    </FormRow>
+
+    <FormRow :columns="1">
       <FormGroup label="Position">
         <BaseInput 
           v-model="localData.position" 

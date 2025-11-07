@@ -94,7 +94,7 @@ export default {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .projects-section {
-    padding: 0 1.5rem 3rem 1.5rem;
+    padding: 0 1.5rem 1rem 1.5rem;
   }
   
   .projects-grid {

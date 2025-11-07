@@ -51,18 +51,12 @@ export default {
 <style scoped>
 .right-content {
   flex: 1;
-  height: 100vh;
-  overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-}
-
-.right-content::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  min-height: 100vh;
+  /* Remove margin since we're not using fixed positioning */
 }
 
 .content-container {
-  max-width: 1000px;
+  max-width: 700px;
   margin: 0 auto;
   padding: 6rem 2rem;
 }
@@ -81,15 +75,14 @@ export default {
   .right-content {
     height: auto;
     min-height: auto;
-    overflow-y: visible;
     flex: none;
     width: 100%;
   }
-  
+
   .content-container {
-    padding: 2rem 1rem;
+    padding: 2rem 0;
   }
-  
+
   .content-section {
     margin-bottom: 3rem;
   }

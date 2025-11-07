@@ -149,6 +149,7 @@ class PortfolioController
         $data = [
             'portfolio_id' => 1, // For now, assume single portfolio
             'company' => sanitize_text_field($params['company'] ?? ''),
+            'company_website' => esc_url_raw($params['company_website'] ?? ''),
             'position' => sanitize_text_field($params['position'] ?? ''),
             'start_date' => sanitize_text_field($params['start_date'] ?? ''),
             'end_date' => sanitize_text_field($params['end_date'] ?? ''),
