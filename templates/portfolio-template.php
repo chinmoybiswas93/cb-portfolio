@@ -6,8 +6,8 @@
 
     <?php if (file_exists(CB_PORTFOLIO_PLUGIN_PATH . '/.hot')): ?>
         <!-- Development mode -->
-        <script type="module" src="http://localhost:5173/@vite/client"></script>
-        <script type="module" src="http://localhost:5173/frontend/app.js"></script>
+        <script type="module" src="<?php echo CB_PORTFOLIO_VITE_DEV_URL; ?>/@vite/client"></script>
+        <script type="module" src="<?php echo CB_PORTFOLIO_VITE_DEV_URL; ?>/frontend/app.js"></script>
     <?php else: ?>
         <!-- Production mode -->
         <?php

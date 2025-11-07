@@ -1,17 +1,20 @@
 <template>
   <section class="projects-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Projects</h2>
-        <div class="section-divider"></div>
-      </div>
+    <div class="section-header fade-in">
+      <h2 class="section-title">Projects</h2>
+      <div class="section-divider"></div>
+    </div>
+    
+    <div class="projects-grid slide-up">
+      <ProjectItem
+        v-for="(project, index) in projectsData"
+        :key="project.id"
+        :project="project"
+        :index="index"
+      />
       
-      <div class="projects-grid">
-        <ProjectItem
-          v-for="project in projectsData"
-          :key="project.id"
-          :project="project"
-        />
+      <div v-if="projectsData.length === 0" class="empty-state">
+        <p>No projects available yet.</p>
       </div>
     </div>
   </section>
@@ -36,54 +39,75 @@ export default {
 
 <style scoped>
 .projects-section {
-  padding: 80px 0;
-  background: #f8f9fa;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  background: transparent;
+  padding: 0 3rem 4rem 3rem;
+  margin-bottom: 0;
 }
 
 .section-header {
-  text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 2rem;
 }
 
-.section-header h2 {
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0 0 10px 0;
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgb(248, 250, 252);
+  margin: 0 0 1rem 0;
 }
 
 .section-divider {
   width: 60px;
-  height: 4px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin: 0 auto;
-  border-radius: 2px;
+  height: 2px;
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 1px;
 }
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 3rem 0;
+  color: rgb(148, 163, 184);
+  grid-column: 1 / -1;
+}
+
+.empty-state p {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
   .projects-section {
-    padding: 60px 0;
+    padding: 0 1.5rem 3rem 1.5rem;
   }
   
-  .section-header h2 {
-    font-size: 2rem;
+  .section-title {
+    font-size: 1.75rem;
   }
   
   .projects-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 1rem;
+  }
+}
+
+/* Tablet Responsive */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .projects-section {
+    padding: 0 2rem 3.5rem 2rem;
+  }
+  
+  .section-title {
+    font-size: 1.875rem;
+  }
+  
+  .projects-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }
 </style>

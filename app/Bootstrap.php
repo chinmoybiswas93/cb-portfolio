@@ -74,7 +74,8 @@ class Bootstrap
     {
         $enabled = get_option('cb_portfolio_enabled', false);
         
-        if ($enabled && is_front_page()) {
+        // Temporarily always enable for development testing
+        if (true) { // Changed from: if ($enabled && is_front_page()) {
             // Load portfolio on homepage
             add_filter('template_include', [$this, 'loadPortfolioTemplate']);
         }

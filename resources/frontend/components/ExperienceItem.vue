@@ -1,29 +1,32 @@
 <template>
-  <div class="experience-item">
-    <div class="experience-header">
-      <div class="experience-title">
-        <h3>{{ experience.position }}</h3>
-        <p class="company">{{ experience.company }}</p>
-      </div>
-      <div class="experience-dates">
-        <span class="date-range">
-          {{ experience.start_date }} - {{ experience.current ? 'Present' : experience.end_date }}
-        </span>
-      </div>
-    </div>
-    
-    <div class="experience-content">
-      <p class="description">{{ experience.description }}</p>
-      
-      <div v-if="experience.skills" class="skills">
-        <div class="skill-tags">
-          <span 
-            v-for="skill in skillList" 
-            :key="skill" 
-            class="skill-tag"
-          >
-            {{ skill.trim() }}
+  <div class="experience-item" :style="{ animationDelay: `${index * 0.1}s` }">
+    <div class="experience-card">
+      <div class="experience-header">
+        <div class="experience-title">
+          <h3>{{ experience.position }}</h3>
+          <p class="company">{{ experience.company }}</p>
+        </div>
+        <div class="experience-dates">
+          <span class="date-badge" :class="{ current: experience.current }">
+            {{ experience.start_date }} - {{ experience.current ? 'Present' : experience.end_date }}
           </span>
+        </div>
+      </div>
+      
+      <div class="experience-content">
+        <p class="description" v-if="experience.description">{{ experience.description }}</p>
+        
+        <div v-if="experience.skills" class="skills-section">
+          <h4 class="skills-title">Technologies & Skills</h4>
+          <div class="skill-tags">
+            <span 
+              v-for="skill in skillList" 
+              :key="skill" 
+              class="skill-tag"
+            >
+              {{ skill.trim() }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -37,6 +40,10 @@ export default {
     experience: {
       type: Object,
       required: true
+    },
+    index: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
@@ -50,95 +57,150 @@ export default {
 
 <style scoped>
 .experience-item {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  padding-left: 0;
+  margin-bottom: 3rem;
+  animation: slideInLeft 0.6s ease-out;
+  animation-fill-mode: both;
 }
 
-.experience-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+.experience-card {
+  background: transparent;
+  padding: 1.5rem 0;
+  border-left: 3px solid rgba(148, 163, 184, 0.3);
+  padding-left: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.experience-card:hover {
+  border-left-color: rgba(148, 163, 184, 0.6);
 }
 
 .experience-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
 .experience-title h3 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgb(248, 250, 252);
+  margin: 0 0 0.25rem 0;
 }
 
 .company {
-  font-size: 1.1rem;
-  color: #667eea;
-  font-weight: 500;
+  font-size: 1rem;
+  color: rgb(203, 213, 225);
+  font-weight: 600;
   margin: 0;
 }
 
 .experience-dates {
-  text-align: right;
+  flex-shrink: 0;
 }
 
-.date-range {
-  background: #f8f9fa;
-  color: #666;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
+.date-badge {
+  background: transparent;
+  color: rgb(148, 163, 184);
+  padding: 0;
+  font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.date-badge.current {
+  color: rgb(203, 213, 225);
+  font-weight: 600;
 }
 
 .experience-content {
-  margin-top: 20px;
+  margin-top: 1rem;
 }
 
 .description {
   font-size: 1rem;
   line-height: 1.6;
-  color: #555;
-  margin: 0 0 20px 0;
+  color: rgb(148, 163, 184);
+  margin: 0 0 1rem 0;
 }
 
-.skills {
-  margin-top: 20px;
+.skills-section {
+  margin-top: 1rem;
+}
+
+.skills-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(203, 213, 225);
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .skill-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .skill-tag {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 0.85rem;
+  background: transparent;
+  color: rgb(148, 163, 184);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
   font-weight: 500;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  transition: all 0.2s ease;
 }
 
+.skill-tag:hover {
+  border-color: rgba(148, 163, 184, 0.6);
+  color: rgb(203, 213, 225);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
+  .experience-item {
+    padding-left: 0;
+  }
+  
   .experience-header {
     flex-direction: column;
-    gap: 12px;
+    gap: 0.75rem;
   }
   
   .experience-dates {
-    text-align: left;
+    align-self: flex-start;
   }
   
-  .experience-item {
-    padding: 20px;
+  .experience-card {
+    padding: 1rem 0;
+    padding-left: 1rem;
+  }
+  
+  .experience-title h3 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Tablet Responsive */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .experience-card {
+    padding: 1.25rem 0;
+    padding-left: 1.25rem;
   }
 }
 </style>

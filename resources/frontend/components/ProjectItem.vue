@@ -1,5 +1,9 @@
 <template>
-  <div class="project-item" :class="{ featured: project.featured }">
+  <div 
+    class="project-item" 
+    :class="{ featured: project.featured }"
+    :style="{ '--index': index }"
+  >
     <div class="project-header">
       <h3>{{ project.title }}</h3>
       <div v-if="project.featured" class="featured-badge">Featured</div>
@@ -52,6 +56,10 @@ export default {
     project: {
       type: Object,
       required: true
+    },
+    index: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
@@ -65,23 +73,24 @@ export default {
 
 <style scoped>
 .project-item {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  border: 2px solid transparent;
+  background: transparent;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.6s ease-out;
+  animation-delay: calc(var(--index, 0) * 0.1s);
+  animation-fill-mode: both;
+  height: fit-content;
 }
 
 .project-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  border-bottom-color: rgba(148, 163, 184, 0.3);
 }
 
 .project-item.featured {
-  border-color: #667eea;
-  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+  border-left: 3px solid rgba(148, 163, 184, 0.4);
+  padding-left: 1rem;
+  position: relative;
 }
 
 .project-header {
@@ -92,21 +101,21 @@ export default {
 }
 
 .project-header h3 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #2c3e50;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgb(248, 250, 252);
   margin: 0;
+  line-height: 1.3;
 }
 
 .featured-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 0.8rem;
+  background: transparent;
+  color: rgb(203, 213, 225);
+  padding: 0;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
 }
 
 .project-content {
@@ -114,77 +123,102 @@ export default {
 }
 
 .description {
-  font-size: 1rem;
+  font-size: 0.875rem;
   line-height: 1.6;
-  color: #555;
-  margin: 0 0 20px 0;
+  color: rgb(148, 163, 184);
+  margin: 0 0 1rem 0;
 }
 
 .technologies {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 }
 
 .tech-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .tech-tag {
-  background: #f8f9fa;
-  color: #667eea;
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 0.85rem;
+  background: transparent;
+  color: rgb(148, 163, 184);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid #e9ecef;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  transition: all 0.2s ease;
+}
+
+.tech-tag:hover {
+  border-color: rgba(148, 163, 184, 0.6);
+  color: rgb(203, 213, 225);
 }
 
 .project-links {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .project-link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 500;
-  transition: all 0.2s;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  flex: 1;
+  justify-content: center;
+  min-width: 100px;
 }
 
 .live-link {
-  background: #667eea;
-  color: white;
+  background: transparent;
+  color: rgb(148, 163, 184);
+  border: 1px solid rgba(148, 163, 184, 0.5);
 }
 
 .live-link:hover {
-  background: #5a6fd8;
-  transform: translateY(-1px);
+  border-color: rgba(148, 163, 184, 0.8);
+  color: rgb(203, 213, 225);
 }
 
 .github-link {
-  background: #f8f9fa;
-  color: #333;
-  border: 1px solid #e9ecef;
+  background: transparent;
+  color: rgb(148, 163, 184);
+  border: 1px solid rgba(148, 163, 184, 0.3);
 }
 
 .github-link:hover {
-  background: #e9ecef;
-  transform: translateY(-1px);
+  border-color: rgba(148, 163, 184, 0.6);
+  color: rgb(203, 213, 225);
 }
 
 .link-icon {
   font-size: 1rem;
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 768px) {
   .project-item {
-    padding: 20px;
+    padding: 1.5rem 0;
+  }
+  
+  .project-item.featured {
+    padding-left: 1rem;
   }
   
   .project-header {

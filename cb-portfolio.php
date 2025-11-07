@@ -17,6 +17,7 @@ define('CB_PORTFOLIO_VERSION', '0.1.0');
 define('CB_PORTFOLIO_PLUGIN_FILE', __FILE__);
 define('CB_PORTFOLIO_PLUGIN_PATH', untrailingslashit(plugin_dir_path(__FILE__)));
 define('CB_PORTFOLIO_PLUGIN_URL', untrailingslashit(plugin_dir_url(__FILE__)));
+define('CB_PORTFOLIO_VITE_DEV_URL', 'http://localhost:5173');
 
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {

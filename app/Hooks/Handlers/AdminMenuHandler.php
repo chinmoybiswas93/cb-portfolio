@@ -77,7 +77,7 @@ class AdminMenuHandler
     {
         wp_enqueue_script(
             'vite-client',
-            'http://localhost:5173/@vite/client',
+            CB_PORTFOLIO_VITE_DEV_URL . '/@vite/client',
             [],
             null,
             true
@@ -85,7 +85,7 @@ class AdminMenuHandler
 
         wp_enqueue_script(
             'cb-portfolio-admin',
-            'http://localhost:5173/admin/app.js',
+            CB_PORTFOLIO_VITE_DEV_URL . '/admin/app.js',
             ['vite-client'],
             CB_PORTFOLIO_VERSION,
             true
