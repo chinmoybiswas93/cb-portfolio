@@ -25,41 +25,16 @@ export default {
 </script>
 
 <style scoped>
+/* About section specific styles */
 .about-section {
   background: transparent;
-}
-
-.section-header {
-  margin-bottom: 2rem;
-  display: none; /* Hidden on desktop */
-}
-
-@media (max-width: 768px) {
-  .section-header {
-    display: block; /* Show on mobile */
-    position: sticky;
-    top: 0;
-    background: var(--color-background-blur);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    padding: 1rem 1.5rem;
-    margin: 0 -1.5rem 1rem -1.5rem;
-    z-index: 10;
-  }
-  
-  .section-title {
-    margin: 0;
-    font-size: var(--section-title-size);
-  }
+  margin-bottom: 0;
 }
 
 .section-title {
-  font-size: var(--section-title-size);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: .5px;
-  color: var(--color-text-primary);
-  margin: 0;
 }
 
 .about-content {
@@ -104,15 +79,10 @@ export default {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .about-section {
-    padding: 0 1.5rem 0 1.5rem;
-  }
-}
-
-/* Tablet Responsive */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .about-section {
-    padding: 0 2rem 0 2rem;
+  .section-header {
+    background: var(--color-background-blur);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
 }
 </style>

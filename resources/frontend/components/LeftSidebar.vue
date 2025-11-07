@@ -128,7 +128,6 @@ export default {
   top: 0;
   height: 100vh;
   min-height: 100vh;
-  color: var(--color-white);
   overflow: hidden;
   z-index: 1000;
   padding: 0 2rem;
@@ -154,7 +153,7 @@ export default {
   font-size: var(--profile-name-size);
   font-weight: var(--font-weight-bold);
   margin: 0 0 0.5rem 0;
-  color: var(--color-white);
+  color: var(--color-white-90);
   letter-spacing: -0.02em;
   line-height: 1;
 }
@@ -280,7 +279,7 @@ export default {
   }
 
   .sidebar-content {
-    padding: 2rem 1.5rem;
+    padding: 3.5rem .5rem 0 .5rem;
   }
 
   .sidebar-nav {

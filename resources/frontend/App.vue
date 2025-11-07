@@ -248,6 +248,7 @@ export default {
   --nav-link-size: 14px;
   --highlight-title-size: 20px;
   --highlight-text-size: 18px;
+  --extra-small-size: 12px;
 
   /* Color Variables */
   --color-white: #ffffff;
@@ -267,6 +268,7 @@ export default {
   /* Text Colors */
   --color-text-primary: rgb(248, 250, 252);
   --color-text-secondary: rgb(148, 163, 184);
+  --text-light: rgb(148, 163, 184);
 
   /* UI Elements */
   --color-slate-bg-10: rgba(148, 163, 184, 0.1);
@@ -309,7 +311,7 @@ html {
     --profile-tagline-size: 16px;
 
     /* Section Font Sizes */
-    --section-title-size: 17px;
+    --section-title-size: 20px;
     --body-text-size: 16px;
     --nav-link-size: 14px;
     --highlight-title-size: 20px;
@@ -326,6 +328,7 @@ html {
     overflow: auto;
     min-height: 100vh;
   }
+
   .profile-tagline {
     max-width: 80% !important;
   }
@@ -420,6 +423,297 @@ a:hover {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Slide In Left Animation */
+.slide-left {
+  animation: slideInLeft 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Common Item Card Styles */
+.item-card {
+  display: flex;
+  gap: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  transition: padding 0.3s ease;
+}
+
+.item-card::before {
+  content: '';
+  position: absolute;
+  top: -1rem;
+  left: -1.5rem;
+  right: -1.5rem;
+  bottom: -1rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.item-card:hover::before {
+  opacity: 1;
+}
+
+/* Common Item Wrapper */
+.content-item {
+  display: block;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+/* Two Column Layout */
+.item-left-column {
+  flex: 0 0 25%;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+}
+
+.item-right-column {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.item-header {
+  margin-bottom: 0.75rem;
+}
+
+/* Common Position/Title Styles */
+.item-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-primary);
+  margin: 0 0 0.25rem 0;
+  line-height: var(--line-height-base);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.item-title>span {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  background-color: var(--color-text-primary);
+  border-radius: 50%;
+  margin-left: 2px;
+}
+
+/* Common Link Styles */
+.external-link {
+  font-size: 14px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.item-card:hover .external-link {
+  opacity: 1;
+}
+
+.item-link {
+  color: var(--color-white-80);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-base);
+}
+
+.item-link:hover {
+  color: var(--color-white-90);
+}
+
+/* Common Description */
+.item-description {
+  color: var(--text-light);
+  line-height: var(--line-height-base);
+  margin-bottom: 1rem;
+  font-size: var(--font-size-sm);
+}
+
+/* Common Tags Section */
+.tags-section {
+  margin-top: 1rem;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-item {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-light);
+  padding: 2px 0.5rem;
+  border-radius: 4px;
+  font-size: var(--font-size-xs);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.tag-item:hover {
+  border-color: var(--color-white-40);
+  color: var(--color-white-90);
+  background: var(--color-white-10);
+}
+
+.archive-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--body-text-size);
+  padding: .2rem 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.archive-button:hover {
+  color: var(--color-white);
+  border-bottom: 1px solid var(--color-white-60);
+}
+
+.archive-button:hover .archive-arrow {
+  transform: translateX(4px);
+}
+
+.archive-text {
+  font-size: var(--body-text-size);
+}
+
+.archive-arrow {
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
+
+/* Section Layouts */
+.content-section {
+  background: transparent;
+  margin-bottom: 0;
+}
+
+.section-header {
+  margin-bottom: 2rem;
+  display: none;
+  /* Hidden on desktop */
+}
+
+.section-title {
+  font-size: var(--section-title-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.content-timeline {
+  position: relative;
+  overflow: visible;
+  /* Allow hover effects to extend beyond boundaries */
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--color-text-secondary);
+}
+
+.empty-state p {
+  font-size: var(--highlight-text-size);
+  margin: 0;
+}
+
+/* Mobile Responsive - Common Patterns */
+@media (max-width: 768px) {
+  .section-header {
+    display: block;
+    /* Show on mobile */
+    position: sticky;
+    top: 0;
+    background: var(--color-background-blur-strong);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 1rem 1.5rem;
+    margin: 0 -1.5rem 1rem -1.5rem;
+    z-index: 10;
+  }
+
+  .section-title {
+    margin: 0;
+  }
+
+  .content-section {
+    padding: 0 0.5rem 0 0.5rem;
+  }
+
+  .item-card {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .item-card::before {
+    top: -1rem;
+    left: -1rem;
+    right: -1rem;
+    bottom: -1rem;
+  }
+
+  .item-left-column {
+    flex: none;
+    width: 100%;
+  }
+
+  .item-title {
+    font-size: var(--body-text-size);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-title>span {
+    display: none;
+  }
+
+  .item-link {
+    font-size: var(--extra-small-size);
+  }
+}
+
+/* Tablet Responsive - Common Patterns */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .content-section {
+    padding: 0 1rem 0 1rem;
   }
 }
 </style>
