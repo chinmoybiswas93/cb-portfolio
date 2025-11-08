@@ -57,6 +57,18 @@ class PortfolioController
             'callback' => [$this, 'delete_project'],
             'permission_callback' => [$this, 'check_permission'],
         ]);
+
+        register_rest_route('cb-portfolio/v1', '/experience/reorder', [
+            'methods' => 'POST',
+            'callback' => [$this, 'reorder_experience'],
+            'permission_callback' => [$this, 'check_permission'],
+        ]);
+
+        register_rest_route('cb-portfolio/v1', '/projects/reorder', [
+            'methods' => 'POST',
+            'callback' => [$this, 'reorder_projects'],
+            'permission_callback' => [$this, 'check_permission'],
+        ]);
     }
 
     public function check_permission()
@@ -124,13 +136,13 @@ class PortfolioController
         global $wpdb;
         
         $experience = $wpdb->get_results(
-            "SELECT * FROM {$wpdb->prefix}cb_portfolio_experience ORDER BY id DESC"
+            "SELECT * FROM {$wpdb->prefix}cb_portfolio_experience ORDER BY order_index ASC, created_at ASC"
         );
         
         foreach ($experience as $exp) {
-            $exp->current = (int) $exp->current; // Convert string to integer
+            $exp->current = (int) $exp->current;
             $exp->id = (int) $exp->id;
-            $exp->portfolio_id = (int) $exp->portfolio_id;
+            $exp->order_index = (int) ($exp->order_index ?? 0);
         }
         
         return new \WP_REST_Response($experience, 200);
@@ -143,7 +155,6 @@ class PortfolioController
         $params = $request->get_json_params();
         
         $data = [
-            'portfolio_id' => 1, // For now, assume single portfolio
             'company' => sanitize_text_field($params['company'] ?? ''),
             'company_website' => esc_url_raw($params['company_website'] ?? ''),
             'position' => sanitize_text_field($params['position'] ?? ''),
@@ -161,6 +172,8 @@ class PortfolioController
                 ['id' => $params['id']]
             );
         } else {
+            $max_order = $wpdb->get_var("SELECT MAX(order_index) FROM {$wpdb->prefix}cb_portfolio_experience");
+            $data['order_index'] = ($max_order ?? 0) + 1;
             $result = $wpdb->insert($wpdb->prefix . 'cb_portfolio_experience', $data);
         }
         
@@ -194,8 +207,14 @@ class PortfolioController
         global $wpdb;
         
         $projects = $wpdb->get_results(
-            "SELECT * FROM {$wpdb->prefix}cb_portfolio_projects ORDER BY id DESC"
+            "SELECT * FROM {$wpdb->prefix}cb_portfolio_projects ORDER BY order_index ASC, created_at ASC"
         );
+        
+        foreach ($projects as $project) {
+            $project->id = (int) $project->id;
+            $project->featured = (int) $project->featured;
+            $project->order_index = (int) ($project->order_index ?? 0);
+        }
         
         return new \WP_REST_Response($projects, 200);
     }
@@ -207,7 +226,6 @@ class PortfolioController
         $params = $request->get_json_params();
         
         $data = [
-            'portfolio_id' => 1, // For now, assume single portfolio
             'title' => sanitize_text_field($params['title'] ?? ''),
             'description' => sanitize_textarea_field($params['description'] ?? ''),
             'image_url' => esc_url_raw($params['image_url'] ?? ''),
@@ -224,6 +242,8 @@ class PortfolioController
                 ['id' => $params['id']]
             );
         } else {
+            $max_order = $wpdb->get_var("SELECT MAX(order_index) FROM {$wpdb->prefix}cb_portfolio_projects");
+            $data['order_index'] = ($max_order ?? 0) + 1;
             $result = $wpdb->insert($wpdb->prefix . 'cb_portfolio_projects', $data);
         }
         
@@ -250,6 +270,86 @@ class PortfolioController
         }
         
         return new \WP_REST_Response(['success' => true], 200);
+    }
+
+    public function reorder_experience(\WP_REST_Request $request)
+    {
+        if (!current_user_can('manage_options')) {
+            return new \WP_Error('forbidden', 'Access denied', array('status' => 403));
+        }
+        
+        $items = $request->get_param('items');
+        
+        if (!is_array($items)) {
+            return new \WP_Error('invalid_data', 'Invalid data format', array('status' => 400));
+        }
+        
+        global $wpdb;
+        $experience_table = $wpdb->prefix . 'cb_portfolio_experience';
+        
+        foreach ($items as $item) {
+            if (!isset($item['id']) || !isset($item['order_index'])) {
+                continue;
+            }
+            
+            $wpdb->update(
+                $experience_table,
+                array('order_index' => intval($item['order_index'])),
+                array('id' => intval($item['id'])),
+                array('%d'),
+                array('%d')
+            );
+        }
+        
+        return new \WP_REST_Response(array(
+            'success' => true,
+            'message' => 'Experience order updated successfully'
+        ), 200);
+    }
+
+    public function reorder_projects(\WP_REST_Request $request)
+    {
+        if (!current_user_can('manage_options')) {
+            return new \WP_Error('forbidden', 'Access denied', array('status' => 403));
+        }
+        
+        $items = $request->get_param('items');
+        
+        if (!is_array($items)) {
+            return new \WP_Error('invalid_data', 'Invalid data format', array('status' => 400));
+        }
+        
+        global $wpdb;
+        $projects_table = $wpdb->prefix . 'cb_portfolio_projects';
+        
+        $updated_items = array();
+        
+        foreach ($items as $item) {
+            if (!isset($item['id']) || !isset($item['order_index'])) {
+                continue;
+            }
+            
+            $result = $wpdb->update(
+                $projects_table,
+                array('order_index' => intval($item['order_index'])),
+                array('id' => intval($item['id'])),
+                array('%d'),
+                array('%d')
+            );
+            
+            $updated_items[] = array(
+                'id' => intval($item['id']),
+                'order_index' => intval($item['order_index']),
+                'result' => $result
+            );
+        }
+        
+        return new \WP_REST_Response(array(
+            'success' => true,
+            'message' => 'Projects order updated successfully',
+            'updated_items' => $updated_items,
+            'sql_last_error' => $wpdb->last_error
+        ), 200);
     }
     
     private function getAllowedHtmlTags()

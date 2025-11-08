@@ -492,7 +492,7 @@ p {
 .tag-item {
   background: var(--color-ui-bg);
   color: var(--color-text-secondary);
-  padding: 2px 0.5rem;
+  padding: 0 0.5rem;
   border-radius: 4px;
   font-size: var(--font-size-small);
   border: 1px solid var(--color-ui-border);

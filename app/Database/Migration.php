@@ -51,7 +51,6 @@ class Migration
         
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
-            portfolio_id mediumint(9) NOT NULL,
             company varchar(200) NOT NULL,
             company_website varchar(255),
             position varchar(200) NOT NULL,
@@ -60,10 +59,10 @@ class Migration
             current tinyint(1) DEFAULT 0,
             description text,
             skills text,
+            order_index int(11) DEFAULT 0,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            FOREIGN KEY (portfolio_id) REFERENCES {$wpdb->prefix}cb_portfolio(id) ON DELETE CASCADE
+            PRIMARY KEY (id)
         ) $charset_collate;";
         
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -80,7 +79,6 @@ class Migration
         
         $sql = "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
-            portfolio_id mediumint(9) NOT NULL,
             title varchar(200) NOT NULL,
             description text,
             image_url varchar(255),
@@ -88,10 +86,10 @@ class Migration
             github_url varchar(255),
             technologies text,
             featured tinyint(1) DEFAULT 0,
+            order_index int(11) DEFAULT 0,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            FOREIGN KEY (portfolio_id) REFERENCES {$wpdb->prefix}cb_portfolio(id) ON DELETE CASCADE
+            PRIMARY KEY (id)
         ) $charset_collate;";
         
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');

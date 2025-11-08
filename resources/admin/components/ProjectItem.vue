@@ -2,9 +2,31 @@
   <div class="project-item">
     <div class="item-header">
       <h3>Project {{ projectNumber }}</h3>
-      <button @click="$emit('remove')" class="remove-btn">
-        <span class="btn-icon">×</span>
-      </button>
+      <div class="header-actions">
+        <button 
+          @click="$emit('move-up')" 
+          :disabled="!canMoveUp"
+          class="order-btn" 
+          title="Move Up"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 14L12 9L17 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button 
+          @click="$emit('move-down')" 
+          :disabled="!canMoveDown"
+          class="order-btn" 
+          title="Move Down"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button @click="$emit('remove')" class="remove-btn" title="Delete">
+          <span class="btn-icon">×</span>
+        </button>
+      </div>
     </div>
 
     <!-- Two Column Layout for Title/Description and Image Upload -->
@@ -107,9 +129,17 @@ export default {
     projectNumber: {
       type: Number,
       required: true
+    },
+    canMoveUp: {
+      type: Boolean,
+      default: false
+    },
+    canMoveDown: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: ['update', 'remove'],
+  emits: ['update', 'remove', 'move-up', 'move-down'],
   data() {
     return {
       localData: { 
@@ -157,6 +187,37 @@ export default {
   font-size: 16px;
   font-weight: 600;
   color: #1d2327;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.order-btn {
+  background: #0073aa;
+  color: white;
+  border: none;
+  padding: 4px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: all 0.2s;
+}
+
+.order-btn:hover:not(:disabled) {
+  background: #005a87;
+}
+
+.order-btn:disabled {
+  background: #ddd;
+  color: #999;
+  cursor: not-allowed;
 }
 
 .remove-btn {

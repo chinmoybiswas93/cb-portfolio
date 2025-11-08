@@ -5,15 +5,15 @@
     </div>
 
     <div class="content-timeline slide-up">
-      <ExperienceItem v-for="(experience, index) in experienceData" :key="experience.id" :experience="experience"
+      <ExperienceItem v-for="(experience, index) in sortedExperience" :key="experience.id" :experience="experience"
         :index="index" />
 
-      <div v-if="experienceData.length === 0" class="empty-state">
+      <div v-if="sortedExperience.length === 0" class="empty-state">
         <p>No experience data available yet.</p>
       </div>
 
       <!-- View Full Archive Button -->
-      <div v-if="experienceData.length > 0" class="archive-section">
+      <div v-if="sortedExperience.length > 0" class="archive-section">
         <a href="#" class="archive-button" @click.prevent="viewFullArchive">
           <span class="archive-text">View Full Resume</span>
           <span class="archive-arrow">→</span>
@@ -35,6 +35,16 @@ export default {
     experienceData: {
       type: Array,
       required: true
+    }
+  },
+  computed: {
+    sortedExperience() {
+      // Sort experience by order_index in ascending order
+      return [...this.experienceData].sort((a, b) => {
+        const orderA = a.order_index || 999;
+        const orderB = b.order_index || 999;
+        return orderA - orderB;
+      });
     }
   },
   methods: {

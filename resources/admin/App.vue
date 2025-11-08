@@ -55,11 +55,12 @@
 
         <!-- Experience Tab -->
         <ExperienceTab v-if="activeTab === 'experience'" :experience-data="experienceData"
-          @add-experience="addExperience" @update-experience="updateExperience" @remove-experience="removeExperience" />
+          @add-experience="addExperience" @update-experience="updateExperience" @remove-experience="removeExperience" 
+          @update-experience-order="handleExperienceOrderUpdate" />
 
         <!-- Projects Tab -->
         <ProjectsTab v-if="activeTab === 'projects'" :projects-data="projectsData" @add-project="addProject"
-          @update-project="updateProject" @remove-project="removeProject" />
+          @update-project="updateProject" @remove-project="removeProject" @update-projects-order="handleProjectsOrderUpdate" />
       </div>
     </div>
 
@@ -427,6 +428,16 @@ export default {
         this.deletedProjectIds.push(project.id);
       }
       this.projectsData.splice(index, 1);
+    },
+
+    handleExperienceOrderUpdate(updatedExperience) {
+      // Replace the entire experience data with the updated order
+      this.experienceData = [...updatedExperience];
+    },
+
+    handleProjectsOrderUpdate(updatedProjects) {
+      // Replace the entire projects data with the updated order
+      this.projectsData = [...updatedProjects];
     }
   }
 }
