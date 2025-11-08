@@ -36,6 +36,10 @@
             <span class="nav-icon">🚀</span>
             <span class="nav-text">Projects</span>
           </div>
+          <div class="nav-item" :class="{ active: activeTab === 'import-export' }" @click="setActiveTab('import-export')">
+            <span class="nav-icon">📁</span>
+            <span class="nav-text">Import/Export</span>
+          </div>
         </nav>
       </div>
 
@@ -61,6 +65,15 @@
         <!-- Projects Tab -->
         <ProjectsTab v-if="activeTab === 'projects'" :projects-data="projectsData" @add-project="addProject"
           @update-project="updateProject" @remove-project="removeProject" @update-projects-order="handleProjectsOrderUpdate" />
+
+        <!-- Import/Export Tab -->
+        <ImportExportTab v-if="activeTab === 'import-export'" 
+          :portfolio-data="portfolioData"
+          :experience-data="experienceData"
+          :projects-data="projectsData"
+          @import-data="handleImportData"
+          @show-toast="showToastNotification"
+        />
       </div>
     </div>
 
@@ -75,6 +88,7 @@ import PersonalInfoTab from './components/PersonalInfoTab.vue'
 import ContactInfoTab from './components/ContactInfoTab.vue'
 import ExperienceTab from './components/ExperienceTab.vue'
 import ProjectsTab from './components/ProjectsTab.vue'
+import ImportExportTab from './components/ImportExportTab.vue'
 import ToastNotification from './components/ToastNotification.vue'
 
 export default {
@@ -85,6 +99,7 @@ export default {
     ContactInfoTab,
     ExperienceTab,
     ProjectsTab,
+    ImportExportTab,
     ToastNotification
   },
   data() {
@@ -128,7 +143,7 @@ export default {
 
     // Restore active tab from localStorage
     const savedTab = localStorage.getItem('cb-portfolio-active-tab');
-    if (savedTab && ['settings', 'personal', 'contact', 'experience', 'projects'].includes(savedTab)) {
+    if (savedTab && ['settings', 'personal', 'contact', 'experience', 'projects', 'import-export'].includes(savedTab)) {
       this.activeTab = savedTab;
     }
   },
@@ -438,6 +453,26 @@ export default {
     handleProjectsOrderUpdate(updatedProjects) {
       // Replace the entire projects data with the updated order
       this.projectsData = [...updatedProjects];
+    },
+
+    async handleImportData(importedData) {
+      try {
+        // Since the import is already handled by the backend API,
+        // we just need to reload all data from the database
+        await this.loadPortfolioData();
+        await this.loadExperienceData();
+        await this.loadProjectsData();
+        await this.loadSettings();
+        
+        // Reset deleted IDs arrays since we have fresh data
+        this.deletedExperienceIds = [];
+        this.deletedProjectIds = [];
+        
+        this.showToastNotification('success', 'Data imported and refreshed successfully!');
+      } catch (error) {
+        console.error('Error refreshing imported data:', error);
+        this.showToastNotification('error', 'Data was imported but failed to refresh UI. Please reload the page.');
+      }
     }
   }
 }
