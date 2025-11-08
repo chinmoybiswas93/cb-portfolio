@@ -39,16 +39,9 @@ export default {
 </script>
 
 <style scoped>
-/* About section specific styles */
-.about-section {
-  background: transparent;
-  margin-bottom: 0;
-}
 
-.section-title {
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: .5px;
+.about-section {
+  margin-bottom: 0;
 }
 
 .about-content {

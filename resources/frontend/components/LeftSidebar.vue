@@ -171,7 +171,7 @@ export default {
   color: var(--color-text-secondary);
   line-height: var(--line-height-base);
   font-weight: var(--font-weight-light);
-  max-width: 60%;
+  max-width: 80%;
 }
 
 /* Navigation */
@@ -288,6 +288,10 @@ export default {
   .profile-section {
   margin-bottom: 1.5rem;
   padding-bottom: 0;
+}
+
+.profile-tagline {
+  max-width: 95%;
 }
 }
 

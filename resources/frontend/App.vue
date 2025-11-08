@@ -264,10 +264,6 @@ html {
     overflow: auto;
     min-height: 100vh;
   }
-
-  .profile-tagline {
-    max-width: 80%;
-  }
 }
 
 h1,
@@ -548,10 +544,12 @@ p {
 }
 
 .section-title {
-  font-size: var(--font-size-title);
-  font-weight: var(--font-weight-semibold);
+  font-size: 18px;
   color: var(--color-text-primary);
   margin: 0;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: .5px;
 }
 
 .content-timeline {
@@ -585,10 +583,6 @@ p {
     padding: 1rem 1.5rem;
     margin: 0 -1.5rem 1rem -1.5rem;
     z-index: 10;
-  }
-
-  .section-title {
-    margin: 0;
   }
 
   .content-section {

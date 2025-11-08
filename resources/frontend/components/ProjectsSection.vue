@@ -64,16 +64,8 @@ export default {
 </script>
 
 <style scoped>
-/* Component-specific styles for Projects Section */
 .projects-section {
-  background: transparent;
   margin-bottom: 0;
-}
-
-.section-title {
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: .5px;
 }
 
 .archive-button {
