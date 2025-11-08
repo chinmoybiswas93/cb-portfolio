@@ -131,7 +131,6 @@ export default {
   overflow: hidden;
   z-index: 1000;
   padding: 0 2rem;
-  background: var(--color-background);
   flex-shrink: 0;
 }
 

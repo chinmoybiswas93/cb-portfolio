@@ -1,5 +1,8 @@
 <template>
   <div class="portfolio-app">
+    <!-- Mouse spotlight effect -->
+    <div class="spotlight-effect" :style="spotlightStyle"></div>
+
     <LeftSidebar :portfolio-data="portfolioData" :active-section="activeSection" @navigate-to="navigateToSection" />
     <RightContent :portfolio-data="portfolioData" :experience-data="experienceData" :projects-data="projectsData" />
   </div>
@@ -33,7 +36,16 @@ export default {
       },
       experienceData: [],
       projectsData: [],
-      activeSection: 'about'
+      activeSection: 'about',
+      mouseX: 0,
+      mouseY: 0
+    }
+  },
+  computed: {
+    spotlightStyle() {
+      return {
+        background: `radial-gradient(400px at ${this.mouseX}px ${this.mouseY}px, rgba(29, 78, 216, 0.15), transparent 80%)`
+      }
     }
   },
   mounted() {
@@ -41,6 +53,7 @@ export default {
     this.loadExperienceData();
     this.loadProjectsData();
     this.setupScrollHandler();
+    this.setupMouseTracking();
   },
   methods: {
     async loadPortfolioData() {
@@ -163,11 +176,60 @@ export default {
         });
       });
     },
+
+    setupMouseTracking() {
+      const updateMousePosition = (e) => {
+        this.mouseX = e.clientX;
+        this.mouseY = e.clientY;
+      };
+
+      // Only enable on desktop
+      const isDesktop = window.innerWidth >= 1024;
+
+      if (isDesktop) {
+        // Set initial position to top-left corner
+        this.mouseX = 0;
+        this.mouseY = 0;
+        
+        document.addEventListener('mousemove', updateMousePosition);
+      }
+
+      // Handle resize to enable/disable based on screen size
+      const handleResize = () => {
+        const nowDesktop = window.innerWidth >= 1024;
+        if (nowDesktop && !isDesktop) {
+          // Reset to top-left when enabling on desktop
+          this.mouseX = 0;
+          this.mouseY = 0;
+          document.addEventListener('mousemove', updateMousePosition);
+        } else if (!nowDesktop && isDesktop) {
+          document.removeEventListener('mousemove', updateMousePosition);
+        }
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      this.$once('hook:beforeDestroy', () => {
+        document.removeEventListener('mousemove', updateMousePosition);
+        window.removeEventListener('resize', handleResize);
+      });
+    }
   }
 }
 </script>
 
 <style scoped>
+.spotlight-effect {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  transition: background 300ms ease;
+}
+
 .portfolio-app {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: var(--line-height-base);
@@ -218,9 +280,9 @@ export default {
   --color-background-blur: rgba(15, 23, 42, 0.762);
   --color-background-blur-strong: rgba(15, 23, 42, 0.9);
 
-  --color-ui-border: rgba(148, 163, 184, 0.2);
-  --color-ui-bg: rgba(148, 163, 184, 0.1);
-  --color-ui-hover: rgba(189, 198, 211, 0.053);
+  --color-ui-border: rgb(46, 60, 83);
+  --color-ui-bg: rgba(30, 41, 59, 0.6);
+  --color-ui-hover: rgba(30, 41, 59, 0.6);
 
   --font-weight-light: 300;
   --font-weight-normal: 400;
