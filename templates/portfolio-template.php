@@ -1,8 +1,35 @@
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
+
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- WordPress title and meta -->
+    <title><?php
+            $site_title = get_bloginfo('name');
+            $site_tagline = get_bloginfo('description');
+            if ($site_title && $site_tagline) {
+                echo $site_title . ' - ' . $site_tagline;
+            } elseif ($site_title) {
+                echo $site_title;
+            } else {
+                echo 'Portfolio';
+            }
+            ?></title>
+
+    <!-- Site favicon -->
+    <?php if (has_site_icon()): ?>
+        <link rel="icon" href="<?php echo esc_url(get_site_icon_url(32)); ?>" sizes="32x32">
+        <link rel="icon" href="<?php echo esc_url(get_site_icon_url(192)); ?>" sizes="192x192">
+        <link rel="apple-touch-icon" href="<?php echo esc_url(get_site_icon_url(180)); ?>">
+        <meta name="msapplication-TileImage" content="<?php echo esc_url(get_site_icon_url(270)); ?>">
+    <?php endif; ?>
+
+    <!-- Meta description -->
+    <?php if (get_bloginfo('description')): ?>
+        <meta name="description" content="<?php echo esc_attr(get_bloginfo('description')); ?>">
+    <?php endif; ?>
 
     <?php if (file_exists(CB_PORTFOLIO_PLUGIN_PATH . '/.hot')): ?>
         <!-- Development mode -->
@@ -28,12 +55,24 @@
     <?php endif; ?>
 
     <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; }
-        #cb-portfolio-frontend { min-height: 100vh; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #cb-portfolio-frontend {
+            min-height: 100vh;
+        }
     </style>
+
 </head>
+
 <body>
     <div id="cb-portfolio-frontend"></div>
 </body>
+
 </html>
