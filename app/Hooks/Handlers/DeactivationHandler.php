@@ -9,6 +9,6 @@ class DeactivationHandler
 {
     public function handle()
     {
-        // error_log('Plugin Deactivated.');
+        // No actions needed on deactivation
     }
 }

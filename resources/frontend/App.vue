@@ -1,9 +1,6 @@
 <template>
   <div class="portfolio-app">
-    <!-- Left Sidebar - Fixed -->
     <LeftSidebar :portfolio-data="portfolioData" :active-section="activeSection" @navigate-to="navigateToSection" />
-
-    <!-- Right Content - Scrollable -->
     <RightContent :portfolio-data="portfolioData" :experience-data="experienceData" :projects-data="projectsData" />
   </div>
 </template>
@@ -51,7 +48,6 @@ export default {
         const response = await fetch('/wp-json/cb-portfolio/v1/portfolio');
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           if (data && Object.keys(data).length > 0) {
             this.portfolioData = { ...this.portfolioData, ...data };
           }
@@ -103,7 +99,6 @@ export default {
         const handleScroll = () => {
           const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-          // Get all section elements and their positions
           const sectionElements = sections.map(id => ({
             id,
             element: document.getElementById(id)
@@ -111,26 +106,22 @@ export default {
 
           if (sectionElements.length === 0) return;
 
-          let currentSection = 'about'; // default
+          let currentSection = 'about';
           let minDistance = Infinity;
 
-          // Find the section closest to the top of the viewport
           for (let i = 0; i < sectionElements.length; i++) {
             const section = sectionElements[i];
             const rect = section.element.getBoundingClientRect();
 
-            // Calculate the distance from section top to viewport top
             const sectionTop = rect.top;
             const distanceFromTop = Math.abs(sectionTop);
 
-            // If section is visible and closer to top than others
             if (sectionTop <= 200 && distanceFromTop < minDistance) {
               minDistance = distanceFromTop;
               currentSection = section.id;
             }
           }
 
-          // Handle edge case: if we're at the very bottom, always show Projects
           const documentHeight = Math.max(
             document.body.scrollHeight,
             document.body.offsetHeight,
@@ -143,18 +134,15 @@ export default {
             currentSection = 'projects';
           }
 
-          // Handle edge case: if we're at the very top, always show About
           if (scrollTop < 50) {
             currentSection = 'about';
           }
 
-          // Only update if section actually changed to prevent flickering
           if (this.activeSection !== currentSection) {
             this.activeSection = currentSection;
           }
         };
 
-        // Add scroll listener with throttling to improve performance
         let ticking = false;
         const throttledScroll = () => {
           if (!ticking) {
@@ -168,10 +156,8 @@ export default {
 
         window.addEventListener('scroll', throttledScroll);
 
-        // Initial call
         handleScroll();
 
-        // Cleanup on component unmount
         this.$once('hook:beforeDestroy', () => {
           window.removeEventListener('scroll', throttledScroll);
         });
@@ -185,6 +171,7 @@ export default {
 .portfolio-app {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: var(--line-height-base);
+  font-weight: var(--font-weight-light);
   color: var(--color-text-secondary);
   display: flex;
   min-height: 100vh;
@@ -194,7 +181,6 @@ export default {
   position: relative;
 }
 
-/* Mobile Responsive - Stack layout */
 @media (max-width: 768px) {
   .portfolio-app {
     flex-direction: column;
@@ -203,7 +189,6 @@ export default {
   }
 }
 
-/* Large screens */
 @media (min-width: 1920px) {
   .portfolio-app {
     max-width: 1400px;
@@ -212,49 +197,36 @@ export default {
 }
 </style>
 
-<!-- Global Styles -->
 <style>
 :root {
-  /* Standardized Font Sizes */
-  --font-size-profile: 48px;
-  /* Profile name */
-  --font-size-title: 20px;
-  /* Profile title */
-  --font-size-body: 16px;
-  /* Body text, tagline, item titles */
-  --font-size-description: 14px;
-  /* Item descriptions */
   --font-size-small: 12px;
-  /* Navigation, duration, skills tags */
+  --font-size-medium: 14px;
+  --font-size-base: 16px;
+  --font-size-large: 20px;
+
+  --font-size-profile: 48px;
+  --font-size-title: var(--font-size-large);
+  --font-size-body: var(--font-size-base);
+  --font-size-description: var(--font-size-medium);
 
   --line-height-base: 1.6;
 
-  /* Color System - Two Colors Only */
   --color-text-primary: rgb(226, 232, 240);
-  /* Highlights, headings, profile name/title */
   --color-text-secondary: rgb(148, 163, 184);
-  /* Regular text */
 
-  /* Background Colors */
   --color-background: rgb(15, 23, 42);
   --color-background-blur: rgba(15, 23, 42, 0.762);
   --color-background-blur-strong: rgba(15, 23, 42, 0.9);
 
-  /* UI Elements */
   --color-ui-border: rgba(148, 163, 184, 0.2);
   --color-ui-bg: rgba(148, 163, 184, 0.1);
-  --color-ui-hover: rgba(226, 232, 240, 0.1);
+  --color-ui-hover: rgba(189, 198, 211, 0.053);
 
-  /* Font Weight Variables */
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-
-  /* Deprecated - Legacy compatibility */
-  --text-light: var(--color-text-secondary);
-  --color-secondary: var(--color-text-primary);
 }
 
 * {
@@ -272,14 +244,12 @@ body {
   background: var(--color-background);
   color: var(--color-text-secondary);
   font-size: var(--font-size-body);
-  /* Enable bounce effect for whole app */
   -webkit-overflow-scrolling: touch;
 }
 
 html {
   scroll-behavior: smooth;
   background: var(--color-background);
-  /* Enable bounce effect for whole app */
   -webkit-overflow-scrolling: touch;
 }
 
@@ -296,20 +266,20 @@ html {
   }
 
   .profile-tagline {
-    max-width: 80% !important;
+    max-width: 80%;
   }
 }
 
-/* Typography */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  color: var(--color-secondary);
+  color: var(--color-text-primary);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-base);
+  margin: 0;
 }
 
 p {
@@ -319,47 +289,6 @@ p {
   font-weight: var(--font-weight-light);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-semibold);
-}
-
-a {
-  color: #667eea;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-a:hover {
-  color: #5a67d8;
-}
-
-/* Utility Classes */
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.mb-8 {
-  margin-bottom: 2rem;
-}
-
-/* Animation Classes */
 .fade-in {
   animation: fadeIn 0.8s ease-in-out;
 }
@@ -392,7 +321,6 @@ a:hover {
   }
 }
 
-/* Slide In Left Animation */
 .slide-left {
   animation: slideInLeft 0.6s ease-out;
   animation-fill-mode: both;
@@ -410,7 +338,6 @@ a:hover {
   }
 }
 
-/* Common Item Card Styles */
 .item-card {
   display: flex;
   gap: 2rem;
@@ -433,7 +360,7 @@ a:hover {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-ui-border);
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: -1;
@@ -444,14 +371,12 @@ a:hover {
   opacity: 1;
 }
 
-/* Common Item Wrapper */
 .content-item {
   display: block;
   margin-bottom: 2rem;
   width: 100%;
 }
 
-/* Two Column Layout */
 .item-left-column {
   flex: 0 0 25%;
   position: relative;
@@ -470,7 +395,6 @@ a:hover {
   margin-bottom: 0.75rem;
 }
 
-/* Common Position/Title Styles */
 .item-title {
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-normal);
@@ -492,7 +416,6 @@ a:hover {
   margin-left: 2px;
 }
 
-/* Common Link Styles */
 .external-link {
   font-size: var(--font-size-small);
   opacity: 0.7;
@@ -510,7 +433,7 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-base);
 }
@@ -519,15 +442,13 @@ a:hover {
   color: var(--color-text-primary);
 }
 
-/* Common Description */
 .about-text {
-  color: var(--text-light);
+  color: var(--color-text-secondary);
   line-height: var(--line-height-base);
   margin-bottom: 1rem;
   font-size: var(--font-size-body);
 }
 
-/* Item Description */
 .item-description {
   color: var(--color-text-secondary);
   line-height: var(--line-height-base);
@@ -535,7 +456,6 @@ a:hover {
   font-size: var(--font-size-description);
 }
 
-/* HTML Tags inside text content */
 .about-text b,
 .about-text strong,
 .about-text span,
@@ -545,7 +465,7 @@ a:hover {
 .item-description span,
 .item-description a {
   color: var(--color-text-primary);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
 }
 
 .about-text a,
@@ -559,7 +479,6 @@ a:hover {
   opacity: 0.8;
 }
 
-/* Common Tags Section */
 .tags-section {
   margin-top: 1rem;
 }
@@ -610,6 +529,7 @@ a:hover {
 
 .archive-text {
   font-size: var(--font-size-body);
+  font-weight: var(--font-weight-normal);
 }
 
 .archive-arrow {
@@ -617,7 +537,6 @@ a:hover {
   transition: transform 0.3s ease;
 }
 
-/* Section Layouts */
 .content-section {
   background: transparent;
   margin-bottom: 0;
@@ -626,7 +545,6 @@ a:hover {
 .section-header {
   margin-bottom: 2rem;
   display: none;
-  /* Hidden on desktop */
 }
 
 .section-title {
@@ -639,7 +557,6 @@ a:hover {
 .content-timeline {
   position: relative;
   overflow: visible;
-  /* Allow hover effects to extend beyond boundaries */
 }
 
 .empty-state {
@@ -653,16 +570,13 @@ a:hover {
   margin: 0;
 }
 
-/* Mobile Responsive - Common Patterns */
 @media (max-width: 768px) {
   :root {
-    /* Standardized Font Sizes */
-    --font-size-profile:42px;
+    --font-size-profile: 42px;
   }
 
   .section-header {
     display: block;
-    /* Show on mobile */
     position: sticky;
     top: 0;
     background: var(--color-background-blur-strong);

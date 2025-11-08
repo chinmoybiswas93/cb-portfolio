@@ -10,7 +10,6 @@ class PortfolioController
 {
     public function register_routes()
     {
-        // Portfolio data routes
         register_rest_route('cb-portfolio/v1', '/portfolio', [
             'methods' => 'GET',
             'callback' => [$this, 'get_portfolio'],
@@ -23,7 +22,6 @@ class PortfolioController
             'permission_callback' => [$this, 'check_permission'],
         ]);
 
-        // Experience routes
         register_rest_route('cb-portfolio/v1', '/experience', [
             'methods' => 'GET',
             'callback' => [$this, 'get_experience'],
@@ -42,7 +40,6 @@ class PortfolioController
             'permission_callback' => [$this, 'check_permission'],
         ]);
 
-        // Projects routes
         register_rest_route('cb-portfolio/v1', '/projects', [
             'methods' => 'GET',
             'callback' => [$this, 'get_projects'],
@@ -101,7 +98,6 @@ class PortfolioController
             'footer_text' => wp_kses($params['footer_text'] ?? '', $this->getAllowedHtmlTags()),
         ];
         
-        // Check if portfolio exists
         $existing = $wpdb->get_row("SELECT id FROM {$wpdb->prefix}cb_portfolio ORDER BY id DESC LIMIT 1");
         
         if ($existing) {
@@ -131,7 +127,6 @@ class PortfolioController
             "SELECT * FROM {$wpdb->prefix}cb_portfolio_experience ORDER BY id DESC"
         );
         
-        // Convert database values to proper types
         foreach ($experience as $exp) {
             $exp->current = (int) $exp->current; // Convert string to integer
             $exp->id = (int) $exp->id;

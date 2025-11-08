@@ -31,56 +31,48 @@ class Bootstrap
 
     private function registerHooks(): void
     {
-        // Activation
         register_activation_hook(CB_PORTFOLIO_PLUGIN_FILE, function () {
             (new ActivationHandler())->handle();
         });
 
-        //Deactivation
         register_deactivation_hook(CB_PORTFOLIO_PLUGIN_FILE, function () {
             (new DeactivationHandler())->handle();
         });
 
-        // Initialize plugin features
         add_action('init', [$this, 'initHooks']);
     }
 
     public function initHooks(): void
     {
-        // Register REST API routes
         add_action('rest_api_init', [$this, 'registerApiRoutes']);
-        
-        // Admin menus and admin-only features
+
         if (is_admin()) {
             (new AdminMenuHandler())->register();
         }
-        
-        // Frontend hooks
+
         if (!is_admin()) {
             add_action('template_redirect', [$this, 'maybeLoadPortfolio']);
         }
     }
-    
+
     public function registerApiRoutes(): void
     {
         $settingsController = new PortfolioSettingsController();
         $settingsController->register_routes();
-        
+
         $portfolioController = new PortfolioController();
         $portfolioController->register_routes();
     }
-    
+
     public function maybeLoadPortfolio(): void
     {
         $enabled = get_option('cb_portfolio_enabled', false);
-        
-        // Temporarily always enable for development testing
-        if (true) { // Changed from: if ($enabled && is_front_page()) {
-            // Load portfolio on homepage
+
+        if ($enabled) {
             add_filter('template_include', [$this, 'loadPortfolioTemplate']);
         }
     }
-    
+
     public function loadPortfolioTemplate($template): string
     {
         return CB_PORTFOLIO_PLUGIN_PATH . '/templates/portfolio-template.php';

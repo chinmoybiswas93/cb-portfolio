@@ -53,13 +53,13 @@ export default {
 /* Specific HTML Tag Styles for Footer */
 .footer-text :deep(b),
 .footer-text :deep(strong) {
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
   font-size: inherit;
 }
 
 .footer-text :deep(span) {
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
   font-size: inherit;
 }
@@ -67,7 +67,7 @@ export default {
 .footer-text :deep(a) {
   color: var(--color-text-primary);
   text-decoration: none;
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   border-bottom: 1px solid transparent;
   transition: all 0.2s ease;
   font-size: inherit;

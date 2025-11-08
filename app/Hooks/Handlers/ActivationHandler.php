@@ -11,7 +11,6 @@ class ActivationHandler
 {
     public function handle()
     {
-        // Create database tables if needed
         $this->createTables();
     }
 

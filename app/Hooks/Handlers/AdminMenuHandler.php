@@ -25,15 +25,6 @@ class AdminMenuHandler
             'dashicons-format-gallery',
             6
         );
-
-        // add_submenu_page(
-        //     'cb-custom-portfolio',
-        //     'Portfolio Settings',
-        //     'Settings',
-        //     'manage_options',
-        //     'cb-portfolio-settings',
-        //     [$this, 'renderAdminPage']
-        // );
     }
 
     public function renderAdminPage()
@@ -51,10 +42,8 @@ class AdminMenuHandler
             return;
         }
         
-        // Enqueue WordPress media library
         wp_enqueue_media();
         
-        // Add type="module" for Vue ES modules to work
         add_filter('script_loader_tag', function ($tag, $handle) {
             if (strpos($handle, 'cb-portfolio-') === 0 || $handle === 'vite-client') {
                 return str_replace('<script ', '<script type="module" crossorigin ', $tag);
@@ -62,14 +51,12 @@ class AdminMenuHandler
             return $tag;
         }, 10, 2);
         
-        // Check if we're in dev mode
         if (file_exists(CB_PORTFOLIO_PLUGIN_PATH . '/.hot')) {
             $this->enqueueDevScripts();
         } else {
             $this->enqueueProductionScripts();
         }
         
-        // Localize script with API data
         wp_localize_script('cb-portfolio-admin', 'cbPortfolioData', [
             'nonce' => wp_create_nonce('wp_rest'),
             'restUrl' => rest_url('cb-portfolio/v1/'),
