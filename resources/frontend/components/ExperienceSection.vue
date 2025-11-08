@@ -14,7 +14,22 @@
 
       <!-- View Full Archive Button -->
       <div v-if="sortedExperience.length > 0" class="archive-section">
-        <a href="#" class="archive-button" @click.prevent="viewFullArchive">
+        <a 
+          v-if="portfolioData.resume_url" 
+          :href="portfolioData.resume_url" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="archive-button"
+        >
+          <span class="archive-text">View Full Resume</span>
+          <span class="archive-arrow">→</span>
+        </a>
+        <a 
+          v-else
+          href="#" 
+          class="archive-button" 
+          @click.prevent="viewFullArchive"
+        >
           <span class="archive-text">View Full Resume</span>
           <span class="archive-arrow">→</span>
         </a>
@@ -34,6 +49,10 @@ export default {
   props: {
     experienceData: {
       type: Array,
+      required: true
+    },
+    portfolioData: {
+      type: Object,
       required: true
     }
   },

@@ -491,7 +491,7 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-medium);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-base);
 }
@@ -606,7 +606,7 @@ p {
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: var(--font-size-base);
   color: var(--color-text-primary);
   margin: 0;
   font-weight: var(--font-weight-medium);
@@ -643,7 +643,7 @@ p {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 1rem 1.5rem;
-    margin: 0 -1.5rem 1rem -1.5rem;
+    margin: 0 -28px 1rem -28px;
     z-index: 10;
   }
 

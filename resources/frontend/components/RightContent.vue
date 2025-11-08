@@ -8,7 +8,7 @@
 
       <!-- Experience Section -->
       <section id="experience" class="content-section">
-        <ExperienceSection :experience-data="experienceData" />
+        <ExperienceSection :experience-data="experienceData" :portfolio-data="portfolioData" />
       </section>
 
       <!-- Projects Section -->
