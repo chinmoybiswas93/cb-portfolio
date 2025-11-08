@@ -3,7 +3,7 @@
     <div class="container">
       <div class="footer-content">
         <!-- Custom Footer Text -->
-        <div v-if="portfolioData.footer_text" class="footer-text" v-html="portfolioData.footer_text">
+        <div v-if="portfolioData && portfolioData.footer_text" class="footer-text" v-html="portfolioData.footer_text">
         </div>
       </div>
     </div>
@@ -15,7 +15,7 @@ export default {
   name: 'PortfolioFooter',
   props: {
     portfolioData: {
-      type: Object,
+      type: [Object, null],
       required: true
     }
   }

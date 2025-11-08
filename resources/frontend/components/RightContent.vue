@@ -8,12 +8,19 @@
 
       <!-- Experience Section -->
       <section id="experience" class="content-section">
-        <ExperienceSection :experience-data="experienceData" :portfolio-data="portfolioData" />
+        <ExperienceSection 
+          :experience-data="experienceData" 
+          :portfolio-data="portfolioData" 
+          :is-loading="isLoadingExperience" 
+        />
       </section>
 
       <!-- Projects Section -->
       <section id="projects" class="content-section">
-        <ProjectsSection :projects-data="projectsData" />
+        <ProjectsSection 
+          :projects-data="projectsData" 
+          :is-loading="isLoadingProjects"
+        />
       </section>
 
       <!-- Footer Section -->
@@ -40,7 +47,7 @@ export default {
   },
   props: {
     portfolioData: {
-      type: Object,
+      type: [Object, null],
       required: true
     },
     experienceData: {
@@ -50,6 +57,14 @@ export default {
     projectsData: {
       type: Array,
       required: true
+    },
+    isLoadingExperience: {
+      type: Boolean,
+      default: false
+    },
+    isLoadingProjects: {
+      type: Boolean,
+      default: false
     }
   }
 }

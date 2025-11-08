@@ -3,11 +3,15 @@
     <div class="section-header fade-in">
       <h2 class="section-title">About</h2>
     </div>
-    
-    <div class="about-content slide-up">
+
+    <div class="about-content slide-up" v-if="hasData">
       <div class="about-text">
         <div v-html="aboutText"></div>
       </div>
+    </div>
+
+    <div class="loading-placeholder" v-else>
+      <div class="loading-skeleton"></div>
     </div>
   </section>
 </template>
@@ -17,29 +21,37 @@ export default {
   name: 'AboutSection',
   props: {
     portfolioData: {
-      type: Object,
+      type: [Object, null],
       required: true
     }
   },
   computed: {
     aboutText() {
-      const defaultText = 'A journey that began with curiosity and self-learning in web development has transformed into a rewarding career in the WordPress ecosystem. With hands-on experience in WordPress development, technical support, and project management, the path has included roles at organizations like WPManageNinja LLC, SEOPage1. Day-to-day work involves building custom WordPress websites, debugging complex issues, developing themes and plugins, and guiding junior developers. Experience spans frontend and backend development, API integration, and website optimization, always with a focus on clean code and user-friendly solutions. Along the way, technical support for flagship WordPress plugins has helped over 700,000 users worldwide.';
-      
-      const text = this.portfolioData.about || defaultText;
-      
+      // Only process text when data is fully loaded
+      if (!this.hasData) {
+        return null;
+      }
+
+      const text = this.portfolioData.about;
+
       // Wrap in paragraph if it doesn't contain HTML tags
       if (!text.includes('<')) {
         return `<p>${text}</p>`;
       }
-      
+
       return text;
+    },
+    hasData() {
+      // Check if portfolioData is loaded with an ID (indicating real data)
+      return this.portfolioData &&
+        this.portfolioData.id &&
+        this.portfolioData.about !== undefined;
     }
   }
 }
 </script>
 
 <style scoped>
-
 .about-section {
   margin-bottom: 0;
 }
@@ -115,6 +127,32 @@ export default {
     background: var(--color-background-blur);
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
+  }
+}
+
+/* Loading States */
+.loading-placeholder {
+  margin-top: 1rem;
+}
+
+.loading-skeleton {
+  height: 120px;
+  background: linear-gradient(90deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.02) 50%,
+      transparent 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }
 </style>

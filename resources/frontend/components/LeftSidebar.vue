@@ -3,15 +3,21 @@
     <div class="sidebar-content">
       <!-- Profile Section -->
       <div class="profile-section">
-        <div class="profile-info">
-          <h1 class="profile-name">{{ portfolioData.name || 'Chinmoy Biswas' }}</h1>
-          <p class="profile-title">{{ portfolioData.title || 'Tier 2 Technical Support Engineer' }}</p>
-          <p class="profile-tagline">{{ portfolioData.tagline || 'Very Enthusiast WordPress Plugin Developer and Problem solver with a eye for design.' }}</p>
+        <div class="profile-info" v-if="hasData">
+          <h1 class="profile-name">{{ portfolioData.name }}</h1>
+          <p class="profile-title">{{ portfolioData.title }}</p>
+          <p class="profile-tagline">{{ portfolioData.tagline }}</p>
+        </div>
+        
+        <div class="profile-loading" v-else>
+          <div class="loading-skeleton name-skeleton"></div>
+          <div class="loading-skeleton title-skeleton"></div>
+          <div class="loading-skeleton tagline-skeleton"></div>
         </div>
       </div>
 
       <!-- Navigation Menu -->
-      <nav class="sidebar-nav">
+      <nav class="sidebar-nav" v-if="showNavigation">
         <ul class="nav-list">
           <li class="nav-item">
             <a 
@@ -46,9 +52,18 @@
         </ul>
       </nav>
 
+      <!-- Navigation Loading Skeleton -->
+      <div class="sidebar-nav-loading" v-else>
+        <div class="nav-loading">
+          <div class="loading-skeleton nav-skeleton" v-for="n in 3" :key="`nav-skeleton-${n}`" :style="{ animationDelay: `${(n - 1) * 0.1}s` }">
+            <span class="nav-skeleton-text">SECTION</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Social Links -->
       <div class="contact-section">
-        <div class="social-links">
+        <div class="social-links" v-if="hasData">
           <a 
             v-if="portfolioData.github_url" 
             :href="portfolioData.github_url" 
@@ -103,6 +118,10 @@
             </svg>
           </a>
         </div>
+        
+        <div class="social-loading" v-else>
+          <div class="loading-skeleton social-skeleton"></div>
+        </div>
       </div>
     </div>
   </aside>
@@ -113,18 +132,44 @@ export default {
   name: 'LeftSidebar',
   props: {
     portfolioData: {
-      type: Object,
+      type: [Object, null],
       required: true
     },
     activeSection: {
       type: String,
       default: 'about'
+    },
+    isLoadingExperience: {
+      type: Boolean,
+      default: false
+    },
+    isLoadingProjects: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['navigate-to'],
+  computed: {
+    hasData() {
+      // Check if portfolioData is loaded with real data (has an ID indicating it's from database)
+      return this.portfolioData &&
+        this.portfolioData.id !== null &&
+        this.portfolioData.id !== undefined;
+    },
+    showNavigation() {
+      // Show navigation only when:
+      // 1. Profile data is loaded (for About section)
+      // 2. Experience data is not loading (Experience section is ready)
+      // 3. Projects data is not loading (Projects section is ready)
+      return this.hasData && !this.isLoadingExperience && !this.isLoadingProjects;
+    }
+  },
   methods: {
     scrollToSection(sectionId) {
-      this.$emit('navigate-to', sectionId)
+      // Only emit navigation if all content is loaded
+      if (this.showNavigation) {
+        this.$emit('navigate-to', sectionId)
+      }
     }
   }
 }
@@ -289,6 +334,15 @@ export default {
   .sidebar-nav {
     display: none;
   }
+  
+  .sidebar-nav-loading {
+    display: none;
+  }
+  
+  .nav-loading {
+    display: none;
+  }
+  
   .profile-section {
   margin-bottom: 1.5rem;
   padding-bottom: 0;
@@ -332,5 +386,100 @@ export default {
 
 .left-sidebar::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-primary);
+}
+
+/* Loading States */
+.profile-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nav-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-nav-loading {
+  margin-bottom: 3rem;
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.02) 50%,
+      transparent 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.name-skeleton {
+  height: 48px;
+  width: 80%;
+  margin-bottom: 0.5rem;
+}
+
+.title-skeleton {
+  height: 20px;
+  width: 60%;
+  margin-bottom: 1.5rem;
+}
+
+.tagline-skeleton {
+  height: 16px;
+  width: 90%;
+}
+
+.social-skeleton {
+  height: 24px;
+  width: 150px;
+}
+
+.nav-skeleton {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.nav-skeleton::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.02) 50%,
+      transparent 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.nav-skeleton-text {
+  color: transparent;
+  background: linear-gradient(90deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.02) 50%,
+      transparent 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 </style>

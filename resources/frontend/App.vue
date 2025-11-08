@@ -3,8 +3,20 @@
     <!-- Mouse spotlight effect -->
     <div class="spotlight-effect" :style="spotlightStyle"></div>
 
-    <LeftSidebar :portfolio-data="portfolioData" :active-section="activeSection" @navigate-to="navigateToSection" />
-    <RightContent :portfolio-data="portfolioData" :experience-data="experienceData" :projects-data="projectsData" />
+    <LeftSidebar 
+      :portfolio-data="portfolioData" 
+      :active-section="activeSection" 
+      :is-loading-experience="isLoadingExperience"
+      :is-loading-projects="isLoadingProjects"
+      @navigate-to="navigateToSection" 
+    />
+    <RightContent 
+      :portfolio-data="portfolioData" 
+      :experience-data="experienceData" 
+      :projects-data="projectsData"
+      :is-loading-experience="isLoadingExperience"
+      :is-loading-projects="isLoadingProjects"
+    />
   </div>
 </template>
 
@@ -20,22 +32,11 @@ export default {
   },
   data() {
     return {
-      portfolioData: {
-        name: '',
-        title: '',
-        tagline: '',
-        about: '',
-        email: '',
-        phone: '',
-        location: '',
-        github_url: '',
-        linkedin_url: '',
-        twitter_url: '',
-        website_url: '',
-        profile_image: ''
-      },
+      portfolioData: null,
       experienceData: [],
       projectsData: [],
+      isLoadingExperience: true,
+      isLoadingProjects: true,
       activeSection: 'about',
       mouseX: 0,
       mouseY: 0
@@ -62,35 +63,103 @@ export default {
         if (response.ok) {
           const data = await response.json();
           if (data && Object.keys(data).length > 0) {
-            this.portfolioData = { ...this.portfolioData, ...data };
+            this.portfolioData = data;
+          } else {
+            // Initialize with empty data structure when no data is found
+            this.portfolioData = {
+              id: null,
+              name: '',
+              title: '',
+              tagline: '',
+              about: '',
+              email: '',
+              phone: '',
+              location: '',
+              github_url: '',
+              linkedin_url: '',
+              twitter_url: '',
+              website_url: '',
+              profile_image: ''
+            };
           }
+        } else {
+          // Initialize with empty data structure on API error
+          this.portfolioData = {
+            id: null,
+            name: '',
+            title: '',
+            tagline: '',
+            about: '',
+            email: '',
+            phone: '',
+            location: '',
+            github_url: '',
+            linkedin_url: '',
+            twitter_url: '',
+            website_url: '',
+            profile_image: ''
+          };
         }
       } catch (err) {
         console.error('Error loading portfolio data:', err);
+        // Initialize with empty data structure on error
+        this.portfolioData = {
+          id: null,
+          name: '',
+          title: '',
+          tagline: '',
+          about: '',
+          email: '',
+          phone: '',
+          location: '',
+          github_url: '',
+          linkedin_url: '',
+          twitter_url: '',
+          website_url: '',
+          profile_image: ''
+        };
       }
     },
 
     async loadExperienceData() {
       try {
-        const response = await fetch('/wp-json/cb-portfolio/v1/experience');
+        this.isLoadingExperience = true;
+        
+        // Add minimum loading time for better UX (show skeleton briefly)
+        const [response] = await Promise.all([
+          fetch('/wp-json/cb-portfolio/v1/experience'),
+          new Promise(resolve => setTimeout(resolve, 800)) // Minimum 800ms loading
+        ]);
+        
         if (response.ok) {
           const data = await response.json();
           this.experienceData = data || [];
         }
       } catch (err) {
         console.error('Error loading experience data:', err);
+      } finally {
+        this.isLoadingExperience = false;
       }
     },
 
     async loadProjectsData() {
       try {
-        const response = await fetch('/wp-json/cb-portfolio/v1/projects');
+        this.isLoadingProjects = true;
+        
+        // Add minimum loading time for better UX (show skeleton briefly)
+        const [response] = await Promise.all([
+          fetch('/wp-json/cb-portfolio/v1/projects'),
+          new Promise(resolve => setTimeout(resolve, 800)) // Minimum 800ms loading
+        ]);
+        
         if (response.ok) {
           const data = await response.json();
           this.projectsData = data || [];
         }
       } catch (err) {
         console.error('Error loading projects data:', err);
+      } finally {
+        this.isLoadingProjects = false;
       }
     },
 
