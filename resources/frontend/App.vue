@@ -185,7 +185,7 @@ export default {
 .portfolio-app {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: var(--line-height-base);
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   display: flex;
   min-height: 100vh;
   max-width: 1200px;
@@ -203,13 +203,6 @@ export default {
   }
 }
 
-/* Tablet Responsive */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .portfolio-app {
-    padding: 0 20px;
-  }
-}
-
 /* Large screens */
 @media (min-width: 1920px) {
   .portfolio-app {
@@ -222,57 +215,35 @@ export default {
 <!-- Global Styles -->
 <style>
 :root {
-  /* Font Size Variables */
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-base: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  --font-size-3xl: 32px;
-  --font-size-4xl: 40px;
-  --font-size-5xl: 48px;
+  /* Standardized Font Sizes */
+  --font-size-profile: 48px;
+  /* Profile name */
+  --font-size-title: 20px;
+  /* Profile title */
+  --font-size-body: 16px;
+  /* Body text, tagline, item titles */
+  --font-size-description: 14px;
+  /* Item descriptions */
+  --font-size-small: 12px;
+  /* Navigation, duration, skills tags */
 
-  /* Line Height Variables */
   --line-height-base: 1.6;
 
-  /* Profile Font Sizes */
-  --profile-name-size: 48px;
-  --profile-name-mobile: 40px;
-  --profile-title-size: 20px;
-  --profile-tagline-size: 16px;
+  /* Color System - Two Colors Only */
+  --color-text-primary: rgb(226, 232, 240);
+  /* Highlights, headings, profile name/title */
+  --color-text-secondary: rgb(148, 163, 184);
+  /* Regular text */
 
-  /* Section Font Sizes */
-  --section-title-size: 20px;
-  --body-text-size: 16px;
-  --nav-link-size: 14px;
-  --highlight-title-size: 20px;
-  --highlight-text-size: 18px;
-  --extra-small-size: 12px;
-
-  /* Color Variables */
-  --color-white: #ffffff;
-  --color-white-90: rgba(255, 255, 255, 0.9);
-  --color-white-80: rgba(255, 255, 255, 0.8);
-  --color-white-70: rgba(255, 255, 255, 0.7);
-  --color-white-60: rgba(255, 255, 255, 0.6);
-  --color-white-50: rgba(255, 255, 255, 0.5);
-  --color-white-30: rgba(255, 255, 255, 0.3);
-  --color-white-15: rgba(255, 255, 255, 0.15);
-  --color-white-10: rgba(255, 255, 255, 0.1);
-
+  /* Background Colors */
   --color-background: rgb(15, 23, 42);
   --color-background-blur: rgba(15, 23, 42, 0.762);
   --color-background-blur-strong: rgba(15, 23, 42, 0.9);
 
-  /* Text Colors */
-  --color-text-primary: rgb(248, 250, 252);
-  --color-text-secondary: rgb(148, 163, 184);
-  --text-light: rgb(148, 163, 184);
-
   /* UI Elements */
-  --color-slate-bg-10: rgba(148, 163, 184, 0.1);
-  --color-slate-bg-20: rgba(148, 163, 184, 0.2);
+  --color-ui-border: rgba(148, 163, 184, 0.2);
+  --color-ui-bg: rgba(148, 163, 184, 0.1);
+  --color-ui-hover: rgba(226, 232, 240, 0.1);
 
   /* Font Weight Variables */
   --font-weight-light: 300;
@@ -280,10 +251,19 @@ export default {
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+
+  /* Deprecated - Legacy compatibility */
+  --text-light: var(--color-text-secondary);
+  --color-secondary: var(--color-text-primary);
 }
 
 * {
   box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  outline: none;
 }
 
 body {
@@ -291,7 +271,7 @@ body {
   padding: 0;
   background: var(--color-background);
   color: var(--color-text-secondary);
-  font-size: var(--body-text-size);
+  font-size: var(--font-size-body);
   /* Enable bounce effect for whole app */
   -webkit-overflow-scrolling: touch;
 }
@@ -304,20 +284,6 @@ html {
 }
 
 @media (max-width: 768px) {
-  :root {
-    /* Profile Font Sizes */
-    --profile-name-size: 38px;
-    --profile-title-size: 18px;
-    --profile-tagline-size: 16px;
-
-    /* Section Font Sizes */
-    --section-title-size: 20px;
-    --body-text-size: 16px;
-    --nav-link-size: 14px;
-    --highlight-title-size: 20px;
-    --highlight-text-size: 18px;
-  }
-
   html {
     height: auto;
     min-height: 100vh;
@@ -447,7 +413,7 @@ a:hover {
 /* Common Item Card Styles */
 .item-card {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   border-radius: 8px;
   cursor: pointer;
   padding: 0;
@@ -463,7 +429,7 @@ a:hover {
   left: -1.5rem;
   right: -1.5rem;
   bottom: -1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-ui-hover);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 8px;
@@ -506,7 +472,7 @@ a:hover {
 
 /* Common Position/Title Styles */
 .item-title {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-normal);
   color: var(--color-text-primary);
   margin: 0 0 0.25rem 0;
@@ -528,7 +494,7 @@ a:hover {
 
 /* Common Link Styles */
 .external-link {
-  font-size: 14px;
+  font-size: var(--font-size-small);
   opacity: 0.7;
   transition: opacity 0.2s ease;
 }
@@ -538,27 +504,59 @@ a:hover {
 }
 
 .item-link {
-  color: var(--color-white-80);
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: color 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-base);
 }
 
 .item-link:hover {
-  color: var(--color-white-90);
+  color: var(--color-text-primary);
 }
 
 /* Common Description */
-.item-description {
+.about-text {
   color: var(--text-light);
   line-height: var(--line-height-base);
   margin-bottom: 1rem;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-body);
+}
+
+/* Item Description */
+.item-description {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-base);
+  margin-bottom: 1rem;
+  font-size: var(--font-size-description);
+}
+
+/* HTML Tags inside text content */
+.about-text b,
+.about-text strong,
+.about-text span,
+.about-text a,
+.item-description b,
+.item-description strong,
+.item-description span,
+.item-description a {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.about-text a,
+.item-description a {
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.about-text a:hover,
+.item-description a:hover {
+  opacity: 0.8;
 }
 
 /* Common Tags Section */
@@ -573,19 +571,19 @@ a:hover {
 }
 
 .tag-item {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-light);
+  background: var(--color-ui-bg);
+  color: var(--color-text-secondary);
   padding: 2px 0.5rem;
   border-radius: 4px;
-  font-size: var(--font-size-xs);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: var(--font-size-small);
+  border: 1px solid var(--color-ui-border);
   transition: all 0.3s ease;
 }
 
 .tag-item:hover {
-  border-color: var(--color-white-40);
-  color: var(--color-white-90);
-  background: var(--color-white-10);
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+  background: var(--color-ui-hover);
 }
 
 .archive-button {
@@ -595,15 +593,15 @@ a:hover {
   color: var(--color-text-primary);
   text-decoration: none;
   font-weight: var(--font-weight-medium);
-  font-size: var(--body-text-size);
+  font-size: var(--font-size-body);
   padding: .2rem 0;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .archive-button:hover {
-  color: var(--color-white);
-  border-bottom: 1px solid var(--color-white-60);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-text-secondary);
 }
 
 .archive-button:hover .archive-arrow {
@@ -611,7 +609,7 @@ a:hover {
 }
 
 .archive-text {
-  font-size: var(--body-text-size);
+  font-size: var(--font-size-body);
 }
 
 .archive-arrow {
@@ -632,7 +630,7 @@ a:hover {
 }
 
 .section-title {
-  font-size: var(--section-title-size);
+  font-size: var(--font-size-title);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   margin: 0;
@@ -651,12 +649,17 @@ a:hover {
 }
 
 .empty-state p {
-  font-size: var(--highlight-text-size);
+  font-size: var(--font-size-body);
   margin: 0;
 }
 
 /* Mobile Responsive - Common Patterns */
 @media (max-width: 768px) {
+  :root {
+    /* Standardized Font Sizes */
+    --font-size-profile:42px;
+  }
+
   .section-header {
     display: block;
     /* Show on mobile */
@@ -696,24 +699,13 @@ a:hover {
   }
 
   .item-title {
-    font-size: var(--body-text-size);
+    font-size: var(--font-size-body);
     flex-direction: column;
     align-items: flex-start;
   }
 
   .item-title>span {
     display: none;
-  }
-
-  .item-link {
-    font-size: var(--extra-small-size);
-  }
-}
-
-/* Tablet Responsive - Common Patterns */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .content-section {
-    padding: 0 1rem 0 1rem;
   }
 }
 </style>

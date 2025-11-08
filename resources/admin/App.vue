@@ -42,8 +42,8 @@
       <!-- Main Content Area -->
       <div class="main-content">
         <!-- Settings Tab -->
-        <SettingsTab v-if="activeTab === 'settings'" :portfolio-enabled="portfolioEnabled" :saving="saving"
-          @settings-changed="handleSettingsChange" />
+        <SettingsTab v-if="activeTab === 'settings'" :portfolio-enabled="portfolioEnabled" :footer-text="portfolioData.footer_text" :saving="saving"
+          @settings-changed="handleSettingsChange" @footer-text-changed="handleFooterTextChange" />
 
         <!-- Personal Information Tab -->
         <PersonalInfoTab v-if="activeTab === 'personal'" :portfolio-data="portfolioData"
@@ -110,7 +110,8 @@ export default {
         twitter_url: '',
         website_url: '',
         resume_url: '',
-        profile_image: ''
+        profile_image: '',
+        footer_text: ''
       },
       experienceData: [],
       projectsData: [],
@@ -232,6 +233,10 @@ export default {
 
     handlePortfolioDataChange(data) {
       this.portfolioData = { ...data };
+    },
+
+    handleFooterTextChange(footerText) {
+      this.portfolioData = { ...this.portfolioData, footer_text: footerText };
     },
 
     updateExperience(index, updatedData) {

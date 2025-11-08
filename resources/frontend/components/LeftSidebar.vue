@@ -150,25 +150,25 @@ export default {
 }
 
 .profile-name {
-  font-size: var(--profile-name-size);
+  font-size: var(--font-size-profile);
   font-weight: var(--font-weight-bold);
   margin: 0 0 0.5rem 0;
-  color: var(--color-white-90);
+  color: var(--color-text-primary);
   letter-spacing: -0.02em;
   line-height: 1;
 }
 
 .profile-title {
-  font-size: var(--profile-title-size);
+  font-size: var(--font-size-title);
   font-weight: var(--font-weight-normal);
   margin: 0 0 1.5rem 0;
-  color: var(--color-white-80);
+  color: var(--color-text-secondary);
 }
 
 .profile-tagline {
-  font-size: var(--profile-tagline-size);
+  font-size: var(--font-size-body);
   margin: 0;
-  color: var(--color-white-70);
+  color: var(--color-text-secondary);
   line-height: var(--line-height-base);
   font-weight: var(--font-weight-light);
   max-width: 60%;
@@ -196,11 +196,11 @@ export default {
   display: flex;
   align-items: center;
   padding: 0;
-  color: var(--color-white-50);
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: all 0.3s ease;
-  font-weight: var(--font-weight-light);
-  font-size: var(--nav-link-size);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-small);
   letter-spacing: 0.02em;
   position: relative;
   gap: 0.5rem;
@@ -210,28 +210,28 @@ export default {
   content: '';
   width: 40px;
   height: 1px;
-  background: var(--color-white-30);
+  background: var(--color-text-secondary);
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
 .nav-link:hover {
-  color: var(--color-white-80);
+  color: var(--color-text-primary);
 }
 
 .nav-link:hover::before {
   width: 60px;
-  background: var(--color-white-60);
+  background: var(--color-text-primary);
 }
 
 .nav-link.active {
-  color: var(--color-white);
-  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-bold);
 }
 
 .nav-link.active::before {
   width: 80px;
-  background: var(--color-white);
+  background: var(--color-text-primary);
 }
 
 /* Navigation styling is handled in .nav-link */
@@ -254,15 +254,15 @@ export default {
   justify-content: center;
   width: 44px;
   height: 44px;
-  color: var(--color-white-60);
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: all 0.3s ease;
   border-radius: 8px;
 }
 
 .social-link:hover {
-  color: var(--color-white);
-  background: var(--color-white-10);
+  color: var(--color-text-primary);
+  background: var(--color-ui-hover);
 }
 
 /* Social links are the main CTA */
@@ -314,15 +314,15 @@ export default {
 }
 
 .left-sidebar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-ui-bg);
 }
 
 .left-sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--color-text-secondary);
   border-radius: 2px;
 }
 
 .left-sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--color-text-primary);
 }
 </style>

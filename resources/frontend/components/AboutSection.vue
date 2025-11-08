@@ -6,7 +6,7 @@
     
     <div class="about-content slide-up">
       <div class="about-text">
-        <p>{{ portfolioData.about || 'A journey that began with curiosity and self-learning in web development has transformed into a rewarding career in the WordPress ecosystem. With hands-on experience in WordPress development, technical support, and project management, the path has included roles at organizations like WPManageNinja LLC, SEOPage1. Day-to-day work involves building custom WordPress websites, debugging complex issues, developing themes and plugins, and guiding junior developers. Experience spans frontend and backend development, API integration, and website optimization, always with a focus on clean code and user-friendly solutions. Along the way, technical support for flagship WordPress plugins has helped over 700,000 users worldwide.' }}</p>
+        <div v-html="aboutText"></div>
       </div>
     </div>
   </section>
@@ -19,6 +19,20 @@ export default {
     portfolioData: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    aboutText() {
+      const defaultText = 'A journey that began with curiosity and self-learning in web development has transformed into a rewarding career in the WordPress ecosystem. With hands-on experience in WordPress development, technical support, and project management, the path has included roles at organizations like WPManageNinja LLC, SEOPage1. Day-to-day work involves building custom WordPress websites, debugging complex issues, developing themes and plugins, and guiding junior developers. Experience spans frontend and backend development, API integration, and website optimization, always with a focus on clean code and user-friendly solutions. Along the way, technical support for flagship WordPress plugins has helped over 700,000 users worldwide.';
+      
+      const text = this.portfolioData.about || defaultText;
+      
+      // Wrap in paragraph if it doesn't contain HTML tags
+      if (!text.includes('<')) {
+        return `<p>${text}</p>`;
+      }
+      
+      return text;
     }
   }
 }
@@ -43,11 +57,36 @@ export default {
 }
 
 .about-text p {
-  font-size: var(--body-text-size);
+  font-size: var(--font-size-body);
   line-height: var(--line-height-base);
   color: var(--color-text-secondary);
   margin: 0;
   font-weight: var(--font-weight-light);
+}
+
+/* HTML Tag Styles */
+.about-text b,
+.about-text strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.about-text span {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.about-text a {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.about-text a:hover {
+  color: var(--color-text-primary);
+  border-bottom-color: var(--color-text-secondary);
 }
 
 .about-highlights {
@@ -62,7 +101,7 @@ export default {
 }
 
 .highlight-card h3 {
-  font-size: var(--highlight-title-size);
+  font-size: var(--font-size-title);
   font-weight: var(--font-weight-medium);
   margin: 0 0 1rem 0;
   color: var(--color-text-primary);
@@ -70,7 +109,7 @@ export default {
 }
 
 .highlight-card p {
-  font-size: var(--highlight-text-size);
+  font-size: var(--font-size-body);
   margin: 0;
   color: var(--color-text-secondary);
   line-height: var(--line-height-base);

@@ -2,50 +2,8 @@
   <footer class="portfolio-footer">
     <div class="container">
       <div class="footer-content">
-        <div class="footer-info">
-          <p>&copy; {{ currentYear }} {{ portfolioData.name || 'Your Name' }}. All rights reserved.</p>
-        </div>
-        
-        <div v-if="hasSocialLinks" class="social-links">
-          <a 
-            v-if="portfolioData.github_url" 
-            :href="portfolioData.github_url" 
-            target="_blank" 
-            class="social-link"
-            aria-label="GitHub"
-          >
-            <span class="social-icon">💻</span>
-          </a>
-          
-          <a 
-            v-if="portfolioData.linkedin_url" 
-            :href="portfolioData.linkedin_url" 
-            target="_blank" 
-            class="social-link"
-            aria-label="LinkedIn"
-          >
-            <span class="social-icon">💼</span>
-          </a>
-          
-          <a 
-            v-if="portfolioData.twitter_url" 
-            :href="portfolioData.twitter_url" 
-            target="_blank" 
-            class="social-link"
-            aria-label="Twitter"
-          >
-            <span class="social-icon">🐦</span>
-          </a>
-          
-          <a 
-            v-if="portfolioData.website_url" 
-            :href="portfolioData.website_url" 
-            target="_blank" 
-            class="social-link"
-            aria-label="Website"
-          >
-            <span class="social-icon">🌐</span>
-          </a>
+        <!-- Custom Footer Text -->
+        <div v-if="portfolioData.footer_text" class="footer-text" v-html="portfolioData.footer_text">
         </div>
       </div>
     </div>
@@ -60,81 +18,77 @@ export default {
       type: Object,
       required: true
     }
-  },
-  computed: {
-    currentYear() {
-      return new Date().getFullYear();
-    },
-    hasSocialLinks() {
-      return this.portfolioData.github_url || 
-             this.portfolioData.linkedin_url || 
-             this.portfolioData.twitter_url || 
-             this.portfolioData.website_url;
-    }
   }
 }
 </script>
 
 <style scoped>
-.portfolio-footer {
-  background: #2c3e50;
-  color: white;
-  padding: 40px 0;
-}
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
 .footer-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 
-.footer-info p {
+.footer-text {
+  max-width: 100%;
   margin: 0;
-  font-size: 0.9rem;
-  opacity: 0.8;
+  font-size: var(--font-size-description);
 }
 
-.social-links {
-  display: flex;
-  gap: 16px;
+.footer-text p {
+  margin: 0;
+  font-size: var(--font-size-description);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
 }
 
-.social-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
+/* Specific HTML Tag Styles for Footer */
+.footer-text :deep(b),
+.footer-text :deep(strong) {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-size: inherit;
+}
+
+.footer-text :deep(span) {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-size: inherit;
+}
+
+.footer-text :deep(a) {
+  color: var(--color-text-primary);
   text-decoration: none;
-  transition: all 0.2s;
+  font-weight: var(--font-weight-semibold);
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+  font-size: inherit;
 }
 
-.social-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-
-.social-icon {
-  font-size: 1.2rem;
+.footer-text :deep(a:hover) {
+  color: var(--color-text-primary);
+  border-bottom-color: var(--color-text-secondary);
 }
 
 @media (max-width: 768px) {
-  .footer-content {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
+  .footer-text,
+  .footer-text p {
+    font-size: var(--font-size-description);
   }
   
-  .social-links {
-    justify-content: center;
+  .footer-text :deep(b),
+  .footer-text :deep(strong),
+  .footer-text :deep(span),
+  .footer-text :deep(a) {
+    font-size: inherit;
   }
 }
 </style>

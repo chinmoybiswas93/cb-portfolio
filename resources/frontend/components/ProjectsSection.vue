@@ -58,7 +58,6 @@ export default {
 /* Component-specific styles for Projects Section */
 .projects-section {
   background: transparent;
-  padding-bottom: 4rem;
   margin-bottom: 0;
 }
 

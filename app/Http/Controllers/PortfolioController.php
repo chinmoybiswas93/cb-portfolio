@@ -88,7 +88,7 @@ class PortfolioController
             'name' => sanitize_text_field($params['name'] ?? ''),
             'title' => sanitize_text_field($params['title'] ?? ''),
             'tagline' => sanitize_textarea_field($params['tagline'] ?? ''),
-            'about' => sanitize_textarea_field($params['about'] ?? ''),
+            'about' => wp_kses($params['about'] ?? '', $this->getAllowedHtmlTags()),
             'email' => sanitize_email($params['email'] ?? ''),
             'phone' => sanitize_text_field($params['phone'] ?? ''),
             'location' => sanitize_text_field($params['location'] ?? ''),
@@ -98,6 +98,7 @@ class PortfolioController
             'website_url' => esc_url_raw($params['website_url'] ?? ''),
             'resume_url' => esc_url_raw($params['resume_url'] ?? ''),
             'profile_image' => esc_url_raw($params['profile_image'] ?? ''),
+            'footer_text' => wp_kses($params['footer_text'] ?? '', $this->getAllowedHtmlTags()),
         ];
         
         // Check if portfolio exists
@@ -254,5 +255,25 @@ class PortfolioController
         }
         
         return new \WP_REST_Response(['success' => true], 200);
+    }
+    
+    private function getAllowedHtmlTags()
+    {
+        return [
+            'p' => [],
+            'br' => [],
+            'b' => [],
+            'strong' => [],
+            'span' => [
+                'class' => [],
+                'style' => []
+            ],
+            'a' => [
+                'href' => [],
+                'target' => [],
+                'rel' => [],
+                'title' => []
+            ]
+        ];
     }
 }

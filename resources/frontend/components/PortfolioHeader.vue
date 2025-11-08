@@ -71,7 +71,7 @@ export default {
   }
   
   .portfolio-tagline {
-    font-size: 1rem;
+    font-size: var(--font-size-body);
   }
 }
 </style>

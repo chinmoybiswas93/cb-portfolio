@@ -42,6 +42,7 @@
           :rows="6"
           @update:modelValue="$emit('data-changed', localData)" 
         />
+        <p class="field-description">You can use HTML tags like &lt;b&gt;, &lt;span&gt;, and &lt;a&gt; for formatting. Bold text will be styled prominently.</p>
       </FormGroup>
     </div>
   </div>
@@ -83,3 +84,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.field-description {
+  margin: 8px 0 0 0;
+  color: #646970;
+  font-size: 13px;
+  line-height: 1.5;
+  font-style: italic;
+}
+</style>

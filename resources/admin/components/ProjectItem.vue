@@ -7,23 +7,38 @@
       </button>
     </div>
 
-    <FormGroup label="Project Title">
-      <BaseInput 
-        v-model="localData.title" 
-        type="text"
-        placeholder="Project Name" 
-        @update:modelValue="$emit('update', localData)" 
-      />
-    </FormGroup>
+    <!-- Two Column Layout for Title/Description and Image Upload -->
+    <FormRow :columns="2">
+      <div class="left-column">
+        <FormGroup label="Project Title">
+          <BaseInput 
+            v-model="localData.title" 
+            type="text"
+            placeholder="Project Name" 
+            @update:modelValue="$emit('update', localData)" 
+          />
+        </FormGroup>
 
-    <FormGroup label="Description">
-      <BaseTextarea 
-        v-model="localData.description" 
-        placeholder="Describe the project, technologies used, and your role"
-        :rows="4" 
-        @update:modelValue="$emit('update', localData)" 
-      />
-    </FormGroup>
+        <FormGroup label="Description">
+          <BaseTextarea 
+            v-model="localData.description" 
+            placeholder="Describe the project, technologies used, and your role"
+            :rows="6" 
+            @update:modelValue="$emit('update', localData)" 
+          />
+        </FormGroup>
+      </div>
+
+      <div class="right-column">
+        <FormGroup label="Project Image">
+          <MediaUploader 
+            v-model="localData.image_url" 
+            :alt="localData.title + ' Project Image'"
+            @update:modelValue="$emit('update', localData)" 
+          />
+        </FormGroup>
+      </div>
+    </FormRow>
 
     <FormRow :columns="2">
       <FormGroup label="Live URL">
@@ -72,6 +87,7 @@ import BaseTextarea from './form/BaseTextarea.vue'
 import BaseCheckbox from './form/BaseCheckbox.vue'
 import FormGroup from './form/FormGroup.vue'
 import FormRow from './form/FormRow.vue'
+import MediaUploader from './form/MediaUploader.vue'
 
 export default {
   name: 'ProjectItem',
@@ -80,7 +96,8 @@ export default {
     BaseTextarea,
     BaseCheckbox,
     FormGroup,
-    FormRow
+    FormRow,
+    MediaUploader
   },
   props: {
     project: {
@@ -95,7 +112,16 @@ export default {
   emits: ['update', 'remove'],
   data() {
     return {
-      localData: { ...this.project }
+      localData: { 
+        title: '',
+        description: '',
+        image_url: '',
+        live_url: '',
+        github_url: '',
+        technologies: '',
+        featured: 0,
+        ...this.project 
+      }
     }
   },
   watch: {
@@ -133,7 +159,6 @@ export default {
   color: #1d2327;
 }
 
-
 .remove-btn {
   background: #d63638;
   color: white;
@@ -158,5 +183,32 @@ export default {
 .btn-icon {
   font-size: 14px;
   font-weight: bold;
+}
+
+/* Two Column Layout */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-right: 15px;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  padding-left: 15px;
+}
+
+/* Mobile responsive - stack columns */
+@media (max-width: 768px) {
+  .left-column,
+  .right-column {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  .left-column {
+    margin-bottom: 15px;
+  }
 }
 </style>

@@ -51,6 +51,9 @@ class AdminMenuHandler
             return;
         }
         
+        // Enqueue WordPress media library
+        wp_enqueue_media();
+        
         // Add type="module" for Vue ES modules to work
         add_filter('script_loader_tag', function ($tag, $handle) {
             if (strpos($handle, 'cb-portfolio-') === 0 || $handle === 'vite-client') {

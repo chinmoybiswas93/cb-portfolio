@@ -3,9 +3,12 @@
     <div class="item-card">
       <!-- Left Column: Project Image (25%) -->
       <div class="item-left-column">
-        <div class="project-image-placeholder">
+        <div v-if="project.image_url" class="project-image">
+          <img :src="project.image_url" :alt="project.title + ' Project Image'" />
+        </div>
+        <div v-else class="project-image-placeholder">
           <div class="image-icon">🖼️</div>
-          <span class="image-text">Project Image</span>
+          <span class="image-text">No Image</span>
         </div>
       </div>
 
@@ -69,9 +72,32 @@ export default {
   padding: 5px 0;
 }
 
+.project-image {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-ui-bg);
+  border: 1px solid var(--color-ui-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s ease;
+}
+
+.project-image:hover {
+  border-color: var(--color-text-secondary);
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .project-image-placeholder {
-  background: rgba(148, 163, 184, 0.1);
-  border: 2px dashed rgba(148, 163, 184, 0.3);
+  background: var(--color-ui-bg);
+  border: 2px dashed var(--color-ui-border);
   border-radius: 8px;
   width: 100%;
   height: 120px;
@@ -84,17 +110,17 @@ export default {
 }
 
 .project-image-placeholder:hover {
-  border-color: rgba(148, 163, 184, 0.5);
-  background: rgba(148, 163, 184, 0.15);
+  border-color: var(--color-text-secondary);
+  background: var(--color-ui-hover);
 }
 
 .image-icon {
-  font-size: 2rem;
+  font-size: var(--font-size-profile);
   opacity: 0.6;
 }
 
 .image-text {
-  font-size: 0.75rem;
+  font-size: var(--font-size-small);
   color: var(--color-text-secondary);
   opacity: 0.8;
   text-align: center;
@@ -102,9 +128,10 @@ export default {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .project-image,
   .project-image-placeholder {
-    height: 80px;
-    max-width: 200px;
+    height: 120px;
+    max-width: 220px;
   }
 }
 </style>

@@ -66,8 +66,8 @@ export default {
 
 /* Experience-specific styles */
 .date-range {
-  font-size: var(--font-size-xs);
-  color: var(--color-white-60);
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
   font-weight: var(--font-weight-normal);
   text-transform: uppercase;
   display: block;
@@ -76,13 +76,13 @@ export default {
 }
 
 .date-range.current {
-  color: var(--color-white-80);
+  color: var(--color-text-primary);
   font-weight: var(--font-weight-medium);
 }
 
 .company-text {
-  color: var(--color-white-80);
-  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-base);
 }
@@ -111,25 +111,7 @@ export default {
   }
 
   .date-range {
-    font-size: 11px;
-  }
-}
-
-/* Tablet Responsive */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .item-card {
-    gap: 1.5rem;
-    padding: 0;
-    margin: 0;
-  }
-
-  .item-card:hover {
-    padding: 1rem;
-    margin: 0 -1rem;
-  }
-
-  .item-left-column {
-    width: 30%;
+    font-size: var(--font-size-small);
   }
 }
 </style>

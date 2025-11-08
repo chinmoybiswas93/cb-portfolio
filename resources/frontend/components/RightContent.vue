@@ -15,6 +15,11 @@
       <section id="projects" class="content-section">
         <ProjectsSection :projects-data="projectsData" />
       </section>
+
+      <!-- Footer Section -->
+      <section class="content-section footer-section">
+        <PortfolioFooter :portfolio-data="portfolioData" />
+      </section>
     </div>
   </main>
 </template>
@@ -23,13 +28,15 @@
 import AboutSection from './AboutSection.vue'
 import ExperienceSection from './ExperienceSection.vue'
 import ProjectsSection from './ProjectsSection.vue'
+import PortfolioFooter from './PortfolioFooter.vue'
 
 export default {
   name: 'RightContent',
   components: {
     AboutSection,
     ExperienceSection,
-    ProjectsSection
+    ProjectsSection,
+    PortfolioFooter
   },
   props: {
     portfolioData: {
@@ -56,7 +63,6 @@ export default {
 }
 
 .content-container {
-  max-width: 700px;
   margin: 0 auto;
   padding: 6rem 2rem;
 }
@@ -67,7 +73,13 @@ export default {
 }
 
 .content-section:last-child {
-  margin-bottom: 3rem;
+  margin-bottom: 0;
+}
+
+/* Footer section specific styling */
+.footer-section {
+  margin-bottom: 0 !important;
+  padding-top: 2rem;
 }
 
 /* Mobile Responsive */
@@ -85,13 +97,6 @@ export default {
 
   .content-section {
     margin-bottom: 3rem;
-  }
-}
-
-/* Tablet Responsive */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .content-container {
-    padding: 1.5rem;
   }
 }
 

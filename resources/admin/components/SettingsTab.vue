@@ -6,6 +6,8 @@
     </div>
 
     <div class="form-section">
+      <h3 class="section-title">Display Settings</h3>
+      
       <div class="setting-item">
         <label class="toggle-label">
           <input type="checkbox" :checked="portfolioEnabled" @change="$emit('settings-changed', $event.target.checked)"
@@ -16,28 +18,96 @@
         <p class="description">When enabled, the portfolio will take control of your website homepage.</p>
       </div>
     </div>
+
+    <div class="form-section">
+      <h3 class="section-title">Footer Settings</h3>
+      
+      <FormGroup label="Footer Text">
+        <BaseTextarea 
+          v-model="localFooterText" 
+          placeholder="Loosely designed in Figma and coded in Visual Studio Code by yours truly. Built with Next.js and Tailwind CSS, deployed with Vercel. All text is set in the Inter typeface."
+          :rows="4" 
+          @update:modelValue="$emit('footer-text-changed', $event)" 
+        />
+        <p class="field-description">This text will appear at the bottom of your portfolio. You can use HTML tags like &lt;b&gt;, &lt;span&gt;, and &lt;a&gt; for formatting. Bold text will be styled prominently.</p>
+      </FormGroup>
+    </div>
   </div>
 </template>
 
 <script>
+import BaseTextarea from './form/BaseTextarea.vue'
+import FormGroup from './form/FormGroup.vue'
+
 export default {
   name: 'SettingsTab',
+  components: {
+    BaseTextarea,
+    FormGroup
+  },
   props: {
     portfolioEnabled: {
       type: Boolean,
       default: false
+    },
+    footerText: {
+      type: String,
+      default: ''
     },
     saving: {
       type: Boolean,
       default: false
     }
   },
-  emits: ['settings-changed']
+  emits: ['settings-changed', 'footer-text-changed'],
+  data() {
+    return {
+      localFooterText: this.footerText
+    }
+  },
+  watch: {
+    footerText: {
+      handler(newValue) {
+        this.localFooterText = newValue;
+      },
+      immediate: true
+    }
+  }
 }
 </script>
 
 
 <style scoped>
+/* Section Styling */
+.form-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d2327;
+}
+
+.setting-item {
+  margin-bottom: 20px;
+}
+
+.field-description {
+  margin: 8px 0 0 0;
+  color: #646970;
+  font-size: 13px;
+  line-height: 1.5;
+  font-style: italic;
+}
+
 /* Toggle Switch */
 .toggle-label {
   display: flex;
