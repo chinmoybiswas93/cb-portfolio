@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { onBeforeUnmount } from 'vue'
 import LeftSidebar from './components/LeftSidebar.vue'
 import RightContent from './components/RightContent.vue'
 
@@ -124,13 +125,7 @@ export default {
     async loadExperienceData() {
       try {
         this.isLoadingExperience = true;
-        
-        // Add minimum loading time for better UX (show skeleton briefly)
-        const [response] = await Promise.all([
-          fetch('/wp-json/cb-portfolio/v1/experience'),
-          new Promise(resolve => setTimeout(resolve, 800)) // Minimum 800ms loading
-        ]);
-        
+        const response = await fetch('/wp-json/cb-portfolio/v1/experience');
         if (response.ok) {
           const data = await response.json();
           this.experienceData = data || [];
@@ -145,13 +140,7 @@ export default {
     async loadProjectsData() {
       try {
         this.isLoadingProjects = true;
-        
-        // Add minimum loading time for better UX (show skeleton briefly)
-        const [response] = await Promise.all([
-          fetch('/wp-json/cb-portfolio/v1/projects'),
-          new Promise(resolve => setTimeout(resolve, 800)) // Minimum 800ms loading
-        ]);
-        
+        const response = await fetch('/wp-json/cb-portfolio/v1/projects');
         if (response.ok) {
           const data = await response.json();
           this.projectsData = data || [];
@@ -240,7 +229,7 @@ export default {
 
         handleScroll();
 
-        this.$once('hook:beforeDestroy', () => {
+        onBeforeUnmount(() => {
           window.removeEventListener('scroll', throttledScroll);
         });
       });
@@ -278,7 +267,7 @@ export default {
 
       window.addEventListener('resize', handleResize);
 
-      this.$once('hook:beforeDestroy', () => {
+      onBeforeUnmount(() => {
         document.removeEventListener('mousemove', updateMousePosition);
         window.removeEventListener('resize', handleResize);
       });

@@ -50,7 +50,7 @@ export default {
 
 <style scoped>
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .form-label {

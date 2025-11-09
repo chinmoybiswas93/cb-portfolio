@@ -25,7 +25,6 @@ export default {
 .form-row {
   display: grid;
   gap: v-bind(gap);
-  margin-bottom: 16px;
 }
 
 .form-row.columns-1 {

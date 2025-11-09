@@ -49,7 +49,7 @@ export default {
 <style scoped>
 .base-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 3px 12px;
   border: 1px solid #dcdcde;
   border-radius: 6px;
   font-size: 14px;
