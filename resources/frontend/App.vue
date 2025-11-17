@@ -36,8 +36,8 @@ export default {
       portfolioData: null,
       experienceData: [],
       projectsData: [],
-      isLoadingExperience: true,
-      isLoadingProjects: true,
+      isLoadingExperience: false,
+      isLoadingProjects: false,
       activeSection: 'about',
       mouseX: 0,
       mouseY: 0
@@ -51,11 +51,30 @@ export default {
     }
   },
   mounted() {
-    this.loadPortfolioData();
-    this.loadExperienceData();
-    this.loadProjectsData();
+    // Check if data is available from server-side rendering
+    if (typeof cbPortfolioData !== 'undefined') {
+      this.portfolioData = cbPortfolioData;
+    } else {
+      this.loadPortfolioData();
+    }
+
+    if (typeof cbExperienceData !== 'undefined') {
+      this.experienceData = cbExperienceData;
+    } else {
+      this.isLoadingExperience = true;
+      this.loadExperienceData();
+    }
+
+    if (typeof cbProjectsData !== 'undefined') {
+      this.projectsData = cbProjectsData;
+    } else {
+      this.isLoadingProjects = true;
+      this.loadProjectsData();
+    }
+
     this.setupScrollHandler();
     this.setupMouseTracking();
+    this.setupNavigationHandlers();
   },
   methods: {
     async loadPortfolioData() {
@@ -270,6 +289,20 @@ export default {
       onBeforeUnmount(() => {
         document.removeEventListener('mousemove', updateMousePosition);
         window.removeEventListener('resize', handleResize);
+      });
+    },
+
+    setupNavigationHandlers() {
+      // Update active section based on server-rendered HTML
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sectionId = link.getAttribute('data-section') || link.getAttribute('href')?.replace('#', '');
+          if (sectionId) {
+            this.navigateToSection(sectionId);
+          }
+        });
       });
     }
   }
