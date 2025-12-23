@@ -63,6 +63,27 @@
     </FormRow>
 
     <FormRow :columns="2">
+      <FormGroup label="Year">
+        <BaseInput 
+          v-model="localData.year" 
+          type="text"
+          placeholder="2024"
+          maxlength="4"
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
+
+      <FormGroup label="Made At">
+        <BaseInput 
+          v-model="localData.made_at" 
+          type="text"
+          placeholder="Company Name or Organization"
+          @update:modelValue="$emit('update', localData)" 
+        />
+      </FormGroup>
+    </FormRow>
+
+    <FormRow :columns="2">
       <FormGroup label="Live URL">
         <BaseInput 
           v-model="localData.live_url" 
@@ -149,6 +170,8 @@ export default {
         live_url: '',
         github_url: '',
         technologies: '',
+        year: '',
+        made_at: '',
         featured: 0,
         ...this.project 
       }

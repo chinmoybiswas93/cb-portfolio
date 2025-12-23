@@ -85,6 +85,8 @@ class Migration
             live_url varchar(255),
             github_url varchar(255),
             technologies text,
+            year varchar(4),
+            made_at varchar(200),
             featured tinyint(1) DEFAULT 0,
             order_index int(11) DEFAULT 0,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -94,5 +96,42 @@ class Migration
         
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+        
+        // Add new columns if they don't exist (for existing installations)
+        self::addProjectsTableColumns();
+    }
+    
+    /**
+     * Add year and made_at columns to existing projects table
+     */
+    private static function addProjectsTableColumns()
+    {
+        global $wpdb;
+        
+        $table_name = $wpdb->prefix . 'cb_portfolio_projects';
+        
+        // Check if year column exists
+        $year_exists = $wpdb->get_results(
+            $wpdb->prepare(
+                "SHOW COLUMNS FROM {$table_name} LIKE %s",
+                'year'
+            )
+        );
+        
+        if (empty($year_exists)) {
+            $wpdb->query("ALTER TABLE {$table_name} ADD COLUMN year varchar(4) AFTER technologies");
+        }
+        
+        // Check if made_at column exists
+        $made_at_exists = $wpdb->get_results(
+            $wpdb->prepare(
+                "SHOW COLUMNS FROM {$table_name} LIKE %s",
+                'made_at'
+            )
+        );
+        
+        if (empty($made_at_exists)) {
+            $wpdb->query("ALTER TABLE {$table_name} ADD COLUMN made_at varchar(200) AFTER year");
+        }
     }
 }

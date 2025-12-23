@@ -75,10 +75,27 @@ class Bootstrap
 
     public function loadPortfolioTemplate($template): string
     {
-        if (!is_front_page()) {
+        $enabled = get_option('cb_portfolio_enabled', false);
+        
+        if (!$enabled) {
             return $template;
         }
 
-        return CB_PORTFOLIO_PLUGIN_PATH . '/templates/portfolio-template.php';
+        // Check if we're on the projects page
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+        $parsed_url = wp_parse_url($request_uri);
+        $path = isset($parsed_url['path']) ? trim($parsed_url['path'], '/') : '';
+        
+        // Check if path is /projects
+        if ($path === 'projects' || substr($path, -8) === '/projects') {
+            return CB_PORTFOLIO_PLUGIN_PATH . '/templates/projects-template.php';
+        }
+
+        // Only load portfolio template on front page
+        if (is_front_page()) {
+            return CB_PORTFOLIO_PLUGIN_PATH . '/templates/portfolio-template.php';
+        }
+
+        return $template;
     }
 }

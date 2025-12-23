@@ -36,7 +36,7 @@
 
       <!-- View Full Archive Button -->
       <div v-if="featuredProjects.length > 0" class="archive-section">
-        <a href="#" class="archive-button" @click.prevent="viewFullArchive">
+        <a href="/projects" class="archive-button">
           <span class="archive-text">View Full Project Archive</span>
           <span class="archive-arrow">→</span>
         </a>
@@ -80,12 +80,7 @@ export default {
     }
   },
   methods: {
-    viewFullArchive() {
-      // Add your archive view logic here
-      console.log('View full project archive');
-      // You can emit an event or navigate to an archive page
-      this.$emit('view-archive');
-    }
+    // Removed viewFullArchive method as we're using direct link now
   }
 }
 </script>

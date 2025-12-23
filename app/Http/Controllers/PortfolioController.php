@@ -244,6 +244,8 @@ class PortfolioController
             'live_url' => esc_url_raw($params['live_url'] ?? ''),
             'github_url' => esc_url_raw($params['github_url'] ?? ''),
             'technologies' => sanitize_text_field($params['technologies'] ?? ''),
+            'year' => sanitize_text_field($params['year'] ?? ''),
+            'made_at' => sanitize_text_field($params['made_at'] ?? ''),
             'featured' => (int) ($params['featured'] ?? 0),
         ];
 

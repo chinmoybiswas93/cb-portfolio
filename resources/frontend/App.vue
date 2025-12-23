@@ -1,8 +1,5 @@
 <template>
   <div class="portfolio-app">
-    <!-- Mouse spotlight effect -->
-    <div class="spotlight-effect" :style="spotlightStyle"></div>
-
     <LeftSidebar 
       :portfolio-data="portfolioData" 
       :active-section="activeSection" 
@@ -38,16 +35,7 @@ export default {
       projectsData: [],
       isLoadingExperience: false,
       isLoadingProjects: false,
-      activeSection: 'about',
-      mouseX: 0,
-      mouseY: 0
-    }
-  },
-  computed: {
-    spotlightStyle() {
-      return {
-        background: `radial-gradient(400px at ${this.mouseX}px ${this.mouseY}px, rgba(29, 78, 216, 0.15), transparent 80%)`
-      }
+      activeSection: 'about'
     }
   },
   mounted() {
@@ -73,7 +61,6 @@ export default {
     }
 
     this.setupScrollHandler();
-    this.setupMouseTracking();
     this.setupNavigationHandlers();
     this.revealAppShell();
   },
@@ -255,44 +242,6 @@ export default {
       });
     },
 
-    setupMouseTracking() {
-      const updateMousePosition = (e) => {
-        this.mouseX = e.clientX;
-        this.mouseY = e.clientY;
-      };
-
-      // Only enable on desktop
-      const isDesktop = window.innerWidth >= 1024;
-
-      if (isDesktop) {
-        // Set initial position to top-left corner
-        this.mouseX = 0;
-        this.mouseY = 0;
-        
-        document.addEventListener('mousemove', updateMousePosition);
-      }
-
-      // Handle resize to enable/disable based on screen size
-      const handleResize = () => {
-        const nowDesktop = window.innerWidth >= 1024;
-        if (nowDesktop && !isDesktop) {
-          // Reset to top-left when enabling on desktop
-          this.mouseX = 0;
-          this.mouseY = 0;
-          document.addEventListener('mousemove', updateMousePosition);
-        } else if (!nowDesktop && isDesktop) {
-          document.removeEventListener('mousemove', updateMousePosition);
-        }
-      };
-
-      window.addEventListener('resize', handleResize);
-
-      onBeforeUnmount(() => {
-        document.removeEventListener('mousemove', updateMousePosition);
-        window.removeEventListener('resize', handleResize);
-      });
-    },
-
     setupNavigationHandlers() {
       // Update active section based on server-rendered HTML
       const navLinks = document.querySelectorAll('.nav-link');
@@ -371,17 +320,6 @@ export default {
 </script>
 
 <style scoped>
-.spotlight-effect {
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  transition: background 300ms ease;
-}
-
 .portfolio-app {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: var(--line-height-base);
