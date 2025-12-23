@@ -1,34 +1,32 @@
 <?php
-/**
- * Projects Template - Server-Side Rendered for SEO
- * 
- * This template renders the projects page with table layout
- */
-// Fetch portfolio data server-side (used for SEO/meta + JS hydration)
+
 global $wpdb;
+
 $portfolio = $wpdb->get_row(
     $wpdb->prepare(
-        "SELECT * FROM {$wpdb->prefix}cb_portfolio ORDER BY id DESC LIMIT %d",
+        "SELECT id, name, profile_image FROM {$wpdb->prefix}cb_portfolio ORDER BY id DESC LIMIT %d",
         1
-    )
+    ),
+    OBJECT
 );
 
 $projects = $wpdb->get_results(
-    "SELECT * FROM {$wpdb->prefix}cb_portfolio_projects ORDER BY order_index ASC, created_at ASC"
+    "SELECT id, title, description, image_url, live_url, github_url, technologies, year, made_at, featured, order_index FROM {$wpdb->prefix}cb_portfolio_projects ORDER BY order_index ASC, created_at ASC",
+    OBJECT
 );
 
-// Normalize data types
 if ($portfolio) {
     $portfolio->id = (int) $portfolio->id;
 }
 
-foreach ($projects as $project) {
-    $project->id = (int) $project->id;
-    $project->featured = (int) $project->featured;
-    $project->order_index = (int) ($project->order_index ?? 0);
+if ($projects) {
+    foreach ($projects as $project) {
+        $project->id = (int) $project->id;
+        $project->featured = (int) $project->featured;
+        $project->order_index = (int) ($project->order_index ?? 0);
+    }
 }
 
-// Prepare data for JavaScript
 $portfolio_data = $portfolio ?: null;
 $projects_data = $projects ?: [];
 ?>
@@ -39,52 +37,56 @@ $projects_data = $projects ?: [];
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- WordPress title and meta -->
+    <?php
+    $site_title = get_bloginfo('name');
+    $has_icon = has_site_icon();
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    $portfolio_name = $portfolio && !empty($portfolio->name) ? $portfolio->name : $site_title;
+    $meta_description = 'View all projects by ' . esc_attr($portfolio_name);
+    ?>
     <title>
-        <?php
-            $site_title = get_bloginfo('name');
-            echo esc_html(($portfolio && !empty($portfolio->name) ? $portfolio->name . ' - ' : '') . 'All Projects' . ($site_title ? ' - ' . $site_title : ''));
-            ?>
+        <?php echo esc_html(($portfolio && !empty($portfolio->name) ? $portfolio->name . ' - ' : '') . 'All Projects' . ($site_title ? ' - ' . $site_title : '')); ?>
     </title>
 
-    <!-- Site favicon -->
-    <?php if (has_site_icon()): ?>
-        <link rel="icon" href="<?php echo esc_url(get_site_icon_url(32)); ?>" sizes="32x32">
-        <link rel="icon" href="<?php echo esc_url(get_site_icon_url(192)); ?>" sizes="192x192">
-        <link rel="apple-touch-icon" href="<?php echo esc_url(get_site_icon_url(180)); ?>">
-        <meta name="msapplication-TileImage" content="<?php echo esc_url(get_site_icon_url(270)); ?>">
+    <?php if ($has_icon): ?>
+        <?php
+        $icon_32 = get_site_icon_url(32);
+        $icon_192 = get_site_icon_url(192);
+        $icon_180 = get_site_icon_url(180);
+        $icon_270 = get_site_icon_url(270);
+        ?>
+        <link rel="icon" href="<?php echo esc_url($icon_32); ?>" sizes="32x32">
+        <link rel="icon" href="<?php echo esc_url($icon_192); ?>" sizes="192x192">
+        <link rel="apple-touch-icon" href="<?php echo esc_url($icon_180); ?>">
+        <meta name="msapplication-TileImage" content="<?php echo esc_url($icon_270); ?>">
     <?php endif; ?>
 
-    <!-- Meta description -->
-    <?php 
-    $meta_description = 'View all projects by ' . ($portfolio && !empty($portfolio->name) ? esc_attr($portfolio->name) : get_bloginfo('name'));
-    ?>
     <meta name="description" content="<?php echo esc_attr($meta_description); ?>">
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="<?php echo esc_url(home_url($_SERVER['REQUEST_URI'])); ?>">
+    <meta property="og:url" content="<?php echo esc_url(home_url($request_uri)); ?>">
     <meta property="og:title" content="<?php echo esc_attr(($portfolio && !empty($portfolio->name) ? $portfolio->name . ' - ' : '') . 'All Projects'); ?>">
     <meta property="og:description" content="<?php echo esc_attr($meta_description); ?>">
     <?php if ($portfolio && !empty($portfolio->profile_image)): ?>
         <meta property="og:image" content="<?php echo esc_url($portfolio->profile_image); ?>">
     <?php endif; ?>
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="<?php echo esc_url(home_url($_SERVER['REQUEST_URI'])); ?>">
+    <meta property="twitter:url" content="<?php echo esc_url(home_url($request_uri)); ?>">
     <meta property="twitter:title" content="<?php echo esc_attr(($portfolio && !empty($portfolio->name) ? $portfolio->name . ' - ' : '') . 'All Projects'); ?>">
     <meta property="twitter:description" content="<?php echo esc_attr($meta_description); ?>">
     <?php if ($portfolio && !empty($portfolio->profile_image)): ?>
         <meta property="twitter:image" content="<?php echo esc_url($portfolio->profile_image); ?>">
     <?php endif; ?>
 
-    <?php if (file_exists(CB_PORTFOLIO_PLUGIN_PATH . '/.hot')): ?>
-        <!-- Development mode -->
+    <?php
+    $is_dev = file_exists(CB_PORTFOLIO_PLUGIN_PATH . '/.hot');
+    
+    if ($is_dev): ?>
         <script type="module" src="<?php echo esc_url(CB_PORTFOLIO_VITE_DEV_URL); ?>/@vite/client"></script>
         <script type="module" src="<?php echo esc_url(CB_PORTFOLIO_VITE_DEV_URL); ?>/frontend/projects.js"></script>
+        <script type="module" src="<?php echo esc_url(CB_PORTFOLIO_VITE_DEV_URL); ?>/frontend/spotlight.js"></script>
     <?php else: ?>
-        <!-- Production mode -->
         <?php
         $manifest = CB_PORTFOLIO_PLUGIN_PATH . '/assets/.vite/manifest.json';
         if (file_exists($manifest)) {
@@ -100,12 +102,6 @@ $projects_data = $projects ?: [];
         }
         ?>
         <script type="module" src="<?php echo esc_url(CB_PORTFOLIO_PLUGIN_URL . '/assets/frontend/projects.js'); ?>"></script>
-    <?php endif; ?>
-
-    <!-- Global Spotlight Effect -->
-    <?php if (file_exists(CB_PORTFOLIO_PLUGIN_PATH . '/.hot')): ?>
-        <script type="module" src="<?php echo esc_url(CB_PORTFOLIO_VITE_DEV_URL); ?>/frontend/spotlight.js"></script>
-    <?php else: ?>
         <script type="module" src="<?php echo esc_url(CB_PORTFOLIO_PLUGIN_URL . '/assets/frontend/spotlight.js'); ?>"></script>
     <?php endif; ?>
 
@@ -124,7 +120,6 @@ $projects_data = $projects ?: [];
             background: #0f172a;
         }
 
-        /* Global Spotlight Effect */
         .cb-portfolio-spotlight {
             pointer-events: none;
             position: fixed;
@@ -304,7 +299,6 @@ $projects_data = $projects ?: [];
         </div>
     </noscript>
 
-    <!-- Pass data to JavaScript for Vue hydration -->
     <script>
         var cbPortfolioData = <?php echo wp_json_encode($portfolio_data); ?>;
         var cbProjectsData = <?php echo wp_json_encode($projects_data); ?>;

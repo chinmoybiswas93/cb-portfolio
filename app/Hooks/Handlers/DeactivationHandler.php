@@ -9,6 +9,5 @@ class DeactivationHandler
 {
     public function handle()
     {
-        // No actions needed on deactivation
     }
 }

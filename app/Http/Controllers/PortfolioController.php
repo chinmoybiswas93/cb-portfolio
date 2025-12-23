@@ -93,7 +93,11 @@ class PortfolioController
         global $wpdb;
 
         $portfolio = $wpdb->get_row(
-            "SELECT * FROM {$wpdb->prefix}cb_portfolio ORDER BY id DESC LIMIT 1"
+            $wpdb->prepare(
+                "SELECT id, name, title, tagline, about, email, phone, location, github_url, linkedin_url, twitter_url, website_url, resume_url, profile_image, footer_text FROM {$wpdb->prefix}cb_portfolio ORDER BY id DESC LIMIT %d",
+                1
+            ),
+            OBJECT
         );
 
         return new \WP_REST_Response($portfolio ?: [], 200);
@@ -148,16 +152,19 @@ class PortfolioController
         global $wpdb;
 
         $experience = $wpdb->get_results(
-            "SELECT * FROM {$wpdb->prefix}cb_portfolio_experience ORDER BY order_index ASC, created_at ASC"
+            "SELECT id, company, company_website, position, start_date, end_date, current, description, skills, order_index FROM {$wpdb->prefix}cb_portfolio_experience ORDER BY order_index ASC, created_at ASC",
+            OBJECT
         );
 
-        foreach ($experience as $exp) {
-            $exp->current = (int) $exp->current;
-            $exp->id = (int) $exp->id;
-            $exp->order_index = (int) ($exp->order_index ?? 0);
+        if ($experience) {
+            foreach ($experience as $exp) {
+                $exp->current = (int) $exp->current;
+                $exp->id = (int) $exp->id;
+                $exp->order_index = (int) ($exp->order_index ?? 0);
+            }
         }
 
-        return new \WP_REST_Response($experience, 200);
+        return new \WP_REST_Response($experience ?: [], 200);
     }
 
     public function save_experience(\WP_REST_Request $request)
@@ -219,16 +226,19 @@ class PortfolioController
         global $wpdb;
 
         $projects = $wpdb->get_results(
-            "SELECT * FROM {$wpdb->prefix}cb_portfolio_projects ORDER BY order_index ASC, created_at ASC"
+            "SELECT id, title, description, image_url, live_url, github_url, technologies, year, made_at, featured, order_index FROM {$wpdb->prefix}cb_portfolio_projects ORDER BY order_index ASC, created_at ASC",
+            OBJECT
         );
 
-        foreach ($projects as $project) {
-            $project->id = (int) $project->id;
-            $project->featured = (int) $project->featured;
-            $project->order_index = (int) ($project->order_index ?? 0);
+        if ($projects) {
+            foreach ($projects as $project) {
+                $project->id = (int) $project->id;
+                $project->featured = (int) $project->featured;
+                $project->order_index = (int) ($project->order_index ?? 0);
+            }
         }
 
-        return new \WP_REST_Response($projects, 200);
+        return new \WP_REST_Response($projects ?: [], 200);
     }
 
     public function save_project(\WP_REST_Request $request)
@@ -384,7 +394,6 @@ class PortfolioController
         ];
 
         try {
-            // Get portfolio data
             $portfolio_table = $wpdb->prefix . 'cb_portfolio';
             $portfolio_data = $wpdb->get_row("SELECT * FROM $portfolio_table ORDER BY id DESC LIMIT 1", ARRAY_A);
             if ($portfolio_data) {
@@ -392,7 +401,6 @@ class PortfolioController
                 $export_data['portfolio'] = $portfolio_data;
             }
 
-            // Get experience data
             $experience_table = $wpdb->prefix . 'cb_portfolio_experience';
             $experience_data = $wpdb->get_results("SELECT * FROM $experience_table ORDER BY order_index ASC", ARRAY_A);
             if ($experience_data) {
@@ -402,7 +410,6 @@ class PortfolioController
                 $export_data['experience'] = $experience_data;
             }
 
-            // Get projects data
             $projects_table = $wpdb->prefix . 'cb_portfolio_projects';
             $projects_data = $wpdb->get_results("SELECT * FROM $projects_table ORDER BY order_index ASC", ARRAY_A);
             if ($projects_data) {
@@ -412,7 +419,6 @@ class PortfolioController
                 $export_data['projects'] = $projects_data;
             }
 
-            // Get settings
             $settings = [
                 'enabled' => get_option('cb_portfolio_enabled', false)
             ];
@@ -438,18 +444,14 @@ class PortfolioController
 
         global $wpdb;
 
-        // Track import results for debugging
         $import_results = [];
 
         try {
-            // Start transaction
             $wpdb->query('START TRANSACTION');
 
-            // Import portfolio data
             if (isset($import_data['portfolio']) && !empty($import_data['portfolio'])) {
                 $portfolio_table = $wpdb->prefix . 'cb_portfolio';
 
-                // Clear existing portfolio data
                 $deleted = $wpdb->query("DELETE FROM $portfolio_table");
                 $import_results['portfolio_deleted'] = $deleted;
 
@@ -465,11 +467,9 @@ class PortfolioController
                 }
             }
 
-            // Import experience data
             if (isset($import_data['experience']) && !empty($import_data['experience'])) {
                 $experience_table = $wpdb->prefix . 'cb_portfolio_experience';
 
-                // Clear existing experience data
                 $deleted = $wpdb->query("DELETE FROM $experience_table");
                 $import_results['experience_deleted'] = $deleted;
 
@@ -489,11 +489,9 @@ class PortfolioController
                 $import_results['experience_inserted'] = $inserted_count;
             }
 
-            // Import projects data
             if (isset($import_data['projects']) && !empty($import_data['projects'])) {
                 $projects_table = $wpdb->prefix . 'cb_portfolio_projects';
 
-                // Clear existing projects data
                 $deleted = $wpdb->query("DELETE FROM $projects_table");
                 $import_results['projects_deleted'] = $deleted;
 
@@ -513,7 +511,6 @@ class PortfolioController
                 $import_results['projects_inserted'] = $inserted_count;
             }
 
-            // Import settings
             if (isset($import_data['settings']) && !empty($import_data['settings'])) {
                 $settings = $import_data['settings'];
                 if (isset($settings['enabled'])) {
@@ -522,7 +519,6 @@ class PortfolioController
                 }
             }
 
-            // Commit transaction
             $wpdb->query('COMMIT');
 
             return new \WP_REST_Response([
@@ -531,7 +527,6 @@ class PortfolioController
                 'import_results' => $import_results
             ], 200);
         } catch (\Exception $e) {
-            // Rollback transaction on error
             $wpdb->query('ROLLBACK');
 
             return new \WP_Error('import_failed', 'Failed to import data: ' . $e->getMessage(), [

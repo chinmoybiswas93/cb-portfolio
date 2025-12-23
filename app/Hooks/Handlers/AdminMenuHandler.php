@@ -100,7 +100,6 @@ class AdminMenuHandler
         $plugin_url = CB_PORTFOLIO_PLUGIN_URL;
         $dependencies = [];
         
-        // Load shared chunks first
         if (isset($entry['imports'])) {
             foreach ($entry['imports'] as $import) {
                 if (isset($manifest[$import])) {
@@ -118,7 +117,6 @@ class AdminMenuHandler
             }
         }
         
-        // Load CSS
         if (isset($entry['css'])) {
             foreach ($entry['css'] as $css) {
                 wp_enqueue_style(
@@ -130,7 +128,6 @@ class AdminMenuHandler
             }
         }
         
-        // Load main script with dependencies
         wp_enqueue_script(
             'cb-portfolio-admin',
             $plugin_url . '/assets/' . $entry['file'],
