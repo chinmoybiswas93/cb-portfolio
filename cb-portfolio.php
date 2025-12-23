@@ -1,13 +1,17 @@
 <?php
 /*
-Plugin Name: Chinmoy Biswas - Portfolio
-Description: A portfolio plugin for showcasing work.
-Version: 0.1.0
-Author: Chinmoy Biswas
-License: GPLv2 or later
-Text Domain: cb-portfolio
-Requires PHP: 7.4
-*/
+ * Plugin Name:       CB Portfolio
+ * Description:       A portfolio plugin for showcasing work.
+ * Version:           0.1.0
+ * Requires at least: 5.0
+ * Requires PHP:      7.4
+ * Author:            Chinmoy Biswas
+ * Author URI:        https://chinmoybiswas.me
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       cb-portfolio
+ * Domain Path:       /languages
+ */
 
 if (! defined('ABSPATH')) {
     exit;
@@ -24,4 +28,4 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-\ChinmoyBiswasPortfolio\Bootstrap::init();
+\ChinmoyBiswas\CBPortfolio\Bootstrap::init();

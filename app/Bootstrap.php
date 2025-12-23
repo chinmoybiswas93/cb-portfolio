@@ -1,12 +1,12 @@
 <?php
 
-namespace ChinmoyBiswasPortfolio;
+namespace ChinmoyBiswas\CBPortfolio;
 
-use ChinmoyBiswasPortfolio\Hooks\Handlers\ActivationHandler;
-use ChinmoyBiswasPortfolio\Hooks\Handlers\DeactivationHandler;
-use ChinmoyBiswasPortfolio\Hooks\Handlers\AdminMenuHandler;
-use ChinmoyBiswasPortfolio\Http\Controllers\PortfolioSettingsController;
-use ChinmoyBiswasPortfolio\Http\Controllers\PortfolioController;
+use ChinmoyBiswas\CBPortfolio\Hooks\Handlers\ActivationHandler;
+use ChinmoyBiswas\CBPortfolio\Hooks\Handlers\DeactivationHandler;
+use ChinmoyBiswas\CBPortfolio\Hooks\Handlers\AdminMenuHandler;
+use ChinmoyBiswas\CBPortfolio\Http\Controllers\PortfolioSettingsController;
+use ChinmoyBiswas\CBPortfolio\Http\Controllers\PortfolioController;
 
 if (! defined('ABSPATH')) {
     exit;
@@ -75,6 +75,10 @@ class Bootstrap
 
     public function loadPortfolioTemplate($template): string
     {
+        if (!is_front_page()) {
+            return $template;
+        }
+
         return CB_PORTFOLIO_PLUGIN_PATH . '/templates/portfolio-template.php';
     }
 }

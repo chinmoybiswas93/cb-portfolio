@@ -1,6 +1,6 @@
 <?php
 
-namespace ChinmoyBiswasPortfolio\Database;
+namespace ChinmoyBiswas\CBPortfolio\Database;
 
 if (! defined('ABSPATH')) {
     exit;

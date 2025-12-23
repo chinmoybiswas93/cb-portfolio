@@ -1,6 +1,6 @@
 <?php
 
-namespace ChinmoyBiswasPortfolio\Hooks\Handlers;
+namespace ChinmoyBiswas\CBPortfolio\Hooks\Handlers;
 
 if (! defined('ABSPATH')) {
     exit;

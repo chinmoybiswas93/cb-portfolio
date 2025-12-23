@@ -1,6 +1,6 @@
 <?php
 
-namespace ChinmoyBiswasPortfolio\Http\Controllers;
+namespace ChinmoyBiswas\CBPortfolio\Http\Controllers;
 
 if (! defined('ABSPATH')) {
     exit;

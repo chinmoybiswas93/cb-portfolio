@@ -75,6 +75,7 @@ export default {
     this.setupScrollHandler();
     this.setupMouseTracking();
     this.setupNavigationHandlers();
+    this.revealAppShell();
   },
   methods: {
     async loadPortfolioData() {
@@ -304,6 +305,66 @@ export default {
           }
         });
       });
+    },
+
+    revealAppShell() {
+      const root = document.getElementById('cb-portfolio-frontend');
+      const loader = document.getElementById('cb-portfolio-loader');
+      const loaderIcon = document.querySelector('.cb-portfolio-loader__icon');
+      if (!root) {
+        return;
+      }
+
+      const durationMs = this.getLoaderCycleDuration(loaderIcon);
+      const totalDelay = durationMs + durationMs / 2; // one full cycle + half cycle
+      const startTime = window.cbPortfolioLoaderStart || 0;
+      const elapsed = performance.now() - startTime;
+      const remaining = Math.max(totalDelay - elapsed, 0);
+
+      setTimeout(() => {
+        root.classList.remove('cb-portfolio-hidden');
+        root.classList.add('cb-portfolio-ready');
+
+        if (loader) {
+          loader.classList.add('cb-portfolio-loader--hidden');
+          setTimeout(() => {
+            if (loader && loader.parentNode) {
+              loader.parentNode.removeChild(loader);
+            }
+          }, 400);
+        }
+      }, remaining);
+    },
+
+    getLoaderCycleDuration(element) {
+      if (!element) {
+        return 2400;
+      }
+      const styles = window.getComputedStyle(element);
+      const customDuration = styles.getPropertyValue('--cb-loader-duration');
+      if (customDuration) {
+        return this.parseDuration(customDuration);
+      }
+
+      const animationDuration = styles.animationDuration || '';
+      const firstDuration = animationDuration.split(',')[0];
+      const parsed = this.parseDuration(firstDuration);
+      return parsed || 2400;
+    },
+
+    parseDuration(durationString) {
+      if (!durationString) {
+        return 0;
+      }
+      const trimmed = durationString.trim();
+      if (trimmed.endsWith('ms')) {
+        return parseFloat(trimmed.replace('ms', '').trim());
+      }
+      if (trimmed.endsWith('s')) {
+        return parseFloat(trimmed.replace('s', '').trim()) * 1000;
+      }
+      const numeric = parseFloat(trimmed);
+      return Number.isNaN(numeric) ? 0 : numeric * 1000;
     }
   }
 }

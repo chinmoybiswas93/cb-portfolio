@@ -1,8 +1,8 @@
 <?php
 
-namespace ChinmoyBiswasPortfolio\Hooks\Handlers;
+namespace ChinmoyBiswas\CBPortfolio\Hooks\Handlers;
 
-use ChinmoyBiswasPortfolio\Database\Migration;
+use ChinmoyBiswas\CBPortfolio\Database\Migration;
 
 if (! defined('ABSPATH')) {
     exit;
