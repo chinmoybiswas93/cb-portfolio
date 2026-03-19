@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ChinmoyBiswas\CBPortfolio;
 
 use ChinmoyBiswas\CBPortfolio\Hooks\Handlers\ActivationHandler;

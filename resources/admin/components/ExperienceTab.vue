@@ -1,228 +1,148 @@
 <template>
-  <div class="tab-content">
-    <div class="tab-header">
-      <h2>Work Experience</h2>
-      <p class="tab-description">Your professional journey</p>
-      <button @click="$emit('add-experience')" class="add-btn">
-        <span class="btn-icon">+</span>
-        Add Experience
-      </button>
-    </div>
+  <div>
+    <DataTable
+      title="Work Experience"
+      description="Your professional journey"
+      add-button-text="Add Experience"
+      :columns="columns"
+      :rows="sortedItems"
+      empty-text="No experience added yet. Click 'Add Experience' to get started."
+      @add-new="openAddModal"
+      @edit-row="openEditModal"
+      @delete-row="openDeleteConfirm"
+      @move-up="moveUp"
+      @move-down="moveDown"
+    />
 
-    <div class="form-section">
-      <transition-group name="experience-list" tag="div" class="experience-list">
-        <div 
-          v-for="(exp, index) in sortedExperience" 
-          :key="exp.id || `exp-${index}`"
-          :ref="`experience-${exp.id || index}`"
-          class="experience-item-wrapper"
-        >
-          <ExperienceItem 
-            :experience="exp"
-            :experience-number="index + 1"
-            :can-move-up="index > 0"
-            :can-move-down="index < sortedExperience.length - 1"
-            @update="(updatedData) => $emit('update-experience', getOriginalIndex(exp), updatedData)"
-            @remove="$emit('remove-experience', getOriginalIndex(exp))"
-            @move-up="moveUp(index)"
-            @move-down="moveDown(index)"
-          />
-        </div>
-      </transition-group>
-    </div>
+    <DataEditModal
+      :show="showEditModal"
+      :title="isEditing ? 'Edit Experience' : 'Add Experience'"
+      :save-button-text="isEditing ? 'Update Experience' : 'Add Experience'"
+      :field-layout="fieldLayout"
+      :model-value="editFormData"
+      @save="handleSave"
+      @cancel="showEditModal = false"
+    />
+
+    <ConfirmModal
+      :show="showDeleteConfirm"
+      title="Delete Experience"
+      message="Are you sure you want to delete this experience? This action cannot be undone."
+      @confirm="handleDelete"
+      @cancel="showDeleteConfirm = false"
+    />
   </div>
 </template>
 
 <script>
-import ExperienceItem from './ExperienceItem.vue'
+import { onMounted } from 'vue'
+import { useDataListTab } from '../composables/useDataListTab'
+import DataTable from './shared/DataTable.vue'
+import DataEditModal from './shared/DataEditModal.vue'
+import ConfirmModal from './shared/ConfirmModal.vue'
+
+const EXPERIENCE_DEFAULTS = {
+  company: '',
+  company_website: '',
+  position: '',
+  start_date: '',
+  end_date: '',
+  current: 0,
+  description: '',
+  skills: ''
+}
 
 export default {
   name: 'ExperienceTab',
-  components: {
-    ExperienceItem
-  },
+  components: { DataTable, DataEditModal, ConfirmModal },
   props: {
-    experienceData: {
-      type: Array,
-      required: true
-    }
+    experienceData: { type: Array, required: true }
   },
-  computed: {
-    sortedExperience() {
-      return [...this.experienceData].sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
-    }
+  emits: ['reload-data', 'update-experience-order'],
+  setup(props, { emit }) {
+    const list = useDataListTab({
+      endpoint: 'experience',
+      entityName: 'Experience',
+      itemDefaults: EXPERIENCE_DEFAULTS,
+      orderEvent: 'update-experience-order',
+      getItems: () => props.experienceData
+    }, emit)
+
+    onMounted(() => list.initializeOrderIndex())
+
+    return { ...list }
   },
-  emits: ['add-experience', 'update-experience', 'remove-experience', 'update-experience-order'],
-  mounted() {
-    this.initializeOrderIndex()
-  },
-  methods: {
-    initializeOrderIndex() {
-      // Ensure all items have order_index values
-      this.experienceData.forEach((experience, index) => {
-        if (experience.order_index === undefined || experience.order_index === null) {
-          experience.order_index = index + 1
-        }
-      })
-    },
-
-    async moveUp(currentIndex) {
-      if (currentIndex === 0) return
-
-      const items = [...this.sortedExperience]
-      const currentItem = items[currentIndex]
-      const previousItem = items[currentIndex - 1]
-
-      const tempOrder = currentItem.order_index
-      currentItem.order_index = previousItem.order_index
-      previousItem.order_index = tempOrder
-
-      await this.updateOrder([currentItem, previousItem])
-      
-      // Scroll to the moved item after animation
-      this.$nextTick(() => {
-        this.scrollToItem(currentItem.id, currentIndex - 1)
-      })
-    },
-
-    async moveDown(currentIndex) {
-      if (currentIndex === this.sortedExperience.length - 1) return
-
-      const items = [...this.sortedExperience]
-      const currentItem = items[currentIndex]
-      const nextItem = items[currentIndex + 1]
-
-      const tempOrder = currentItem.order_index
-      currentItem.order_index = nextItem.order_index
-      nextItem.order_index = tempOrder
-
-      await this.updateOrder([currentItem, nextItem])
-      
-      // Scroll to the moved item after animation
-      this.$nextTick(() => {
-        this.scrollToItem(currentItem.id, currentIndex + 1)
-      })
-    },
-
-    async updateOrder(itemsToUpdate) {
-      try {
-        const nonce = window.cbPortfolioAdmin?.nonce || window.wpApiSettings?.nonce || '';
-        
-        const response = await fetch(`/wp-json/cb-portfolio/v1/experience/reorder`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-WP-Nonce': nonce
-          },
-          body: JSON.stringify({ 
-            items: itemsToUpdate.map(item => ({
-              id: item.id,
-              order_index: item.order_index
-            }))
-          })
-        })
-
-        if (!response.ok) {
-          const errorText = await response.text()
-          console.error('Response error:', response.status, errorText)
-          throw new Error(`Server responded with ${response.status}: ${errorText}`)
-        }
-
-        const result = await response.json()
-        
-        // Update the original experienceData array with new order values
-        const updatedExperienceData = [...this.experienceData]
-        itemsToUpdate.forEach(updatedItem => {
-          const originalIndex = updatedExperienceData.findIndex(exp => exp.id === updatedItem.id)
-          if (originalIndex !== -1) {
-            updatedExperienceData[originalIndex] = { ...updatedExperienceData[originalIndex], order_index: updatedItem.order_index }
+  data() {
+    return {
+      columns: [
+        { key: 'company', label: 'Company' },
+        { key: 'position', label: 'Position' },
+        {
+          key: 'start_date',
+          label: 'Period',
+          formatter: (_val, row) => {
+            const start = row.start_date || '—'
+            const end = (parseInt(row.current) === 1) ? 'Present' : (row.end_date || '—')
+            return `${start} – ${end}`
           }
-        })
-        
-        // Emit the updated data to the parent component
-        this.$emit('update-experience-order', updatedExperienceData)
-        
-      } catch (error) {
-        alert(`Error updating experience order: ${error.message}`)
-      }
-    },
+        },
+        { key: 'skills', label: 'Skills', truncate: true }
+      ],
 
-    getOriginalIndex(experience) {
-      return this.experienceData.findIndex(exp => exp.id === experience.id)
-    },
-
-    scrollToItem(itemId, newIndex) {
-      // Wait for the animation to complete, then scroll
-      setTimeout(() => {
-        const element = this.$refs[`experience-${itemId}`]?.[0]
-        if (element) {
-          element.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center',
-            inline: 'nearest'
-          })
-          
-          // Add a brief highlight animation
-          element.classList.add('highlight-moved')
-          setTimeout(() => {
-            element.classList.remove('highlight-moved')
-          }, 1500)
+      fieldLayout: [
+        {
+          columns: 2,
+          fields: [
+            { key: 'company', label: 'Company', type: 'text', placeholder: 'Company Name' },
+            { key: 'company_website', label: 'Company Website', type: 'url', placeholder: 'https://company.com' }
+          ]
+        },
+        {
+          columns: 1,
+          fields: [
+            { key: 'position', label: 'Position', type: 'text', placeholder: 'Job Title' }
+          ]
+        },
+        {
+          columns: 3,
+          fields: [
+            { key: 'start_date', label: 'Start Date', type: 'text', placeholder: '2020' },
+            {
+              key: 'end_date',
+              label: 'End Date',
+              type: 'text',
+              placeholder: (data) => parseInt(data.current) === 1 ? 'Present' : '2024 or Present',
+              disabled: (data) => parseInt(data.current) === 1
+            },
+            {
+              key: 'current',
+              label: 'Currently working here',
+              type: 'checkbox',
+              trueValue: 1,
+              falseValue: 0,
+              checkboxLabel: 'Currently working here',
+              onChange(value, data) {
+                if (parseInt(value) === 1) {
+                  data.end_date = ''
+                }
+              }
+            }
+          ]
+        },
+        {
+          columns: 1,
+          fields: [
+            { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe your role and achievements', rows: 3 }
+          ]
+        },
+        {
+          columns: 1,
+          fields: [
+            { key: 'skills', label: 'Skills / Technologies', type: 'text', placeholder: 'JavaScript, React, Node.js (comma separated)' }
+          ]
         }
-      }, 300)
+      ]
     }
   }
 }
 </script>
-
-<style scoped>
-.experience-item-wrapper {
-  margin-bottom: 20px;
-}
-
-/* Animation styles for list transitions */
-.experience-list {
-  position: relative;
-}
-
-.experience-list-move {
-  transition: transform 0.3s ease;
-}
-
-.experience-list-enter-active,
-.experience-list-leave-active {
-  transition: all 0.3s ease;
-}
-
-.experience-list-enter-from {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.experience-list-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-/* Highlight animation for moved items */
-.highlight-moved {
-  animation: highlightPulse 1.5s ease-in-out;
-  transform: scale(1.02);
-  transition: transform 0.2s ease;
-  border-radius: 8px;
-}
-
-@keyframes highlightPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 115, 170, 0.4);
-    border-radius: 8px;
-  }
-  50% {
-    box-shadow: 0 0 0 10px rgba(0, 115, 170, 0.2);
-    border-radius: 8px;
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 115, 170, 0);
-    border-radius: 8px;
-  }
-}
-</style>

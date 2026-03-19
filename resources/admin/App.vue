@@ -1,19 +1,6 @@
 <template>
   <div class="cb-portfolio-admin">
-    <!-- Minimal Header -->
-    <div class="admin-header">
-      <div class="header-left">
-        <h1>{{ title }}</h1>
-      </div>
-      <div class="header-right">
-        <button @click="saveAll" :disabled="saving" class="save-btn">
-          {{ saving ? 'Saving Changes...' : 'Save Changes' }}
-        </button>
-      </div>
-    </div>
-
     <div class="admin-layout">
-      <!-- Left Sidebar Navigation -->
       <div class="sidebar">
         <nav class="nav-menu">
           <div class="nav-item" :class="{ active: activeTab === 'settings' }" @click="setActiveTab('settings')">
@@ -43,49 +30,51 @@
         </nav>
       </div>
 
-      <!-- Main Content Area -->
       <div class="main-content">
-        <!-- Settings Tab -->
-        <SettingsTab v-if="activeTab === 'settings'" :portfolio-enabled="portfolioEnabled" :footer-text="portfolioData.footer_text" :saving="saving"
+        <SettingsTab v-if="activeTab === 'settings'" :portfolio-enabled="portfolioEnabled" :footer-text="portfolioData.footer_text"
           @settings-changed="handleSettingsChange" @footer-text-changed="handleFooterTextChange" />
 
-        <!-- Personal Information Tab -->
-        <PersonalInfoTab v-if="activeTab === 'personal'" :portfolio-data="portfolioData"
+        <PortfolioFormTab v-if="activeTab === 'personal'"
+          title="Personal Information"
+          description="Tell visitors about yourself and your expertise"
+          success-message="Personal info saved successfully!"
+          :fields="personalFields"
+          :portfolio-data="portfolioData"
           @data-changed="handlePortfolioDataChange" />
 
-        <!-- Contact Information Tab -->
-        <ContactInfoTab v-if="activeTab === 'contact'" :portfolio-data="portfolioData"
+        <PortfolioFormTab v-if="activeTab === 'contact'"
+          title="Contact Information"
+          description="How people can reach you"
+          success-message="Contact info saved successfully!"
+          :fields="contactFields"
+          :portfolio-data="portfolioData"
           @data-changed="handlePortfolioDataChange" />
 
-        <!-- Experience Tab -->
         <ExperienceTab v-if="activeTab === 'experience'" :experience-data="experienceData"
-          @add-experience="addExperience" @update-experience="updateExperience" @remove-experience="removeExperience" 
+          @reload-data="loadExperienceData"
           @update-experience-order="handleExperienceOrderUpdate" />
 
-        <!-- Projects Tab -->
-        <ProjectsTab v-if="activeTab === 'projects'" :projects-data="projectsData" @add-project="addProject"
-          @update-project="updateProject" @remove-project="removeProject" @update-projects-order="handleProjectsOrderUpdate" />
+        <ProjectsTab v-if="activeTab === 'projects'" :projects-data="projectsData"
+          @reload-data="loadProjectsData"
+          @update-projects-order="handleProjectsOrderUpdate" />
 
-        <!-- Import/Export Tab -->
         <ImportExportTab v-if="activeTab === 'import-export'" 
           :portfolio-data="portfolioData"
           :experience-data="experienceData"
           :projects-data="projectsData"
           @import-data="handleImportData"
-          @show-toast="showToastNotification"
         />
       </div>
     </div>
 
-    <!-- Floating Toast Notifications -->
     <ToastNotification :show="showToast" :type="toastType" :message="toastMessage" />
   </div>
 </template>
 
 <script>
+import api from './utils/api'
 import SettingsTab from './components/SettingsTab.vue'
-import PersonalInfoTab from './components/PersonalInfoTab.vue'
-import ContactInfoTab from './components/ContactInfoTab.vue'
+import PortfolioFormTab from './components/PortfolioFormTab.vue'
 import ExperienceTab from './components/ExperienceTab.vue'
 import ProjectsTab from './components/ProjectsTab.vue'
 import ImportExportTab from './components/ImportExportTab.vue'
@@ -95,21 +84,22 @@ export default {
   name: 'App',
   components: {
     SettingsTab,
-    PersonalInfoTab,
-    ContactInfoTab,
+    PortfolioFormTab,
     ExperienceTab,
     ProjectsTab,
     ImportExportTab,
     ToastNotification
+  },
+  provide() {
+    return {
+      showToast: (type, message) => this.showToastNotification(type, message)
+    }
   },
   data() {
     return {
       title: 'Chinmoy Biswas Portfolio',
       activeTab: 'settings',
       portfolioEnabled: false,
-      saving: false,
-      success: false,
-      error: null,
       showToast: false,
       toastType: 'success',
       toastMessage: '',
@@ -131,8 +121,40 @@ export default {
       },
       experienceData: [],
       projectsData: [],
-      deletedExperienceIds: [],
-      deletedProjectIds: []
+
+      personalFields: [
+        [
+          { key: 'name', label: 'Full Name', type: 'text', placeholder: 'Enter your full name' },
+          { key: 'title', label: 'Job Title', type: 'text', placeholder: 'e.g., Front End Engineer' }
+        ],
+        [
+          { key: 'tagline', label: 'Tagline', type: 'textarea', placeholder: 'Brief description of what you do', rows: 2 }
+        ],
+        [
+          { key: 'about', label: 'About', type: 'textarea', placeholder: 'Tell us about yourself, your experience, and what you\'re passionate about', rows: 6, helpText: 'You can use HTML tags like &lt;b&gt;, &lt;span&gt;, and &lt;a&gt; for formatting. Bold text will be styled prominently.' }
+        ]
+      ],
+
+      contactFields: [
+        [
+          { key: 'email', label: 'Email', type: 'email', placeholder: 'your.email@example.com' },
+          { key: 'phone', label: 'Phone', type: 'tel', placeholder: '+1 (555) 123-4567' }
+        ],
+        [
+          { key: 'location', label: 'Location', type: 'text', placeholder: 'City, State/Country' }
+        ],
+        [
+          { key: 'github_url', label: 'GitHub URL', type: 'url', placeholder: 'https://github.com/username' },
+          { key: 'linkedin_url', label: 'LinkedIn URL', type: 'url', placeholder: 'https://linkedin.com/in/username' }
+        ],
+        [
+          { key: 'twitter_url', label: 'Twitter URL', type: 'url', placeholder: 'https://twitter.com/username' },
+          { key: 'website_url', label: 'Website URL', type: 'url', placeholder: 'https://yourwebsite.com' }
+        ],
+        [
+          { key: 'resume_url', label: 'Resume URL', type: 'url', placeholder: 'https://yourwebsite.com/resume.pdf' }
+        ]
+      ]
     }
   },
   mounted() {
@@ -149,80 +171,43 @@ export default {
   },
   methods: {
     async loadSettings() {
-      console.log(cbPortfolioData);
       try {
-        const response = await fetch(`${cbPortfolioData.restUrl}settings`, {
-          headers: {
-            'X-WP-Nonce': cbPortfolioData.nonce
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          this.portfolioEnabled = data.enabled || false;
-        }
+        const data = await api.get('settings')
+        this.portfolioEnabled = data.enabled || false
       } catch (err) {
-        console.error('Error loading settings:', err);
+        console.error('Error loading settings:', err)
       }
     },
 
     async loadPortfolioData() {
       try {
-        const response = await fetch(`${cbPortfolioData.restUrl}portfolio`, {
-          headers: {
-            'X-WP-Nonce': cbPortfolioData.nonce
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data && Object.keys(data).length > 0) {
-            this.portfolioData = { ...this.portfolioData, ...data };
-          }
+        const data = await api.get('portfolio')
+        if (data && Object.keys(data).length > 0) {
+          this.portfolioData = { ...this.portfolioData, ...data }
         }
       } catch (err) {
-        console.error('Error loading portfolio data:', err);
+        console.error('Error loading portfolio data:', err)
       }
     },
 
     async loadExperienceData() {
       try {
-        const response = await fetch(`${cbPortfolioData.restUrl}experience`, {
-          headers: {
-            'X-WP-Nonce': cbPortfolioData.nonce
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          this.experienceData = data || [];
-          // Reset deleted IDs when loading fresh data
-          this.deletedExperienceIds = [];
-        }
+        const data = await api.get('experience')
+        this.experienceData = data || []
       } catch (err) {
-        console.error('Error loading experience data:', err);
+        console.error('Error loading experience data:', err)
       }
     },
 
     async loadProjectsData() {
       try {
-        const response = await fetch(`${cbPortfolioData.restUrl}projects`, {
-          headers: {
-            'X-WP-Nonce': cbPortfolioData.nonce
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          this.projectsData = (data || []).map(project => ({
-            ...project,
-            featured: parseInt(project.featured) || 0
-          }));
-          // Reset deleted IDs when loading fresh data
-          this.deletedProjectIds = [];
-        }
+        const data = await api.get('projects')
+        this.projectsData = (data || []).map(project => ({
+          ...project,
+          featured: parseInt(project.featured) || 0
+        }))
       } catch (err) {
-        console.error('Error loading projects data:', err);
+        console.error('Error loading projects data:', err)
       }
     },
 
@@ -244,7 +229,6 @@ export default {
 
     handleSettingsChange(enabled) {
       this.portfolioEnabled = enabled;
-      this.saveSettings();
     },
 
     handlePortfolioDataChange(data) {
@@ -253,196 +237,6 @@ export default {
 
     handleFooterTextChange(footerText) {
       this.portfolioData = { ...this.portfolioData, footer_text: footerText };
-    },
-
-    updateExperience(index, updatedData) {
-      this.experienceData[index] = { ...updatedData };
-    },
-
-    updateProject(index, updatedData) {
-      this.projectsData[index] = { ...updatedData };
-    },
-
-    async saveSettings() {
-      this.saving = true;
-      this.success = false;
-      this.error = null;
-
-      try {
-        const response = await fetch(`${cbPortfolioData.restUrl}settings`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-WP-Nonce': cbPortfolioData.nonce
-          },
-          body: JSON.stringify({
-            enabled: this.portfolioEnabled
-          })
-        });
-
-        if (response.ok) {
-          this.showToastNotification('success', 'Settings saved successfully!');
-        } else {
-          const data = await response.json();
-          this.showToastNotification('error', data.message || 'Failed to save settings');
-        }
-      } catch (err) {
-        this.showToastNotification('error', 'An error occurred while saving settings');
-        console.error('Error saving settings:', err);
-      } finally {
-        this.saving = false;
-      }
-    },
-
-    async saveAll() {
-      this.saving = true;
-      this.success = false;
-      this.error = null;
-
-      try {
-        // Save portfolio data
-        await this.savePortfolioData();
-
-        // Save experience data
-        await this.saveExperienceData();
-
-        // Save projects data
-        await this.saveProjectsData();
-
-        this.showToastNotification('success', 'All data saved successfully!');
-      } catch (err) {
-        this.showToastNotification('error', 'An error occurred while saving data');
-        console.error('Error saving data:', err);
-      } finally {
-        this.saving = false;
-      }
-    },
-
-    async savePortfolioData() {
-      const response = await fetch(`${cbPortfolioData.restUrl}portfolio`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-WP-Nonce': cbPortfolioData.nonce
-        },
-        body: JSON.stringify(this.portfolioData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save portfolio data');
-      }
-    },
-
-    async saveExperienceData() {
-      // First, delete removed experiences
-      for (const id of this.deletedExperienceIds) {
-        const response = await fetch(`${cbPortfolioData.restUrl}experience/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'X-WP-Nonce': cbPortfolioData.nonce
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to delete experience');
-        }
-      }
-
-      // Clear deleted IDs after successful deletion
-      this.deletedExperienceIds = [];
-
-      // Then save/update existing experiences
-      for (const exp of this.experienceData) {
-        const response = await fetch(`${cbPortfolioData.restUrl}experience`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-WP-Nonce': cbPortfolioData.nonce
-          },
-          body: JSON.stringify(exp)
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to save experience data');
-        }
-      }
-    },
-
-    async saveProjectsData() {
-      // First, delete removed projects
-      for (const id of this.deletedProjectIds) {
-        const response = await fetch(`${cbPortfolioData.restUrl}projects/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'X-WP-Nonce': cbPortfolioData.nonce
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to delete project');
-        }
-      }
-
-      // Clear deleted IDs after successful deletion
-      this.deletedProjectIds = [];
-
-      // Then save/update existing projects
-      for (const project of this.projectsData) {
-        const response = await fetch(`${cbPortfolioData.restUrl}projects`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-WP-Nonce': cbPortfolioData.nonce
-          },
-          body: JSON.stringify(project)
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to save projects data');
-        }
-      }
-    },
-
-    addExperience() {
-      this.experienceData.unshift({
-        company: '',
-        position: '',
-        start_date: '',
-        end_date: '',
-        current: false,
-        description: '',
-        skills: ''
-      });
-    },
-
-    removeExperience(index) {
-      const exp = this.experienceData[index];
-      // If it has an ID, track it for deletion
-      if (exp.id) {
-        this.deletedExperienceIds.push(exp.id);
-      }
-      this.experienceData.splice(index, 1);
-    },
-
-    addProject() {
-      this.projectsData.unshift({
-        title: '',
-        description: '',
-        image_url: '',
-        live_url: '',
-        github_url: '',
-        technologies: '',
-        featured: 0
-      });
-    },
-
-    removeProject(index) {
-      const project = this.projectsData[index];
-      // If it has an ID, track it for deletion
-      if (project.id) {
-        this.deletedProjectIds.push(project.id);
-      }
-      this.projectsData.splice(index, 1);
     },
 
     handleExperienceOrderUpdate(updatedExperience) {
@@ -457,16 +251,10 @@ export default {
 
     async handleImportData(importedData) {
       try {
-        // Since the import is already handled by the backend API,
-        // we just need to reload all data from the database
         await this.loadPortfolioData();
         await this.loadExperienceData();
         await this.loadProjectsData();
         await this.loadSettings();
-        
-        // Reset deleted IDs arrays since we have fresh data
-        this.deletedExperienceIds = [];
-        this.deletedProjectIds = [];
         
         this.showToastNotification('success', 'Data imported and refreshed successfully!');
       } catch (error) {
@@ -485,53 +273,6 @@ export default {
   flex-direction: column;
   background: #f8f9fa;
   margin-left: -20px;
-}
-
-/* Minimal Header */
-.admin-header {
-  background: #fff;
-  border-bottom: 1px solid #e1e5e9;
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  position: sticky;
-  top: 0;
-}
-
-.header-left h1 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1d2327;
-}
-
-.save-btn {
-  background: #6237fe;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-}
-
-.save-btn:hover:not(:disabled) {
-  background: #135e96;
-  transform: translateY(-1px);
-}
-
-.save-btn:disabled {
-  background: #8c8f94;
-  cursor: not-allowed;
-  transform: none;
 }
 
 /* Main Layout */
@@ -600,6 +341,13 @@ export default {
 <style>
 #cb-portfolio-admin .main-content .tab-header {
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#cb-portfolio-admin .main-content .tab-header .tab-header-info {
+  flex: 1;
 }
 
 #cb-portfolio-admin .main-content .tab-header h2 {
@@ -615,6 +363,37 @@ export default {
   font-size: 14px;
 }
 
+#cb-portfolio-admin .main-content .tab-header .tab-header-actions {
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+#cb-portfolio-admin .main-content .tab-header .tab-header-actions .save-btn {
+  background: #6237fe;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+#cb-portfolio-admin .main-content .tab-header .tab-header-actions .save-btn:hover:not(:disabled) {
+  background: #4f2bcc;
+  transform: translateY(-1px);
+}
+
+#cb-portfolio-admin .main-content .tab-header .tab-header-actions .save-btn:disabled {
+  background: #8c8f94;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Form Sections */
 #cb-portfolio-admin .main-content .form-section {
   background: #fff;
@@ -626,12 +405,7 @@ export default {
 
 /* Form styles are now encapsulated in form components */
 
-#cb-portfolio-admin .main-content .tab-header .add-btn {
-  margin-top: 10px;
-}
-
-/* Buttons */
-#cb-portfolio-admin .main-content .tab-header .add-btn {
+#cb-portfolio-admin .main-content .tab-header .tab-header-actions .add-btn {
   background: #00a32a;
   color: white;
   border: none;
@@ -646,7 +420,7 @@ export default {
   transition: all 0.2s;
 }
 
-#cb-portfolio-admin .main-content .tab-header .add-btn:hover {
+#cb-portfolio-admin .main-content .tab-header .tab-header-actions .add-btn:hover {
   background: #008a20;
   transform: translateY(-1px);
 }

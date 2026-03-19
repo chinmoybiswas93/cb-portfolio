@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { splitCommaList } from '../utils/format'
+
 export default {
   name: 'ProjectItem',
   props: {
@@ -59,8 +61,7 @@ export default {
   },
   computed: {
     techList() {
-      if (!this.project.technologies) return [];
-      return this.project.technologies.split(',').filter(tech => tech.trim());
+      return splitCommaList(this.project.technologies)
     }
   }
 }

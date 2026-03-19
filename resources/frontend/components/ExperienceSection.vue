@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { sortByOrderIndex } from '../utils/sort'
 import ExperienceItem from './ExperienceItem.vue'
 
 export default {
@@ -84,20 +85,7 @@ export default {
   },
   computed: {
     sortedExperience() {
-      // Sort experience by order_index in ascending order
-      return [...this.experienceData].sort((a, b) => {
-        const orderA = a.order_index || 999;
-        const orderB = b.order_index || 999;
-        return orderA - orderB;
-      });
-    }
-  },
-  methods: {
-    viewFullArchive() {
-      // Add your archive view logic here
-      console.log('View full experience archive');
-      // You can emit an event or navigate to an archive page
-      this.$emit('view-archive');
+      return sortByOrderIndex(this.experienceData)
     }
   }
 }

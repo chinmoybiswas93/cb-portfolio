@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { sortByOrderIndex } from '../utils/sort'
 import ProjectItem from './ProjectItem.vue'
 
 export default {
@@ -65,18 +66,8 @@ export default {
   },
   computed: {
     featuredProjects() {
-      // Filter featured projects and sort by order_index in ascending order
-      const featured = this.projectsData.filter(project => project.featured === 1 || project.featured === '1');
-      
-      // Sort by order_index in ascending order
-      const sortedFeatured = featured.sort((a, b) => {
-        const orderA = a.order_index || 999;
-        const orderB = b.order_index || 999;
-        return orderA - orderB;
-      });
-      
-      // Get the first 5 featured projects (in order_index order)
-      return sortedFeatured.slice(0, 5);
+      const featured = this.projectsData.filter(p => p.featured === 1 || p.featured === '1')
+      return sortByOrderIndex(featured).slice(0, 5)
     }
   },
   methods: {

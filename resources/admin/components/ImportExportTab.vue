@@ -1,8 +1,10 @@
 <template>
   <div class="tab-content">
     <div class="tab-header">
-      <h2>Import/Export Portfolio Data</h2>
-      <p class="tab-description">Export your portfolio data to backup or transfer to another site. Import data will replace all existing content.</p>
+      <div class="tab-header-info">
+        <h2>Import/Export Portfolio Data</h2>
+        <p class="tab-description">Export your portfolio data to backup or transfer to another site. Import data will replace all existing content.</p>
+      </div>
     </div>
 
     <!-- Export Section -->
@@ -135,6 +137,8 @@
 </template>
 
 <script>
+import api from '../utils/api'
+
 export default {
   name: 'ImportExportTab',
   props: {
@@ -151,7 +155,8 @@ export default {
       required: true
     }
   },
-  emits: ['import-data', 'show-toast'],
+  inject: ['showToast'],
+  emits: ['import-data'],
   data() {
     return {
       exportOptions: {
@@ -206,17 +211,9 @@ export default {
         }
 
         if (this.exportOptions.settings) {
-          // We'll need to get settings from the API
-          const response = await fetch(`${cbPortfolioData.restUrl}settings`, {
-            headers: {
-              'X-WP-Nonce': cbPortfolioData.nonce
-            }
-          })
-          
-          if (response.ok) {
-            const settings = await response.json()
-            exportData.settings = settings
-          }
+          try {
+            exportData.settings = await api.get('settings')
+          } catch (_) {}
         }
 
         // Create and download file
@@ -238,10 +235,10 @@ export default {
         document.body.removeChild(link)
         URL.revokeObjectURL(url)
 
-        this.$emit('show-toast', 'success', 'Portfolio data exported successfully!')
+        this.showToast('success', 'Portfolio data exported successfully!')
       } catch (error) {
         console.error('Export error:', error)
-        this.$emit('show-toast', 'error', 'Failed to export data. Please try again.')
+        this.showToast('error', 'Failed to export data. Please try again.')
       }
     },
 
@@ -276,7 +273,7 @@ export default {
 
     async processFile(file) {
       if (!file.type.includes('json')) {
-        this.$emit('show-toast', 'error', 'Please select a JSON file.')
+        this.showToast('error', 'Please select a JSON file.')
         return
       }
 
@@ -293,7 +290,7 @@ export default {
         }
       } catch (error) {
         console.error('File processing error:', error)
-        this.$emit('show-toast', 'error', 'Invalid JSON file format.')
+        this.showToast('error', 'Invalid JSON file format.')
         this.clearSelectedFile()
       }
     },
@@ -317,33 +314,17 @@ export default {
         const text = await this.selectedFile.text()
         const importedData = JSON.parse(text)
 
-        // Call the backend import API
-        const response = await fetch(`${cbPortfolioData.restUrl}import`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-WP-Nonce': cbPortfolioData.nonce
-          },
-          body: text
-        })
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.message || 'Import failed')
-        }
-
-        const result = await response.json()
+        await api.post('import', importedData)
         
-        // Emit the import data to parent component to update UI
         this.$emit('import-data', importedData)
         
         // Clear the selected file after successful import
         this.clearSelectedFile()
         
-        this.$emit('show-toast', 'success', 'Data imported and saved to database successfully!')
+        this.showToast('success', 'Data imported and saved to database successfully!')
       } catch (error) {
         console.error('Import error:', error)
-        this.$emit('show-toast', 'error', `Failed to import data: ${error.message}`)
+        this.showToast('error', `Failed to import data: ${error.message}`)
       } finally {
         this.importing = false
       }

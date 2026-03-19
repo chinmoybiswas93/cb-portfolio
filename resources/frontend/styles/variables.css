@@ -1,0 +1,30 @@
+:root {
+  --font-size-small: 12px;
+  --font-size-medium: 14px;
+  --font-size-base: 16px;
+  --font-size-large: 20px;
+
+  --font-size-profile: 48px;
+  --font-size-title: var(--font-size-large);
+  --font-size-body: var(--font-size-base);
+  --font-size-description: var(--font-size-medium);
+
+  --line-height-base: 1.6;
+
+  --color-text-primary: rgb(226, 232, 240);
+  --color-text-secondary: rgb(148, 163, 184);
+
+  --color-background: rgb(15, 23, 42);
+  --color-background-blur: rgba(15, 23, 42, 0.762);
+  --color-background-blur-strong: rgba(15, 23, 42, 0.9);
+
+  --color-ui-border: rgb(46, 60, 83);
+  --color-ui-bg: rgba(30, 41, 59, 0.6);
+  --color-ui-hover: rgba(30, 41, 59, 0.6);
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}

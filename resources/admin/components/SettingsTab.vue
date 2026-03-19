@@ -1,8 +1,15 @@
 <template>
   <div class="tab-content">
     <div class="tab-header">
-      <h2>Portfolio Settings</h2>
-      <p class="tab-description">Configure your portfolio display settings</p>
+      <div class="tab-header-info">
+        <h2>Portfolio Settings</h2>
+        <p class="tab-description">Configure your portfolio display settings</p>
+      </div>
+      <div class="tab-header-actions">
+        <button @click="saveSettings" :disabled="saving" class="save-btn" type="button">
+          {{ saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
     </div>
 
     <div class="form-section">
@@ -36,6 +43,7 @@
 </template>
 
 <script>
+import api from '../utils/api'
 import BaseTextarea from './form/BaseTextarea.vue'
 import FormGroup from './form/FormGroup.vue'
 
@@ -53,16 +61,14 @@ export default {
     footerText: {
       type: String,
       default: ''
-    },
-    saving: {
-      type: Boolean,
-      default: false
     }
   },
+  inject: ['showToast'],
   emits: ['settings-changed', 'footer-text-changed'],
   data() {
     return {
-      localFooterText: this.footerText
+      localFooterText: this.footerText,
+      saving: false
     }
   },
   watch: {
@@ -71,6 +77,23 @@ export default {
         this.localFooterText = newValue;
       },
       immediate: true
+    }
+  },
+  methods: {
+    async saveSettings() {
+      this.saving = true
+      try {
+        await Promise.all([
+          api.post('settings', { enabled: this.portfolioEnabled }),
+          api.post('portfolio', { footer_text: this.localFooterText })
+        ])
+        this.showToast('success', 'Settings saved successfully!')
+      } catch (err) {
+        console.error('Error saving settings:', err)
+        this.showToast('error', 'Failed to save settings')
+      } finally {
+        this.saving = false
+      }
     }
   }
 }

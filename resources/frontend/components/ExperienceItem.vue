@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import { splitCommaList } from '../utils/format'
+
 export default {
   name: 'ExperienceItem',
   props: {
@@ -52,8 +54,7 @@ export default {
   },
   computed: {
     skillList() {
-      if (!this.experience.skills) return [];
-      return this.experience.skills.split(',').filter(skill => skill.trim());
+      return splitCommaList(this.experience.skills)
     }
   }
 }

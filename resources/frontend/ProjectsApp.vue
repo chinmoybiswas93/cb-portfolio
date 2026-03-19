@@ -101,6 +101,9 @@
 </template>
 
 <script>
+import { sortByOrderIndex } from './utils/sort'
+import { splitCommaList } from './utils/format'
+
 export default {
   name: 'ProjectsApp',
   data() {
@@ -112,18 +115,7 @@ export default {
   },
   computed: {
     sortedProjects() {
-      // Sort by order_index ascending, then by created_at descending
-      return [...this.projects].sort((a, b) => {
-        const orderA = a.order_index || 999;
-        const orderB = b.order_index || 999;
-        if (orderA !== orderB) {
-          return orderA - orderB;
-        }
-        // If order_index is same, sort by created_at descending
-        const dateA = new Date(a.created_at || 0);
-        const dateB = new Date(b.created_at || 0);
-        return dateB - dateA;
-      });
+      return sortByOrderIndex(this.projects)
     }
   },
   mounted() {
@@ -186,11 +178,7 @@ export default {
       if (!project.technologies) {
         return [];
       }
-      // Split by comma and trim
-      return project.technologies
-        .split(',')
-        .map(tech => tech.trim())
-        .filter(tech => tech.length > 0);
+      return splitCommaList(project.technologies)
     },
     getDomainFromUrl(url) {
       try {
@@ -206,11 +194,15 @@ export default {
 };
 </script>
 
+<style>
+@import './styles/variables.css';
+</style>
+
 <style scoped>
 .projects-page {
   min-height: 100vh;
-  background: #0f172a;
-  color: rgb(148, 163, 184);
+  background: var(--color-background);
+  color: var(--color-text-secondary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   padding: 60px 20px;
 }
@@ -234,14 +226,14 @@ export default {
 .back-link {
   display: inline-flex;
   align-items: center;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: color 0.2s ease;
   margin-right: 4px;
 }
 
 .back-link:hover {
-  color: rgb(226, 232, 240);
+  color: var(--color-text-primary);
 }
 
 .back-arrow {
@@ -254,20 +246,20 @@ export default {
 .projects-name {
   font-size: 16px;
   font-weight: 500;
-  color: rgb(226, 232, 240);
+  color: var(--color-text-primary);
   margin: 0;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .projects-name:hover {
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
 }
 
 .projects-title {
   font-size: 32px;
   font-weight: 600;
-  color: rgb(226, 232, 240);
+  color: var(--color-text-primary);
   margin: 0;
   letter-spacing: -0.5px;
 }
@@ -283,7 +275,7 @@ export default {
 }
 
 .projects-table thead {
-  border-bottom: 1px solid rgb(46, 60, 83);
+  border-bottom: 1px solid var(--color-ui-border);
 }
 
 .projects-table th {
@@ -291,7 +283,7 @@ export default {
   padding: 16px 20px;
   font-size: 14px;
   font-weight: 500;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   text-transform: capitalize;
   letter-spacing: 0.5px;
 }
@@ -323,7 +315,7 @@ export default {
   width: 80px;
   font-size: 14px;
   font-weight: 300;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   text-align: left;
   padding-left: 20px;
   padding-right: 20px;
@@ -342,20 +334,20 @@ export default {
 .project-name {
   font-size: 16px;
   font-weight: 500;
-  color: rgb(226, 232, 240);
+  color: var(--color-text-primary);
 }
 
 .project-name-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: rgb(226, 232, 240);
+  color: var(--color-text-primary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .project-name-link:hover {
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
 }
 
 .project-name-link .external-icon {
@@ -366,7 +358,7 @@ export default {
 .col-made-at {
   min-width: 150px;
   font-size: 14px;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
 }
 
 .col-built-with {
@@ -383,10 +375,10 @@ export default {
   display: inline-block;
   padding: 4px 12px;
   background-color: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgb(46, 60, 83);
+  border: 1px solid var(--color-ui-border);
   border-radius: 4px;
   font-size: 12px;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   white-space: nowrap;
 }
 
@@ -404,14 +396,14 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   text-decoration: none;
   font-size: 14px;
   transition: color 0.2s ease;
 }
 
 .project-link:hover {
-  color: rgb(226, 232, 240);
+  color: var(--color-text-primary);
 }
 
 .external-icon {
@@ -432,16 +424,7 @@ export default {
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: rgb(148, 163, 184);
-}
-
-/* Desktop only columns */
-.desktop-only {
-  display: table-cell;
-}
-
-.mobile-only {
-  display: none;
+  color: var(--color-text-secondary);
 }
 
 /* Mobile responsive */
@@ -524,7 +507,7 @@ export default {
   .year-text {
     font-size: 14px;
     font-weight: 300;
-    color: rgb(148, 163, 184);
+    color: var(--color-text-secondary);
   }
 
   .col-project {

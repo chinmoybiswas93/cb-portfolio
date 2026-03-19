@@ -19,6 +19,7 @@
 
 <script>
 import { onBeforeUnmount } from 'vue'
+import { revealAppShell } from './utils/loader'
 import LeftSidebar from './components/LeftSidebar.vue'
 import RightContent from './components/RightContent.vue'
 
@@ -257,63 +258,7 @@ export default {
     },
 
     revealAppShell() {
-      const root = document.getElementById('cb-portfolio-frontend');
-      const loader = document.getElementById('cb-portfolio-loader');
-      const loaderIcon = document.querySelector('.cb-portfolio-loader__icon');
-      if (!root) {
-        return;
-      }
-
-      const durationMs = this.getLoaderCycleDuration(loaderIcon);
-      const totalDelay = durationMs + durationMs / 2; // one full cycle + half cycle
-      const startTime = window.cbPortfolioLoaderStart || 0;
-      const elapsed = performance.now() - startTime;
-      const remaining = Math.max(totalDelay - elapsed, 0);
-
-      setTimeout(() => {
-        root.classList.remove('cb-portfolio-hidden');
-        root.classList.add('cb-portfolio-ready');
-
-        if (loader) {
-          loader.classList.add('cb-portfolio-loader--hidden');
-          setTimeout(() => {
-            if (loader && loader.parentNode) {
-              loader.parentNode.removeChild(loader);
-            }
-          }, 400);
-        }
-      }, remaining);
-    },
-
-    getLoaderCycleDuration(element) {
-      if (!element) {
-        return 2400;
-      }
-      const styles = window.getComputedStyle(element);
-      const customDuration = styles.getPropertyValue('--cb-loader-duration');
-      if (customDuration) {
-        return this.parseDuration(customDuration);
-      }
-
-      const animationDuration = styles.animationDuration || '';
-      const firstDuration = animationDuration.split(',')[0];
-      const parsed = this.parseDuration(firstDuration);
-      return parsed || 2400;
-    },
-
-    parseDuration(durationString) {
-      if (!durationString) {
-        return 0;
-      }
-      const trimmed = durationString.trim();
-      if (trimmed.endsWith('ms')) {
-        return parseFloat(trimmed.replace('ms', '').trim());
-      }
-      if (trimmed.endsWith('s')) {
-        return parseFloat(trimmed.replace('s', '').trim()) * 1000;
-      }
-      const numeric = parseFloat(trimmed);
-      return Number.isNaN(numeric) ? 0 : numeric * 1000;
+      revealAppShell('cb-portfolio-frontend')
     }
   }
 }
@@ -350,36 +295,7 @@ export default {
 </style>
 
 <style>
-:root {
-  --font-size-small: 12px;
-  --font-size-medium: 14px;
-  --font-size-base: 16px;
-  --font-size-large: 20px;
-
-  --font-size-profile: 48px;
-  --font-size-title: var(--font-size-large);
-  --font-size-body: var(--font-size-base);
-  --font-size-description: var(--font-size-medium);
-
-  --line-height-base: 1.6;
-
-  --color-text-primary: rgb(226, 232, 240);
-  --color-text-secondary: rgb(148, 163, 184);
-
-  --color-background: rgb(15, 23, 42);
-  --color-background-blur: rgba(15, 23, 42, 0.762);
-  --color-background-blur-strong: rgba(15, 23, 42, 0.9);
-
-  --color-ui-border: rgb(46, 60, 83);
-  --color-ui-bg: rgba(30, 41, 59, 0.6);
-  --color-ui-hover: rgba(30, 41, 59, 0.6);
-
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-}
+@import './styles/variables.css';
 
 * {
   box-sizing: border-box;
