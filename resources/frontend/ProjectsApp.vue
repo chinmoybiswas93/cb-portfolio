@@ -103,6 +103,7 @@
 <script>
 import { sortByOrderIndex } from './utils/sort'
 import { splitCommaList } from './utils/format'
+import { revealAppShell } from './utils/loader'
 
 export default {
   name: 'ProjectsApp',
@@ -118,20 +119,24 @@ export default {
       return sortByOrderIndex(this.projects)
     }
   },
-  mounted() {
+  async mounted() {
+    const loadingTasks = []
+
     // Check if data is available from server-side rendering
     if (typeof cbPortfolioData !== 'undefined') {
-      this.portfolioData = cbPortfolioData;
+      this.portfolioData = cbPortfolioData
     } else {
-      this.loadPortfolioData();
+      loadingTasks.push(this.loadPortfolioData())
     }
 
     if (typeof cbProjectsData !== 'undefined') {
-      this.projects = cbProjectsData || [];
+      this.projects = cbProjectsData || []
     } else {
-      this.isLoading = true;
-      this.loadProjectsData();
+      loadingTasks.push(this.loadProjectsData())
     }
+
+    await Promise.all(loadingTasks)
+    this.$nextTick(() => revealAppShell('cb-portfolio-projects'))
   },
   methods: {
     async loadPortfolioData() {
@@ -149,6 +154,7 @@ export default {
     },
     async loadProjectsData() {
       try {
+        this.isLoading = true;
         const response = await fetch('/wp-json/cb-portfolio/v1/projects');
         if (response.ok) {
           const data = await response.json();

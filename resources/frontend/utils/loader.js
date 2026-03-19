@@ -27,27 +27,13 @@ export function getLoaderCycleDuration(element) {
 export function revealAppShell(rootId) {
   const root = document.getElementById(rootId)
   const loader = document.getElementById('cb-portfolio-loader')
-  const loaderIcon = document.querySelector('.cb-portfolio-loader__icon')
   if (!root) return
 
-  const durationMs = getLoaderCycleDuration(loaderIcon)
-  const totalDelay = durationMs * 1.5
-  const startTime = window.cbPortfolioLoaderStart || 0
-  const elapsed = performance.now() - startTime
-  const remaining = Math.max(totalDelay - elapsed, 0)
+  root.classList.remove('cb-portfolio-hidden')
+  root.classList.add('cb-portfolio-ready')
 
-  const reveal = () => {
-    root.classList.remove('cb-portfolio-hidden')
-    root.classList.add('cb-portfolio-ready')
-    if (loader) {
-      loader.classList.add('cb-portfolio-loader--hidden')
-      setTimeout(() => loader.parentNode?.removeChild(loader), 400)
-    }
-  }
-
-  if (remaining > 0) {
-    setTimeout(reveal, remaining)
-  } else {
-    reveal()
+  if (loader) {
+    loader.classList.add('cb-portfolio-loader--hidden')
+    setTimeout(() => loader.parentNode?.removeChild(loader), 400)
   }
 }

@@ -39,31 +39,33 @@ export default {
       activeSection: 'about'
     }
   },
-  mounted() {
+  async mounted() {
+    const loadingTasks = []
+
     // Check if data is available from server-side rendering
     if (typeof cbPortfolioData !== 'undefined') {
-      this.portfolioData = cbPortfolioData;
+      this.portfolioData = cbPortfolioData
     } else {
-      this.loadPortfolioData();
+      loadingTasks.push(this.loadPortfolioData())
     }
 
     if (typeof cbExperienceData !== 'undefined') {
-      this.experienceData = cbExperienceData;
+      this.experienceData = cbExperienceData
     } else {
-      this.isLoadingExperience = true;
-      this.loadExperienceData();
+      loadingTasks.push(this.loadExperienceData())
     }
 
     if (typeof cbProjectsData !== 'undefined') {
-      this.projectsData = cbProjectsData;
+      this.projectsData = cbProjectsData
     } else {
-      this.isLoadingProjects = true;
-      this.loadProjectsData();
+      loadingTasks.push(this.loadProjectsData())
     }
 
-    this.setupScrollHandler();
-    this.setupNavigationHandlers();
-    this.revealAppShell();
+    await Promise.all(loadingTasks)
+
+    this.setupScrollHandler()
+    this.setupNavigationHandlers()
+    this.revealAppShell()
   },
   methods: {
     async loadPortfolioData() {

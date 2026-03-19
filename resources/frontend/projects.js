@@ -1,5 +1,4 @@
-import { createApp, nextTick } from 'vue';
-import { revealAppShell } from './utils/loader';
+import { createApp } from 'vue';
 import ProjectsApp from './ProjectsApp.vue';
 
 const mountElement = document.getElementById('cb-portfolio-projects');
@@ -10,12 +9,6 @@ if (!mountElement) {
     try {
         const app = createApp(ProjectsApp);
         app.mount('#cb-portfolio-projects');
-        
-        nextTick(() => {
-            requestAnimationFrame(() => {
-                revealAppShell('cb-portfolio-projects');
-            });
-        });
     } catch (error) {
         console.error('CB Portfolio Projects: Error mounting Vue app', error);
         const loader = document.getElementById('cb-portfolio-loader');
